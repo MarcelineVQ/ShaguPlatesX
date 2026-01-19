@@ -3,7 +3,7 @@
 ## This version is performance adapted for modern SuperWoW TWoW use.
 
 * Performance enhanced in various places
-* Tankplates coloring by default, easy to disable
+* Performs the job of [TankPlates](https://github.com/MarcelineVQ/TankPlates) by default, easy to disable.
 * Disables ShaguTweaks and SuperAPI_Castlib redundant background work
 * Disables ShaguTweaks target debuff and cast tracking if original blizzard frame isn't visible anyway
 * Somewhat untested since only I've used it
