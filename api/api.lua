@@ -113,7 +113,7 @@ end
 -- return:      [string]        the string tranformed to a column.
 function ShaguPlatesX.api.strvertical(str)
   local _, len = string.gsub(str,"[^\128-\193]", "")
-  if (len == string.len(str)) then
+  if (str and (len == string.len(str))) then
     return string.gsub(str, "(.)", "%1\n")
   else
     return string.gsub(str,"([%z\1-\127\194-\244][\128-\191]*)", "%1\n")
