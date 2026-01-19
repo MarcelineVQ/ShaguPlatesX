@@ -1,5 +1,5 @@
 -- load ShaguPlates environment
-setfenv(1, ShaguPlates:GetEnvironment())
+setfenv(1, ShaguPlatesX:GetEnvironment())
 
 --[[ libtipscan ]]--
 -- A ShaguPlates library that provides tooltip scanner.
@@ -26,7 +26,7 @@ setfenv(1, ShaguPlates:GetEnvironment())
 --    prints a list of all available scanner methods
 
 -- return instantly when another libtipscan is already active
-if ShaguPlates.api.libtipscan then return end
+if ShaguPlatesX.api.libtipscan then return end
 
 local libtipscan = {}
 local baseName = "ShaguPlatesScan"
@@ -197,4 +197,4 @@ function libtipscan:List()
 end
 
 -- add libtipscan to ShaguPlates API
-ShaguPlates.api.libtipscan = libtipscan
+ShaguPlatesX.api.libtipscan = libtipscan

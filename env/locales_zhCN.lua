@@ -1,6 +1,6 @@
-ShaguPlates_locale["zhCN"] = {}
+ShaguPlatesX_locale["zhCN"] = {}
 
-ShaguPlates_locale["zhCN"]["class"] = {
+ShaguPlatesX_locale["zhCN"]["class"] = {
   ["术士"] = "WARLOCK",
   ["战士"] = "WARRIOR",
   ["猎人"] = "HUNTER",
@@ -12,18 +12,18 @@ ShaguPlates_locale["zhCN"]["class"] = {
   ["盗贼"] = "ROGUE",
 }
 
-ShaguPlates_locale["zhCN"]["healduration"] = {
+ShaguPlatesX_locale["zhCN"]["healduration"] = {
   ["Rejuvenation"] = "使你的回春术的持续时间延长3秒。",
   ["Renew"] = "使你的恢复术的持续时间延长3秒。",
 }
 
-ShaguPlates_locale["zhCN"]["bagtypes"] = {
+ShaguPlatesX_locale["zhCN"]["bagtypes"] = {
   ["箭袋"] = "QUIVER",
   ["灵魂袋"] = "SOULBAG",
   ["容器"] = "DEFAULT",
 }
 
-ShaguPlates_locale["zhCN"]["itemtypes"] = {
+ShaguPlatesX_locale["zhCN"]["itemtypes"] = {
   ["INVTYPE_WAND"] = "魔杖",
   ["INVTYPE_THROWN"] = "投掷武器",
   ["INVTYPE_GUN"] = "枪械",
@@ -31,17 +31,17 @@ ShaguPlates_locale["zhCN"]["itemtypes"] = {
   ["INVTYPE_PROJECTILE"] = "弹药",
 }
 
-ShaguPlates_locale["zhCN"]["hunterpaging"] = {
+ShaguPlatesX_locale["zhCN"]["hunterpaging"] = {
   ["MELEE"] = "摔绊",
   ["RANGED"] = "奥术射击",
 }
 
-ShaguPlates_locale["zhCN"]["customcast"] = {
+ShaguPlatesX_locale["zhCN"]["customcast"] = {
   ["AIMEDSHOT"] = "瞄准射击",
   ["MULTISHOT"] = "多重射击",
 }
 
-ShaguPlates_locale["zhCN"]["critters"] = {
+ShaguPlatesX_locale["zhCN"]["critters"] = {
   '蝰蛇',
   '甲壳虫',
   '钟楼蝙蝠',
@@ -122,7 +122,7 @@ ShaguPlates_locale["zhCN"]["critters"] = {
   '小精灵',
 }
 
-ShaguPlates_locale["zhCN"]["dyndebuffs"] = {
+ShaguPlatesX_locale["zhCN"]["dyndebuffs"] = {
   ["Rupture"] = "割裂",
   ["Kidney Shot"] = "肾击",
   ["Rend"] = "撕裂",
@@ -132,14 +132,14 @@ ShaguPlates_locale["zhCN"]["dyndebuffs"] = {
   ["Gouge"] = "凿击",
 }
 
-ShaguPlates_locale["zhCN"]["judgements"] = {
+ShaguPlatesX_locale["zhCN"]["judgements"] = {
   ["公正审判"] = true,
   ["圣光审判"] = true,
   ["智慧审判"] = true,
   ["十字军审判"] = true,
 }
 
-ShaguPlates_locale["zhCN"]["interrupts"] = {
+ShaguPlatesX_locale["zhCN"]["interrupts"] = {
   ["盾击"] = true,
   ["拳击"] = true,
   ["脚踢"] = true,
@@ -188,14 +188,14 @@ ShaguPlates_locale["zhCN"]["interrupts"] = {
   ["地精迫击炮"] = true,
 }
 
-ShaguPlates_locale["zhCN"]["resurrections"] = {
+ShaguPlatesX_locale["zhCN"]["resurrections"] = {
   ["复活术"] = true,
   ["复生"] = true,
   ["救赎"] = true,
   ["先祖之魂"] = true,
 }
 
-ShaguPlates_locale["zhCN"]["spells"] = {
+ShaguPlatesX_locale["zhCN"]["spells"] = {
   ['"Plucky" Resumes Chicken Form']={t=1000,icon='Ability_Racial_BearForm'},
   ['Aqual Quintessence - Dowse Molten Core Rune']={t=1000,icon='Temp'},
   ['Archaedas Awaken Visual']={t=1500,icon='Spell_Nature_Earthquake'},
@@ -1442,7 +1442,7 @@ ShaguPlates_locale["zhCN"]["spells"] = {
   ['龙翼攻击']={t=1000,icon='INV_Misc_MonsterScales_14'},
 }
 
-ShaguPlates_locale["zhCN"]["debuffs"] = {
+ShaguPlatesX_locale["zhCN"]["debuffs"] = {
   ['AE Charm']={[0]=300.0,},
   ['Alliance Flag Captured']={[0]=10.0,},
   ['Armor IV']={[0]=3600.0,},
@@ -2395,9 +2395,9 @@ ShaguPlates_locale["zhCN"]["debuffs"] = {
 }
 
 -- custom entries not detected by DBC extractor
-ShaguPlates_locale["zhCN"]["debuffs"]['冰锥']={[0]=8.0,} -- Cone of Cold
+ShaguPlatesX_locale["zhCN"]["debuffs"]['冰锥']={[0]=8.0,} -- Cone of Cold
 
-ShaguPlates_locale["zhCN"]["totems"] = {
+ShaguPlatesX_locale["zhCN"]["totems"] = {
   ["祛病图腾"] = "spell_nature_diseasecleansingtotem",
   ["土元素图腾"] = "spell_nature_earthelemental_totem",
   ["地缚图腾"] = "spell_nature_strengthofearthtotem02",
@@ -2426,7 +2426,7 @@ ShaguPlates_locale["zhCN"]["totems"] = {
   ["空气之怒图腾"] = "spell_nature_slowingtotem",
 }
 
-ShaguPlates_locale["zhCN"]["icons"] = {
+ShaguPlatesX_locale["zhCN"]["icons"] = {
   ["驱除疾病"] = "Spell_Nature_NullifyDisease",
   ["驱毒术"] = "Spell_Nature_NullifyPoison_02",
   ["驱毒术效果"] = "Spell_Nature_NullifyPoison_02",

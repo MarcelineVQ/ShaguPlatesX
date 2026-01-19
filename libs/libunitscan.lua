@@ -1,11 +1,11 @@
 -- load ShaguPlates environment
-setfenv(1, ShaguPlates:GetEnvironment())
+setfenv(1, ShaguPlatesX:GetEnvironment())
 
 --[[ libunitscan ]]--
 -- A ShaguPlates library that detects and saves all kind of unit related informations.
 -- Such as level, class, elite-state and playertype. Each query causes the library
 -- to automatically scan for the target if not already existing. Player-data is
--- persisted within the ShaguPlates_playerDB where the mob data is a throw-away table.
+-- persisted within the ShaguPlatesX_playerDB where the mob data is a throw-away table.
 -- The automatic target scanner is only working for vanilla due to client limitations
 -- on further expansions.
 --
@@ -27,7 +27,7 @@ setfenv(1, ShaguPlates:GetEnvironment())
 --
 
 -- return instantly when another libunitscan is already active
-if ShaguPlates.api.libunitscan then return end
+if ShaguPlatesX.api.libunitscan then return end
 
 local units = { players = {}, mobs = {} }
 local queue = { }
@@ -69,8 +69,8 @@ libunitscan:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
 libunitscan:SetScript("OnEvent", function()
   if event == "PLAYER_ENTERING_WORLD" then
 
-    -- load ShaguPlates_playerDB
-    units.players = ShaguPlates_playerDB
+    -- load ShaguPlatesX_playerDB
+    units.players = ShaguPlatesX_playerDB
 
     -- update own character details
     local name = UnitName("player")
@@ -146,7 +146,7 @@ end)
 
 -- since TargetByName can only be triggered within vanilla,
 -- we can't auto-scan targets on further expansions.
-if ShaguPlates.client <= 11200 then
+if ShaguPlatesX.client <= 11200 then
   -- setup sound function switches
   local SoundOn = PlaySound
   local SoundOff = function() return end
@@ -174,4 +174,4 @@ if ShaguPlates.client <= 11200 then
   end)
 end
 
-ShaguPlates.api.libunitscan = libunitscan
+ShaguPlatesX.api.libunitscan = libunitscan

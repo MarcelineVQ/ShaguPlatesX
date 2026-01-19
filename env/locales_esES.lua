@@ -1,6 +1,6 @@
-ShaguPlates_locale["esES"] = {}
+ShaguPlatesX_locale["esES"] = {}
 
-ShaguPlates_locale["esES"]["class"] = {
+ShaguPlatesX_locale["esES"]["class"] = {
   ["Brujo"] = "WARLOCK",
   ["Guerrero"] = "WARRIOR",
   ["Cazador"] = "HUNTER",
@@ -12,18 +12,18 @@ ShaguPlates_locale["esES"]["class"] = {
   ["Pícaro"] = "ROGUE",
 }
 
-ShaguPlates_locale["esES"]["healduration"] = {
+ShaguPlatesX_locale["esES"]["healduration"] = {
   ["Rejuvenation"] = "Aumenta 3 s la duración de tu hechizo Rejuvenecimiento.",
   ["Renew"] = "Aumenta en 3 s la duración de tu hechizo Renovar.",
 }
 
-ShaguPlates_locale["esES"]["bagtypes"] = {
+ShaguPlatesX_locale["esES"]["bagtypes"] = {
   ["Carcaj"] = "QUIVER",
   ["Bolsa de almas"] = "SOULBAG",
   ["Bolsa"] = "DEFAULT",
 }
 
-ShaguPlates_locale["esES"]["itemtypes"] = {
+ShaguPlatesX_locale["esES"]["itemtypes"] = {
   ["INVTYPE_WAND"] = "Varita",
   ["INVTYPE_THROWN"] = "Arma arrojadiza",
   ["INVTYPE_GUN"] = "Arma de fuego",
@@ -31,17 +31,17 @@ ShaguPlates_locale["esES"]["itemtypes"] = {
   ["INVTYPE_PROJECTILE"] = "Proyectil",
 }
 
-ShaguPlates_locale["esES"]["hunterpaging"] = {
+ShaguPlatesX_locale["esES"]["hunterpaging"] = {
   ["MELEE"] = "Cortar alas",
   ["RANGED"] = "Disparo Arcano",
 }
 
-ShaguPlates_locale["esES"]["customcast"] = {
+ShaguPlatesX_locale["esES"]["customcast"] = {
   ["AIMEDSHOT"] = "Disparo de puntería",
   ["MULTISHOT"] = "Multidisparo",
 }
 
-ShaguPlates_locale["esES"]["critters"] = {
+ShaguPlatesX_locale["esES"]["critters"] = {
   'Víboris',
   'Alfazaque',
   'Murciélago Timbralevín',
@@ -127,7 +127,7 @@ ShaguPlates_locale["esES"]["critters"] = {
   'Fuego fatuo',
 }
 
-ShaguPlates_locale["esES"]["dyndebuffs"] = {
+ShaguPlatesX_locale["esES"]["dyndebuffs"] = {
   ["Rupture"] = "Ruptura",
   ["Kidney Shot"] = "Golpe en los riñones",
   ["Rend"] = "Desgarrar",
@@ -137,14 +137,14 @@ ShaguPlates_locale["esES"]["dyndebuffs"] = {
   ["Gouge"] = "Incapacitación",
 }
 
-ShaguPlates_locale["esES"]["judgements"] = {
+ShaguPlatesX_locale["esES"]["judgements"] = {
   ["Sentencia de Justicia"] = true,
   ["Sentencia de Luz"] = true,
   ["Sentencia de Sabiduría"] = true,
   ["Sentencia del Cruzado"] = true,
 }
 
-ShaguPlates_locale["esES"]["interrupts"] = {
+ShaguPlatesX_locale["esES"]["interrupts"] = {
   ["Azote de escudo"] = true,
   ["Zurrar"] = true,
   ["Patada"] = true,
@@ -193,14 +193,14 @@ ShaguPlates_locale["esES"]["interrupts"] = {
   ["Mortero goblin"] = true,
 }
 
-ShaguPlates_locale["esES"]["resurrections"] = {
+ShaguPlatesX_locale["esES"]["resurrections"] = {
   ["Resurrección"] = true,
   ["Renacer"] = true,
   ["Redención"] = true,
   ["Espíritu ancestral"] = true,
 }
 
-ShaguPlates_locale["esES"]["spells"] = {
+ShaguPlatesX_locale["esES"]["spells"] = {
   ['"Desplumado" mantiene forma de pollo']={t=1000,icon='Ability_Racial_BearForm'},
   ['Abrazo de la viuda']={t=500,icon='Spell_Arcane_Blink'},
   ['Abrellamas']={t=2500,icon='Spell_Fire_Fire'},
@@ -1464,7 +1464,7 @@ ShaguPlates_locale["esES"]["spells"] = {
   ['Éxtasis melódico']={t=1000,icon='Temp'},
 }
 
-ShaguPlates_locale["esES"]["debuffs"] = {
+ShaguPlatesX_locale["esES"]["debuffs"] = {
   ['Abrazo de la viuda']={[0]=30.0,},
   ['Abrazo vampírico']={[0]=60.0,},
   ['Acido tunelador']={[0]=30.0,},
@@ -2392,9 +2392,9 @@ ShaguPlates_locale["esES"]["debuffs"] = {
 }
 
 -- custom entries not detected by DBC extractor
-ShaguPlates_locale["esES"]["debuffs"]['Cono de frío']={[0]=8.0,} -- Cone of Cold
+ShaguPlatesX_locale["esES"]["debuffs"]['Cono de frío']={[0]=8.0,} -- Cone of Cold
 
-ShaguPlates_locale["esES"]["totems"] = {
+ShaguPlatesX_locale["esES"]["totems"] = {
   ["Tótem de limpieza de enfermedades"] = "spell_nature_diseasecleansingtotem",
   ["Tótem Elemental de Tierra"] = "spell_nature_earthelemental_totem",
   ["Tótem Nexo terrestre"] = "spell_nature_strengthofearthtotem02",
@@ -2423,7 +2423,7 @@ ShaguPlates_locale["esES"]["totems"] = {
   ["Tótem cólera de aire"] = "spell_nature_slowingtotem",
 }
 
-ShaguPlates_locale["esES"]["icons"] = {
+ShaguPlatesX_locale["esES"]["icons"] = {
   ["Suprimir enfermedad"] = "Spell_Nature_NullifyDisease",
   ["Suprimir veneno"] = "Spell_Nature_NullifyPoison_02",
   ["Suprimir efecto de veneno"] = "Spell_Nature_NullifyPoison_02",

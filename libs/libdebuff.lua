@@ -1,5 +1,5 @@
 -- load ShaguPlates environment
-setfenv(1, ShaguPlates:GetEnvironment())
+setfenv(1, ShaguPlatesX:GetEnvironment())
 
 --[[ libdebuff ]]--
 -- A ShaguPlates library that detects and saves all ongoing debuffs of players, NPCs and enemies.
@@ -11,10 +11,10 @@ setfenv(1, ShaguPlates:GetEnvironment())
 --    name, rank, texture, stacks, dtype, duration, timeleft
 
 -- return instantly if we're not on a vanilla client
-if ShaguPlates.client > 11200 then return end
+if ShaguPlatesX.client > 11200 then return end
 
 -- return instantly when another libdebuff is already active
-if ShaguPlates.api.libdebuff then return end
+if ShaguPlatesX.api.libdebuff then return end
 
 -- fix a typo (missing $) in ruRU capture index
 if GetLocale() == "ruRU" then
@@ -79,8 +79,8 @@ function libdebuff:GetMaxRank(effect)
 end
 
 function libdebuff:UpdateUnits()
-  if not ShaguPlates.uf or not ShaguPlates.uf.target then return end
-  ShaguPlates.uf:RefreshUnit(ShaguPlates.uf.target, "aura")
+  if not ShaguPlatesX.uf or not ShaguPlatesX.uf.target then return end
+  ShaguPlatesX.uf:RefreshUnit(ShaguPlatesX.uf.target, "aura")
 end
 
 function libdebuff:AddPending(unit, unitlevel, effect, duration, caster)
@@ -313,4 +313,4 @@ function libdebuff:UnitOwnDebuff(unit, id)
 end
 
 -- add libdebuff to ShaguPlates API
-ShaguPlates.api.libdebuff = libdebuff
+ShaguPlatesX.api.libdebuff = libdebuff

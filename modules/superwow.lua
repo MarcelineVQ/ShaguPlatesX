@@ -1,7 +1,7 @@
 -- Compatibility layer to use castbars provided by SuperWoW:
 -- https://github.com/balakethelock/SuperWoW
 
-ShaguPlates:RegisterModule("superwow", "vanilla", function ()
+ShaguPlatesX:RegisterModule("superwow", "vanilla", function ()
   if SetAutoloot and SpellInfo and not SUPERWOW_VERSION then
     -- Turn every enchanting link that we create in the enchanting frame,
     -- from "spell:" back into "enchant:". The enchant-version is what is
@@ -47,7 +47,7 @@ ShaguPlates:RegisterModule("superwow", "vanilla", function ()
   end
 
   -- Add native mouseover support
-  if SUPERWOW_VERSION and ShaguPlates.uf and ShaguPlates.uf.mouseover then
+  if SUPERWOW_VERSION and ShaguPlatesX.uf and ShaguPlatesX.uf.mouseover then
     _G.SlashCmdList.PFCAST = function(msg)
       local func = loadstring(msg or "")
       local unit = "mouseover"
@@ -73,33 +73,33 @@ ShaguPlates:RegisterModule("superwow", "vanilla", function ()
         if switch_target then TargetLastTarget() end
       else
         -- write temporary unit name
-        ShaguPlates.uf.mouseover.unit = unit
+        ShaguPlatesX.uf.mouseover.unit = unit
 
         -- cast spell to unitstr
         CastSpellByName(msg, unit)
 
         -- remove temporary mouseover unit
-        ShaguPlates.uf.mouseover.unit = nil
+        ShaguPlatesX.uf.mouseover.unit = nil
       end
     end
   end
 
   -- Add support for druid mana bars
-  if SUPERWOW_VERSION and ShaguPlates.uf and ShaguPlates.uf.player and ShaguPlates_config.unitframes.druidmanabar == "1" then
-    local parent = ShaguPlates.uf.player.power.bar
-    local config = ShaguPlates.uf.player.config
-    local mana = config.defcolor == "0" and config.manacolor or ShaguPlates_config.unitframes.manacolor
-    local r, g, b, a = ShaguPlates.api.strsplit(",", mana)
+  if SUPERWOW_VERSION and ShaguPlatesX.uf and ShaguPlatesX.uf.player and ShaguPlatesX_config.unitframes.druidmanabar == "1" then
+    local parent = ShaguPlatesX.uf.player.power.bar
+    local config = ShaguPlatesX.uf.player.config
+    local mana = config.defcolor == "0" and config.manacolor or ShaguPlatesX_config.unitframes.manacolor
+    local r, g, b, a = ShaguPlatesX.api.strsplit(",", mana)
     local rawborder, default_border = GetBorderSize("unitframes")
     local _, class = UnitClass("player")
     local width = config.pwidth ~= "-1" and config.pwidth or config.width
 
-    local fontname = ShaguPlates.font_unit
-    local fontsize = tonumber(ShaguPlates_config.global.font_unit_size)
-    local fontstyle = ShaguPlates_config.global.font_unit_style
+    local fontname = ShaguPlatesX.font_unit
+    local fontsize = tonumber(ShaguPlatesX_config.global.font_unit_size)
+    local fontstyle = ShaguPlatesX_config.global.font_unit_style
 
     if config.customfont == "1" then
-      fontname = ShaguPlates.media[config.customfont_name]
+      fontname = ShaguPlatesX.media[config.customfont_name]
       fontsize = tonumber(config.customfont_size)
       fontstyle = config.customfont_style
     end
@@ -107,12 +107,12 @@ ShaguPlates:RegisterModule("superwow", "vanilla", function ()
     local druidmana = CreateFrame("StatusBar", "pfDruidMana", UIParent)
     druidmana:SetFrameStrata(parent:GetFrameStrata())
     druidmana:SetFrameLevel(parent:GetFrameLevel() + 16)
-    druidmana:SetStatusBarTexture(ShaguPlates.media[config.pbartexture])
+    druidmana:SetStatusBarTexture(ShaguPlatesX.media[config.pbartexture])
     druidmana:SetStatusBarColor(r, g, b, a)
     druidmana:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 0, -2*default_border - config.pspace)
     druidmana:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT", 0, -2*default_border - config.pspace)
     druidmana:SetWidth(width)
-    druidmana:SetHeight(tonumber(ShaguPlates_config.unitframes.druidmanaheight) or 6)
+    druidmana:SetHeight(tonumber(ShaguPlatesX_config.unitframes.druidmanaheight) or 6)
     druidmana:EnableMouse(true)
     druidmana:Hide()
 
@@ -154,14 +154,14 @@ ShaguPlates:RegisterModule("superwow", "vanilla", function ()
       local g = ManaBarColor[0].g
       local b = ManaBarColor[0].b
 
-      if ShaguPlates_config.unitframes.pastel == "1" then
+      if ShaguPlatesX_config.unitframes.pastel == "1" then
         druidmana.text:SetTextColor((r+.75)*.5, (g+.75)*.5, (b+.75)*.5, 1)
       else
         druidmana.text:SetTextColor(r, g, b, a)
       end
     end
 
-    if ShaguPlates_config.unitframes.druidmanatext == "1" then
+    if ShaguPlatesX_config.unitframes.druidmanatext == "1" then
       druidmana.text:Show()
     else
       druidmana.text:Hide()
@@ -174,21 +174,21 @@ ShaguPlates:RegisterModule("superwow", "vanilla", function ()
   end
 
   -- Add support for guid based focus frame
-  if SUPERWOW_VERSION and ShaguPlates.uf and ShaguPlates.uf.focus then
+  if SUPERWOW_VERSION and ShaguPlatesX.uf and ShaguPlatesX.uf.focus then
     local focus = function(unitstr)
       -- try to read target's unit guid
       local _, guid = UnitExists(unitstr)
 
-      if guid and ShaguPlates.uf.focus then
+      if guid and ShaguPlatesX.uf.focus then
         -- update focus frame
-        ShaguPlates.uf.focus.unitname = nil
-        ShaguPlates.uf.focus.label = guid
-        ShaguPlates.uf.focus.id = ""
+        ShaguPlatesX.uf.focus.unitname = nil
+        ShaguPlatesX.uf.focus.label = guid
+        ShaguPlatesX.uf.focus.id = ""
 
         -- update focustarget frame
-        ShaguPlates.uf.focustarget.unitname = nil
-        ShaguPlates.uf.focustarget.label = guid .. "target"
-        ShaguPlates.uf.focustarget.id = ""
+        ShaguPlatesX.uf.focustarget.unitname = nil
+        ShaguPlatesX.uf.focustarget.label = guid .. "target"
+        ShaguPlatesX.uf.focustarget.id = ""
       end
 
       return guid
@@ -208,8 +208,8 @@ ShaguPlates:RegisterModule("superwow", "vanilla", function ()
     local legacyswapfocus = SlashCmdList.PFSWAPFOCUS
     function SlashCmdList.PFSWAPFOCUS(msg)
       -- save previous focus values
-      local oldlabel = ShaguPlates.uf.focus.label or ""
-      local oldid = ShaguPlates.uf.focus.id or ""
+      local oldlabel = ShaguPlatesX.uf.focus.label or ""
+      local oldid = ShaguPlatesX.uf.focus.id or ""
 
       -- try to perform guid based focus
       local guid = focus("target")
@@ -224,109 +224,6 @@ ShaguPlates:RegisterModule("superwow", "vanilla", function ()
     end
   end
 
-  -- Enhance libdebuff with SuperWoW data
-  local superdebuff = CreateFrame("Frame")
-  superdebuff:RegisterEvent("UNIT_CASTEVENT")
-  superdebuff:SetScript("OnEvent", function()
-    -- variable assignments
-    local caster, target, event, spell, duration = arg1, arg2, arg3, arg4
-
-    -- skip other caster and empty target events
-    local _, guid = UnitExists("player")
-    if caster ~= guid then return end
-    if event ~= "CAST" then return end
-    if not target or target == "" then return end
-
-    -- assign all required data
-    local unit = UnitName(target)
-    local unitlevel = UnitLevel(target)
-    local effect, rank = SpellInfo(spell)
-    local duration = libdebuff:GetDuration(effect, rank)
-    local caster = "player"
-
-    -- add effect to current debuff data
-    libdebuff:AddEffect(unit, unitlevel, effect, duration, caster)
-  end)
-
-  -- Enhance libcast with SuperWoW data
-  local supercast = CreateFrame("Frame")
-  supercast:RegisterEvent("UNIT_CASTEVENT")
-  supercast:SetScript("OnEvent", function()
-    if not supercast.init then
-      -- disable combat parsing events in superwow mode
-      libcast:UnregisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE")
-      libcast:UnregisterEvent("CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE")
-      libcast:UnregisterEvent("CHAT_MSG_SPELL_HOSTILEPLAYER_BUFF")
-      libcast:UnregisterEvent("CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE")
-      libcast:UnregisterEvent("CHAT_MSG_SPELL_FRIENDLYPLAYER_BUFF")
-      libcast:UnregisterEvent("CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_BUFFS")
-      libcast:UnregisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_BUFFS")
-      libcast:UnregisterEvent("CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE")
-      libcast:UnregisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE")
-      libcast:UnregisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE")
-      libcast:UnregisterEvent("CHAT_MSG_SPELL_PARTY_DAMAGE")
-      libcast:UnregisterEvent("CHAT_MSG_SPELL_PARTY_BUFF")
-      libcast:UnregisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE")
-      libcast:UnregisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_BUFFS")
-      libcast:UnregisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE")
-      libcast:UnregisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS")
-      libcast:UnregisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE")
-      libcast:UnregisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF")
-      supercast.init = true
-    end
-
-    if arg3 == "START" or arg3 == "CAST" or arg3 == "CHANNEL" then
-      -- human readable argument list
-      local guid = arg1
-      local target = arg2
-      local event_type = arg3
-      local spell_id = arg4
-      local timer = arg5
-      local start = GetTime()
-
-      -- get spell info from spell id
-      local spell, icon, _
-      if SpellInfo and SpellInfo(spell_id) then
-        spell, _, icon = SpellInfo(spell_id)
-      end
-
-      -- set fallback values
-      spell = spell or UNKNOWN
-      icon = icon or "Interface\\Icons\\INV_Misc_QuestionMark"
-
-      -- skip on buff procs during cast
-      if event_type == "CAST" then
-        if not libcast.db[guid] or libcast.db[guid].cast ~= spell then
-          -- ignore casts without 'START' event, while there is already another cast.
-          -- those events can be for example a frost shield proc while casting frostbolt.
-          -- we want to keep the cast itself, so we simply skip those.
-          return
-        end
-      end
-
-      -- add cast action to the database
-      if not libcast.db[guid] then libcast.db[guid] = {} end
-      libcast.db[guid].cast = spell
-      libcast.db[guid].rank = nil
-      libcast.db[guid].start = GetTime()
-      libcast.db[guid].casttime = timer
-      libcast.db[guid].icon = icon
-      libcast.db[guid].channel = event_type == "CHANNEL" or false
-
-      -- write state variable
-      superwow_active = true
-    elseif arg3 == "FAIL" then
-      local guid = arg1
-
-      -- delete all cast entries of guid
-      if libcast.db[guid] then
-        libcast.db[guid].cast = nil
-        libcast.db[guid].rank = nil
-        libcast.db[guid].start = nil
-        libcast.db[guid].casttime = nil
-        libcast.db[guid].icon = nil
-        libcast.db[guid].channel = nil
-      end
-    end
-  end)
+  -- Mark SuperWoW as active
+  superwow_active = true
 end)

@@ -1,4 +1,4 @@
-ShaguPlates_translation["frFR"] = {
+ShaguPlatesX_translation["frFR"] = {
   ["Abbreviate Numbers (4200 -> 4.2k)"] = "Nombre abrégés (4200 -> 4.2k)",
   ["Abbreviate Unit Names"] = nil,
   ["Always Show On Target Units"] = "Toujours montrer sur la cible",
@@ -201,7 +201,7 @@ ShaguPlates_translation["frFR"] = {
   ["Square"] = "Carré",
   ["Standard Text Font"] = "Police standard du texte",
   ["Standard Text Font Size"] = "Taille de la police standard du texte",
-  ["SuperWoW Settings"] = nil,
+  ["Aggro Display Settings"] = nil,
   ["Target Nameplate Zoom Factor"] = "Facteur de zoom du Nameplate de la cible",
   ["Thick Outline"] = "Contour épais",
   ["Threshold To Trust Health Estimation"] = "Seuil de confiance pour l'estimation de la santé",

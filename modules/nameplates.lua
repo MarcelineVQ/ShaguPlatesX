@@ -1,4 +1,4 @@
-ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
+ShaguPlatesX:RegisterModule("nameplates", "vanilla:tbc", function ()
   -- disable original castbars
   pcall(SetCVar, "ShowVKeyCastbar", 0)
 
@@ -12,10 +12,10 @@ ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
 
   local combatstate = {
     -- gets overwritten by user config
-    ["NOTHREAT"] = { r = .7, g = .7, b = .2, a = 1 },
-    ["THREAT"]   = { r = .7, g = .2, b = .2, a = 1 },
-    ["CASTING"]  = { r = .7, g = .2, b = .7, a = 1 },
-    ["STUN"]     = { r = .2, g = .7, b = .7, a = 1 },
+    ["NOTHREAT"] = { r = 1, g = 0, b = 0, a = 1 },     -- Red: not targeting you
+    ["THREAT"]   = { r = 0, g = 1, b = 0, a = 1 },     -- Green: targeting you (has aggro)
+    ["CASTING"]  = { r = .7, g = .2, b = .7, a = 1 },  -- Purple: casting
+    ["STUN"]     = { r = 1, g = 1, b = 0, a = .6 },    -- Yellow: stunned/no target
     ["NONE"]     = { r = .2, g = .2, b = .2, a = 1 },
   }
 
@@ -34,17 +34,85 @@ ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
   local registry = {}
   local debuffdurations = C.appearance.cd.debuffs == "1" and true or nil
 
+  -- SuperWoW performance optimization: GUID-based registry for O(1) lookups
+  local guidRegistry = {}   -- guid -> plate
+  local castEvents = {}     -- guid -> cast info
+  local debuffCache = {}    -- guid -> { [spellID] = { start, duration } }
+  local threatMemory = {}   -- guid -> true if mob had player targeted (persists through casts)
+
+  -- wipe polyfill
+  local wipe = wipe or function(t) for k in pairs(t) do t[k] = nil end end
+
+  -- Throttle constants
+  local THROTTLE_INTERVAL = 0.1   -- 100ms for all plates
+
+  -- Cache frequently accessed config values (updated on config change)
+  local cfg_showcastbar, cfg_targetcastbar, cfg_notargalpha, cfg_namefightcolor
+  local cfg_spellname, cfg_showhp, cfg_showdebuffs
+  local cfg_targetzoom, cfg_zoomval, cfg_width, cfg_heighthealth
+
+  -- store SuperAPI_Castlib original scripts for restore
+  local superapi_castlib_stored = false
+  local superapi_castlib_onupdate, superapi_castlib_onevent
+
+  local function CacheConfig()
+    cfg_showcastbar = C.nameplates["showcastbar"] == "1"
+    cfg_targetcastbar = C.nameplates["targetcastbar"] == "1"
+
+    -- manage SuperAPI_Castlib based on our castbar setting
+    if C.global.override_superapi_castlib == "1" and SuperAPI_Castlib then
+      if cfg_showcastbar then
+        -- store and disable SuperAPI_Castlib
+        if not superapi_castlib_stored then
+          superapi_castlib_onupdate = SuperAPI_Castlib:GetScript("OnUpdate")
+          superapi_castlib_onevent = SuperAPI_Castlib:GetScript("OnEvent")
+          superapi_castlib_stored = true
+          SuperAPI_Castlib:UnregisterAllEvents()
+          SuperAPI_Castlib:SetScript("OnUpdate", nil)
+          SuperAPI_Castlib:SetScript("OnEvent", nil)
+          SuperAPI_nameplatebars = false
+        end
+      elseif superapi_castlib_stored then
+        -- restore SuperAPI_Castlib
+        SuperAPI_Castlib:RegisterEvent("UNIT_CASTEVENT")
+        SuperAPI_Castlib:SetScript("OnUpdate", superapi_castlib_onupdate)
+        SuperAPI_Castlib:SetScript("OnEvent", superapi_castlib_onevent)
+        SuperAPI_nameplatebars = true
+        superapi_castlib_stored = false
+      end
+    end
+    cfg_notargalpha = tonumber(C.nameplates.notargalpha) or 0.5
+    cfg_namefightcolor = C.nameplates.namefightcolor == "1"
+    cfg_spellname = C.nameplates.spellname == "1"
+    cfg_showhp = C.nameplates.showhp == "1"
+    cfg_showdebuffs = C.nameplates["showdebuffs"] == "1"
+    cfg_targetzoom = C.nameplates.targetzoom == "1"
+    cfg_zoomval = (tonumber(C.nameplates.targetzoomval) or 0.4) + 1
+    cfg_width = tonumber(C.nameplates.width) or 120
+    cfg_heighthealth = tonumber(C.nameplates.heighthealth) or 8
+  end
+
   -- cache default border color
-  local er, eg, eb, ea = GetStringColor(ShaguPlates_config.appearance.border.color)
+  local er, eg, eb, ea = GetStringColor(ShaguPlatesX_config.appearance.border.color)
 
   local function GetCombatStateColor(guid)
     local target = guid.."target"
     local color = false
 
     if UnitAffectingCombat("player") and UnitAffectingCombat(guid) and not UnitCanAssist("player", guid) then
-      if C.nameplates.ccombatcasting == "1" and (UnitCastingInfo(guid) or UnitChannelInfo(guid)) then
+      local isCasting = castEvents[guid] and castEvents[guid].endTime and GetTime() < castEvents[guid].endTime
+      local targetingPlayer = UnitIsUnit(target, "player")
+
+      -- Remember if mob targets player, clear only when targeting someone else while NOT casting
+      if targetingPlayer then
+        threatMemory[guid] = true
+      elseif UnitExists(target) and not isCasting then
+        threatMemory[guid] = nil
+      end
+
+      if C.nameplates.ccombatcasting == "1" and isCasting then
         color = combatstate.CASTING
-      elseif C.nameplates.ccombatthreat == "1" and UnitIsUnit(target, "player") then
+      elseif C.nameplates.ccombatthreat == "1" and (targetingPlayer or threatMemory[guid]) then
         color = combatstate.THREAT
       elseif C.nameplates.ccombatnothreat == "1" and UnitExists(target) then
         color = combatstate.NOTHREAT
@@ -131,7 +199,7 @@ ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
   end
 
   local function GetNameString(name)
-    local abbrev = ShaguPlates_config.unitframes.abbrevname == "1" or nil
+    local abbrev = ShaguPlatesX_config.unitframes.abbrevname == "1" or nil
     local size = 20
 
     -- first try to only abbreviate the first word
@@ -189,50 +257,6 @@ ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
     end
   end
 
-  local function PlateCacheDebuffs(self, unitstr, verify)
-    if not self.debuffcache then self.debuffcache = {} end
-
-    for id = 1, 16 do
-      local effect, _, texture, stacks, _, duration, timeleft
-
-      if unitstr and C.nameplates.selfdebuff == "1" then
-        effect, _, texture, stacks, _, duration, timeleft = libdebuff:UnitOwnDebuff(unitstr, id)
-      else
-        effect, _, texture, stacks, _, duration, timeleft = libdebuff:UnitDebuff(unitstr, id)
-      end
-
-      if effect and timeleft and timeleft > 0 then
-        local start = GetTime() - ( (duration or 0) - ( timeleft or 0) )
-        local stop = GetTime() + ( timeleft or 0 )
-        self.debuffcache[id] = self.debuffcache[id] or {}
-        self.debuffcache[id].effect = effect
-        self.debuffcache[id].texture = texture
-        self.debuffcache[id].stacks = stacks
-        self.debuffcache[id].duration = duration or 0
-        self.debuffcache[id].start = start
-        self.debuffcache[id].stop = stop
-        self.debuffcache[id].empty = nil
-      end
-    end
-
-    self.verify = verify
-  end
-
-  local function PlateUnitDebuff(self, id)
-    -- break on unknown data
-    if not self.debuffcache then return end
-    if not self.debuffcache[id] then return end
-    if not self.debuffcache[id].stop then return end
-
-    -- break on timeout debuffs
-    if self.debuffcache[id].empty then return end
-    if self.debuffcache[id].stop < GetTime() then return end
-
-    -- return cached debuff
-    local c = self.debuffcache[id]
-    return c.effect, c.rank, c.texture, c.stacks, c.dtype, c.duration, (c.stop - GetTime())
-  end
-
   local function CreateDebuffIcon(plate, index)
     plate.debuffs[index] = CreateFrame("Frame", plate.platename.."Debuff"..index, plate)
     plate.debuffs[index]:Hide()
@@ -248,7 +272,7 @@ ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
     plate.debuffs[index].stacks:SetJustifyV("BOTTOM")
     plate.debuffs[index].stacks:SetTextColor(1,1,0)
 
-    if ShaguPlates.client <= 11200 then
+    if ShaguPlatesX.client <= 11200 then
       -- create a fake animation frame on vanilla to improve performance
       plate.debuffs[index].cd = CreateFrame("Frame", plate.platename.."Debuff"..index.."Cooldown", plate.debuffs[index])
       plate.debuffs[index].cd:SetScript("OnUpdate", CooldownFrame_OnUpdateModel)
@@ -272,7 +296,7 @@ ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
     local debuffsize = tonumber(C.nameplates.debuffsize)
     local debuffoffset = tonumber(C.nameplates.debuffoffset)
     local limit = floor(width / debuffsize)
-    local font = C.nameplates.use_unitfonts == "1" and ShaguPlates.font_unit or ShaguPlates.font_default
+    local font = C.nameplates.use_unitfonts == "1" and ShaguPlatesX.font_unit or ShaguPlatesX.font_default
     local font_size = C.nameplates.use_unitfonts == "1" and C.global.font_unit_size or C.global.font_size
     local font_style = C.nameplates.name.fontstyle
 
@@ -297,6 +321,12 @@ ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
     nameplate.debuffs[i]:SetHeight(tonumber(C.nameplates.debuffsize))
   end
 
+  -- player GUID for cast event filtering
+  local playerGUID = nil
+
+  -- track which GUID has combo points (only one at a time)
+  local comboPointGuid = nil
+
   -- create nameplate core
   local nameplates = CreateFrame("Frame", "pfNameplates", UIParent)
   nameplates:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -304,23 +334,134 @@ ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
   nameplates:RegisterEvent("UNIT_COMBO_POINTS")
   nameplates:RegisterEvent("PLAYER_COMBO_POINTS")
   nameplates:RegisterEvent("UNIT_AURA")
+  nameplates:RegisterEvent("UNIT_CASTEVENT")
 
   nameplates:SetScript("OnEvent", function()
     if event == "PLAYER_ENTERING_WORLD" then
+      _, playerGUID = UnitExists("player")
+      CacheConfig()
       this:SetGameVariables()
-    else
-      this.eventcache = true
+
+    elseif event == "UNIT_AURA" then
+      -- SuperWoW: arg1 is the unit GUID - direct O(1) lookup
+      local guid = arg1
+      local plate = guidRegistry[guid]
+      if plate and plate.nameplate then
+        plate.nameplate.auraUpdate = true
+
+        -- Track debuff start times for duration display
+        if debuffdurations then
+          if not debuffCache[guid] then debuffCache[guid] = {} end
+          local seen = {}
+
+          -- Scan current debuffs and track new ones
+          for i = 1, 16 do
+            local texture, stacks, dtype, spellID = UnitDebuff(guid, i)
+            if not texture then break end
+
+            seen[spellID] = true
+            if not debuffCache[guid][spellID] then
+              -- New debuff - record start time and lookup duration
+              local spellName = SpellInfo(spellID)
+              local duration = L["debuffs"][spellName] and L["debuffs"][spellName][0] or nil
+              debuffCache[guid][spellID] = { start = GetTime(), duration = duration }
+            end
+          end
+
+          -- Clear expired debuffs from cache
+          for spellID in pairs(debuffCache[guid]) do
+            if not seen[spellID] then
+              debuffCache[guid][spellID] = nil
+            end
+          end
+        end
+      end
+
+    elseif event == "UNIT_CASTEVENT" then
+      local casterGUID = arg1
+      local eventType = arg3  -- "START", "CAST", "FAIL", "CHANNEL", "MAINHAND", "OFFHAND"
+      local spellID = arg4
+      local castDuration = arg5
+
+      -- Skip player casts and melee
+      if casterGUID == playerGUID then return end
+      if eventType == "MAINHAND" or eventType == "OFFHAND" then return end
+
+      -- Store cast data
+      if eventType == "START" or eventType == "CHANNEL" then
+        if not castEvents[casterGUID] then castEvents[casterGUID] = {} end
+        wipe(castEvents[casterGUID])
+
+        local spellName, _, icon = SpellInfo(spellID)
+        castEvents[casterGUID].event = eventType
+        castEvents[casterGUID].spellID = spellID
+        castEvents[casterGUID].spellName = spellName
+        castEvents[casterGUID].icon = icon
+        castEvents[casterGUID].startTime = GetTime()
+        castEvents[casterGUID].endTime = castDuration and GetTime() + castDuration / 1000
+        castEvents[casterGUID].duration = castDuration and castDuration / 1000
+
+      elseif eventType == "CAST" or eventType == "FAIL" then
+        if castEvents[casterGUID] then
+          wipe(castEvents[casterGUID])
+        end
+      end
+
+      -- Flag plate for castbar update
+      local plate = guidRegistry[casterGUID]
+      if plate and plate.nameplate then
+        plate.nameplate.castUpdate = true
+      end
+
+    elseif event == "PLAYER_TARGET_CHANGED" then
+      -- Flag target plate for update
+      local _, targetGuid = UnitExists("target")
+      if targetGuid then
+        local plate = guidRegistry[targetGuid]
+        if plate and plate.nameplate then
+          plate.nameplate.targetUpdate = true
+        end
+      end
+
+    elseif event == "PLAYER_COMBO_POINTS" or event == "UNIT_COMBO_POINTS" then
+      -- Only update the plate that has/had combo points
+      local _, newGuid = UnitExists("target")
+      local cp = GetComboPoints("player", "target")
+
+      -- Clear old combo point holder if different
+      if comboPointGuid and comboPointGuid ~= newGuid then
+        local oldPlate = guidRegistry[comboPointGuid]
+        if oldPlate and oldPlate.nameplate then
+          oldPlate.nameplate.comboUpdate = true
+        end
+      end
+
+      -- Update new combo point holder
+      if cp and cp > 0 and newGuid then
+        comboPointGuid = newGuid
+        local plate = guidRegistry[newGuid]
+        if plate and plate.nameplate then
+          plate.nameplate.comboUpdate = true
+        end
+      else
+        comboPointGuid = nil
+      end
     end
   end)
 
+  -- Cache frame-level state (updated once per frame, used by all plates)
+  local frameState = {
+    now = 0,
+    hasTarget = false,
+    targetGuid = nil,
+    hasMouseover = false,
+  }
+
   nameplates:SetScript("OnUpdate", function()
-    -- propagate events to all nameplates
-    if this.eventcache then
-      this.eventcache = nil
-      for plate in pairs(registry) do
-        plate.eventcache = true
-      end
-    end
+    -- Update frame-level cache once per frame
+    frameState.now = GetTime()
+    frameState.hasTarget,frameState.targetGuid = UnitExists("target")
+    frameState.hasMouseover = UnitExists("mouseover")
 
     -- detect new nameplates
     parentcount = WorldFrame:GetNumChildren()
@@ -335,6 +476,13 @@ ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
       end
 
       initialized = parentcount
+    end
+
+    -- central OnUpdate for all plates
+    for plate in pairs(registry) do
+      if plate:IsVisible() then
+        nameplates.OnUpdate(plate, frameState)
+      end
     end
   end)
 
@@ -363,9 +511,10 @@ ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
     nameplate:EnableMouse(0)
     nameplate.parent = parent
     nameplate.cache = {}
-    nameplate.UnitDebuff = PlateUnitDebuff
-    nameplate.CacheDebuffs = PlateCacheDebuffs
     nameplate.original = {}
+
+    -- Stagger tick to spread updates across frames (0.05s apart per plate)
+    nameplate.tick = GetTime() + math.mod(platecount,10) * 0.05
 
     -- create shortcuts for all known elements and disable them
     nameplate.original.healthbar, nameplate.original.castbar = parent:GetChildren()
@@ -399,7 +548,7 @@ ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
 
     nameplate.glow = nameplate:CreateTexture(nil, "BACKGROUND")
     nameplate.glow:SetPoint("CENTER", nameplate.health, "CENTER", 0, 0)
-    nameplate.glow:SetTexture(ShaguPlates.media["img:dot"])
+    nameplate.glow:SetTexture(ShaguPlatesX.media["img:dot"])
     nameplate.glow:Hide()
 
     nameplate.guild = nameplate:CreateFontString(nil, "OVERLAY")
@@ -410,7 +559,7 @@ ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
 
     nameplate.raidicon:SetParent(nameplate.health)
     nameplate.raidicon:SetDrawLayer("OVERLAY")
-    nameplate.raidicon:SetTexture(ShaguPlates.media["img:raidicons"])
+    nameplate.raidicon:SetTexture(ShaguPlatesX.media["img:raidicons"])
 
     nameplate.totem = CreateFrame("Frame", nil, nameplate)
     nameplate.totem:SetPoint("CENTER", nameplate, "CENTER", 0, 0)
@@ -481,7 +630,7 @@ ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
 
     parent.nameplate = nameplate
     HookScript(parent, "OnShow", nameplates.OnShow)
-    HookScript(parent, "OnUpdate", nameplates.OnUpdate)
+    parent:SetScript("OnUpdate", nil)  -- Disable Blizzard's OnUpdate, we handle centrally
 
     nameplates.OnConfigChange(parent)
     nameplates.OnShow(parent)
@@ -491,12 +640,12 @@ ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
     local parent = frame
     local nameplate = frame.nameplate
 
-    local font = C.nameplates.use_unitfonts == "1" and ShaguPlates.font_unit or ShaguPlates.font_default
+    local font = C.nameplates.use_unitfonts == "1" and ShaguPlatesX.font_unit or ShaguPlatesX.font_default
     local font_size = C.nameplates.use_unitfonts == "1" and C.global.font_unit_size or C.global.font_size
     local font_style = C.nameplates.name.fontstyle
     local glowr, glowg, glowb, glowa = GetStringColor(C.nameplates.glowcolor)
     local hlr, hlg, hlb, hla = GetStringColor(C.nameplates.highlightcolor)
-    local hptexture = ShaguPlates.media[C.nameplates.healthtexture]
+    local hptexture = ShaguPlatesX.media[C.nameplates.healthtexture]
     local rawborder, default_border = GetBorderSize("nameplates")
 
     local plate_width = C.nameplates.width + 50
@@ -573,8 +722,13 @@ ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
     nameplates:OnDataChanged(nameplate)
   end
 
-  nameplates.OnValueChanged = function(arg1)
-    nameplates:OnDataChanged(this:GetParent().nameplate)
+  nameplates.OnValueChanged = function()
+    -- Just sync health bar, don't run full OnDataChanged
+    local plate = this:GetParent().nameplate
+    if plate and plate.health then
+      plate.health:SetMinMaxValues(plate.original.healthbar:GetMinMaxValues())
+      plate.health:SetValue(plate.original.healthbar:GetValue())
+    end
   end
 
   nameplates.OnDataChanged = function(self, plate)
@@ -583,7 +737,6 @@ ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
     local hpmin, hpmax = plate.original.healthbar:GetMinMaxValues()
     local name = plate.original.name:GetText()
     local level = plate.original.level:IsShown() and plate.original.level:GetObjectType() == "FontString" and tonumber(plate.original.level:GetText()) or "??"
-    local class, ulevel, elite, player, guild = GetUnitData(name, true)
     local target = plate.istarget
     local mouseover = UnitExists("mouseover") and plate.original.glow:IsShown() or nil
     local unitstr = target and "target" or mouseover and "mouseover" or nil
@@ -592,31 +745,23 @@ ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
     local font_size = C.nameplates.use_unitfonts == "1" and C.global.font_unit_size or C.global.font_size
 
     -- use superwow unit guid as unitstr if possible
-    if superwow_active and not unitstr then
-      unitstr = plate.parent:GetName(1)
+    local guid = plate.parent:GetName(1)
+    if guid and not unitstr then
+      unitstr = guid
     end
 
-    -- ignore players with npc names if plate level is lower than player level
-    if ulevel and ulevel > (level == "??" and -1 or level) then player = nil end
-
-    -- cache name and reset unittype on change
-    if plate.cache.name ~= name then
-      plate.cache.name = name
-      plate.cache.player = nil
-    end
-
-    -- read and cache unittype
-    if plate.cache.player then
-      -- overwrite unittype from cache if existing
-      player = plate.cache.player == "PLAYER" and true or nil
-    elseif unitstr then
-      -- read unit type while unitstr is set
-      plate.cache.player = UnitIsPlayer(unitstr) and "PLAYER" or "NPC"
+    -- get unit data directly from GUID
+    local class, player, elite, guild
+    if guid then
+      local _, classToken = UnitClass(guid)
+      class = classToken
+      player = UnitIsPlayer(guid)
+      elite = UnitClassification(guid)
+      guild = GetGuildInfo(guid)
     end
 
     if player and unittype == "ENEMY_NPC" then unittype = "ENEMY_PLAYER" end
     elite = plate.original.levelicon:IsShown() and not player and "boss" or elite
-    if not class then plate.wait_for_scan = true end
 
     -- skip data updates on invisible frames
     if not visible then return end
@@ -643,10 +788,8 @@ ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
 
     -- target indicator
     if superwow_active and C.nameplates.outcombatstate == "1" then
-      local guid = plate.parent:GetName(1) or ""
-
       -- determine color based on combat state
-      local color = GetCombatStateColor(guid)
+      local color = GetCombatStateColor(guid or "")
       if not color then color = combatstate.NONE end
 
       -- set border color
@@ -719,39 +862,46 @@ ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
       plate.guild:Hide()
     end
 
-    plate.health:SetMinMaxValues(hpmin, hpmax)
-    plate.health:SetValue(hp)
+    -- Health bar - only update when values change
+    if plate.cache.hp ~= hp or plate.cache.hpmax ~= hpmax then
+      plate.cache.hp = hp
+      plate.cache.hpmax = hpmax
+      plate.health:SetMinMaxValues(hpmin, hpmax)
+      plate.health:SetValue(hp)
 
-    if C.nameplates.showhp == "1" then
-      local rhp, rhpmax, estimated
-      if hpmax > 100 or (round(hpmax/100*hp) ~= hp) then
-        rhp, rhpmax = hp, hpmax
-      elseif ShaguPlates.libhealth and ShaguPlates.libhealth.enabled then
-        rhp, rhpmax, estimated = ShaguPlates.libhealth:GetUnitHealthByName(name,level,tonumber(hp),tonumber(hpmax))
+      if cfg_showhp then
+        local rhp, rhpmax
+        if guid and UnitHealthMax then
+          rhp = UnitHealth(guid)
+          rhpmax = UnitHealthMax(guid)
+        elseif hpmax > 100 or (round(hpmax/100*hp) ~= hp) then
+          rhp, rhpmax = hp, hpmax
+        end
+
+        if rhp and rhpmax then
+          local setting = C.nameplates.hptextformat
+          local pct = ceil(hp/hpmax*100)
+          if setting == "curperc" then
+            plate.health.text:SetText(Abbreviate(rhp).." | "..pct.."%")
+          elseif setting == "cur" then
+            plate.health.text:SetText(Abbreviate(rhp))
+          elseif setting == "curmax" then
+            plate.health.text:SetText(Abbreviate(rhp).." - "..Abbreviate(rhpmax))
+          elseif setting == "curmaxs" then
+            plate.health.text:SetText(Abbreviate(rhp).." / "..Abbreviate(rhpmax))
+          elseif setting == "curmaxperc" then
+            plate.health.text:SetText(Abbreviate(rhp).." - "..Abbreviate(rhpmax).." | "..pct.."%")
+          elseif setting == "curmaxpercs" then
+            plate.health.text:SetText(Abbreviate(rhp).." / "..Abbreviate(rhpmax).." | "..pct.."%")
+          elseif setting == "deficit" then
+            plate.health.text:SetText("-"..Abbreviate(rhpmax - rhp))
+          else
+            plate.health.text:SetText(pct.."%")
+          end
+        else
+          plate.health.text:SetText(ceil(hp/hpmax*100).."%")
+        end
       end
-
-      local setting = C.nameplates.hptextformat
-      local hasdata = ( estimated or hpmax > 100 or (round(hpmax/100*hp) ~= hp) )
-
-      if setting == "curperc" and hasdata then
-        plate.health.text:SetText(string.format("%s | %s%%", Abbreviate(rhp), ceil(hp/hpmax*100)))
-      elseif setting == "cur" and hasdata then
-        plate.health.text:SetText(string.format("%s", Abbreviate(rhp)))
-      elseif setting == "curmax" and hasdata then
-        plate.health.text:SetText(string.format("%s - %s", Abbreviate(rhp), Abbreviate(rhpmax)))
-      elseif setting == "curmaxs" and hasdata then
-        plate.health.text:SetText(string.format("%s / %s", Abbreviate(rhp), Abbreviate(rhpmax)))
-      elseif setting == "curmaxperc" and hasdata then
-        plate.health.text:SetText(string.format("%s - %s | %s%%", Abbreviate(rhp), Abbreviate(rhpmax), ceil(hp/hpmax*100)))
-      elseif setting == "curmaxpercs" and hasdata then
-        plate.health.text:SetText(string.format("%s / %s | %s%%", Abbreviate(rhp), Abbreviate(rhpmax), ceil(hp/hpmax*100)))
-      elseif setting == "deficit" then
-        plate.health.text:SetText(string.format("-%s" .. (hasdata and "" or "%%"), Abbreviate(rhpmax - rhp)))
-      else -- "percent" as fallback
-        plate.health.text:SetText(string.format("%s%%", ceil(hp/hpmax*100)))
-      end
-    else
-      plate.health.text:SetText()
     end
 
     local r, g, b, a = unpack(unitcolors[unittype])
@@ -767,8 +917,7 @@ ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
     end
 
     if superwow_active and C.nameplates.barcombatstate == "1" then
-      local guid = plate.parent:GetName(1) or ""
-      local color = GetCombatStateColor(guid)
+      local color = GetCombatStateColor(guid or "")
 
       if color then
         r, g, b, a = color.r, color.g, color.b, color.a
@@ -791,50 +940,65 @@ ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
       for i=1, GetComboPoints("target") do plate.combopoints[i]:Show() end
     end
 
-    -- update debuffs
+    -- update debuffs - minimize Set calls
     local index = 1
 
-    if C.nameplates["showdebuffs"] == "1" then
-      local verify = string.format("%s:%s", (name or ""), (level or ""))
-
-      -- update cached debuffs
-      if C.nameplates["guessdebuffs"] == "1" and unitstr then
-        plate:CacheDebuffs(unitstr, verify)
-      end
-
-      -- update all debuff icons
+    if cfg_showdebuffs and guid then
       for i = 1, 16 do
-        local effect, rank, texture, stacks, dtype, duration, timeleft
+        local texture, stacks, dtype, spellID = UnitDebuff(guid, i)
+        if not texture then break end
 
-        if unitstr and C.nameplates.selfdebuff == "1" then
-          effect, rank, texture, stacks, dtype, duration, timeleft = libdebuff:UnitOwnDebuff(unitstr, i)
-        elseif unitstr then
-          effect, rank, texture, stacks, dtype, duration, timeleft = libdebuff:UnitDebuff(unitstr, i)
-        elseif plate.verify == verify then
-          effect, rank, texture, stacks, dtype, duration, timeleft = plate:UnitDebuff(i)
-        end
-
-        if effect and texture and DebuffFilter(effect) then
-          if not plate.debuffs[index] then
+        local effect = SpellInfo(spellID)
+        if effect and DebuffFilter(effect) then
+          local debuff = plate.debuffs[index]
+          if not debuff then
             CreateDebuffIcon(plate, index)
             UpdateDebuffConfig(plate, index)
+            debuff = plate.debuffs[index]
           end
 
-          plate.debuffs[index]:Show()
-          plate.debuffs[index].icon:SetTexture(texture)
-          plate.debuffs[index].icon:SetTexCoord(.078, .92, .079, .937)
-
-          if stacks and stacks > 1 and C.nameplates.debuffs["showstacks"] == "1" then
-            plate.debuffs[index].stacks:SetText(stacks)
-            plate.debuffs[index].stacks:Show()
-          else
-            plate.debuffs[index].stacks:Hide()
+          -- Only update texture if changed
+          if debuff.lastTexture ~= texture then
+            debuff.lastTexture = texture
+            debuff.icon:SetTexture(texture)
+            debuff.icon:SetTexCoord(.078, .92, .079, .937)
           end
 
-          if duration and timeleft and debuffdurations then
-            plate.debuffs[index].cd:SetAlpha(0)
-            plate.debuffs[index].cd:Show()
-            CooldownFrame_SetTimer(plate.debuffs[index].cd, GetTime() + timeleft - duration, duration, 1)
+          -- Only show if not already shown
+          if not debuff.isShown then
+            debuff.isShown = true
+            debuff:Show()
+          end
+
+          -- Stacks - only update when changed
+          local showStacks = stacks and stacks > 1
+          if debuff.lastStacks ~= stacks then
+            debuff.lastStacks = stacks
+            if showStacks then
+              debuff.stacks:SetText(stacks)
+              debuff.stacks:Show()
+            else
+              debuff.stacks:Hide()
+            end
+          end
+
+          -- Duration - only set timer when spell changes
+          if debuffdurations then
+            -- Ensure cache exists (handles race condition where UNIT_AURA fired before plate was registered)
+            if not debuffCache[guid] then debuffCache[guid] = {} end
+            if not debuffCache[guid][spellID] then
+              local spellName = SpellInfo(spellID)
+              local duration = L["debuffs"][spellName] and L["debuffs"][spellName][0] or nil
+              debuffCache[guid][spellID] = { start = GetTime(), duration = duration }
+            end
+
+            local cache = debuffCache[guid][spellID]
+            if cache.duration and cache.start and debuff.lastCdSpell ~= spellID then
+              debuff.lastCdSpell = spellID
+              debuff.cd:SetAlpha(0)
+              debuff.cd:Show()
+              CooldownFrame_SetTimer(debuff.cd, cache.start, cache.duration, 1)
+            end
           end
 
           index = index + 1
@@ -842,10 +1006,15 @@ ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
       end
     end
 
-    -- hide remaining debuffs
+    -- hide remaining debuffs - only if currently shown
     for i = index, 16 do
-      if plate.debuffs[i] then
-        plate.debuffs[i]:Hide()
+      local debuff = plate.debuffs[i]
+      if debuff and debuff.isShown then
+        debuff.isShown = nil
+        debuff.lastTexture = nil
+        debuff.lastStacks = nil
+        debuff.lastCdSpell = nil
+        debuff:Hide()
       end
     end
   end
@@ -854,23 +1023,103 @@ ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
     local frame = frame or this
     local nameplate = frame.nameplate
 
+    -- SuperWoW: Register plate in GUID registry for O(1) lookups
+    local guid = frame:GetName(1)
+    if guid then
+      -- Clear old GUID mapping if plate was reused (but keep debuff cache - it's keyed by GUID globally)
+      if nameplate.lastGuid and nameplate.lastGuid ~= guid then
+        guidRegistry[nameplate.lastGuid] = nil
+      end
+      guidRegistry[guid] = frame
+      nameplate.lastGuid = guid
+    end
+
     nameplates:OnDataChanged(nameplate)
   end
 
-  nameplates.OnUpdate = function(frame)
-    local update
-    local frame = frame or this
+  nameplates.OnUpdate = function(frame, state)
     local nameplate = frame.nameplate
     local original = nameplate.original
-    local name = original.name:GetText()
-    local target = UnitExists("target") and frame:GetAlpha() == 1 or nil
-    local mouseover = UnitExists("mouseover") and original.glow:IsShown() or nil
-    local namefightcolor = C.nameplates.namefightcolor == "1"
+    local now = state.now
+    local guid = nameplate.lastGuid
 
-    -- trigger queued event update
-    if nameplate.eventcache then
-      nameplates:OnDataChanged(nameplate)
-      nameplate.eventcache = nil
+    -- Target detection via GUID comparison (stable, no flicker)
+    local target = state.hasTarget and guid and guid == state.targetGuid
+    local mouseover = state.hasMouseover and original.glow:IsShown() or nil
+
+    -- Alpha - only set when changed (uses stable GUID-based target detection)
+    nameplate.istarget = target
+    local wantAlpha = (target or not state.hasTarget) and 1 or cfg_notargalpha
+    if nameplate.lastAlpha ~= wantAlpha then
+      nameplate.lastAlpha = wantAlpha
+      nameplate:SetAlpha(wantAlpha)
+    end
+
+    -- Castbar - only update when actively casting for smooth animation
+    local castbar = nameplate.castbar
+    local showCast = cfg_showcastbar and (not cfg_targetcastbar or target)
+    local castInfo = showCast and guid and castEvents[guid]
+
+    if castInfo and castInfo.spellID and castInfo.endTime and now < castInfo.endTime and castInfo.event ~= "CAST" and castInfo.event ~= "FAIL" then
+      -- Only set min/max when cast changes
+      if castbar.lastCastStart ~= castInfo.startTime then
+        castbar.lastCastStart = castInfo.startTime
+        castbar:SetMinMaxValues(castInfo.startTime, castInfo.endTime)
+      end
+
+      -- Value must update for smooth animation
+      if castInfo.event == "CHANNEL" then
+        castbar:SetValue(castInfo.startTime + (castInfo.endTime - now))
+      else
+        castbar:SetValue(now)
+      end
+
+      -- Text/icon only when changed
+      local timeLeft = floor((castInfo.endTime - now) * 10)
+      if castbar.lastTime ~= timeLeft then
+        castbar.lastTime = timeLeft
+        castbar.text:SetText(string.format("%.1f", timeLeft / 10))
+      end
+
+      if castbar.lastSpell ~= castInfo.spellID then
+        castbar.lastSpell = castInfo.spellID
+        castbar.spell:SetText(cfg_spellname and castInfo.spellName or "")
+        if castInfo.icon then
+          castbar.icon.tex:SetTexture(castInfo.icon)
+          castbar.icon.tex:SetTexCoord(.1,.9,.1,.9)
+        end
+      end
+
+      -- Show only when needed
+      if not castbar.isShown then
+        castbar.isShown = true
+        castbar:Show()
+      end
+    else
+      -- Hide cast info and bar
+      if castInfo and castInfo.spellID then wipe(castInfo) end
+      if castbar.isShown then
+        castbar.isShown = nil
+        castbar.lastCastStart = nil
+        castbar.lastSpell = nil
+        castbar:Hide()
+      end
+    end
+
+    -- Throttle non-critical updates (100ms interval)
+    if nameplate.lastUpdate and (now - nameplate.lastUpdate) < THROTTLE_INTERVAL then
+      return
+    end
+    nameplate.lastUpdate = now
+
+    -- Check for event-driven update flags
+    local update
+    if nameplate.auraUpdate or nameplate.targetUpdate or nameplate.castUpdate or nameplate.comboUpdate then
+      update = true
+      nameplate.auraUpdate = nil
+      nameplate.targetUpdate = nil
+      nameplate.castUpdate = nil
+      nameplate.comboUpdate = nil
     end
 
     -- reset strata cache on target change
@@ -887,17 +1136,6 @@ ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
       nameplate.target_strata = 0
     end
 
-    -- cache target value
-    nameplate.istarget = target
-
-    -- set non-target plate alpha
-    if target or not UnitExists("target") then
-      nameplate:SetAlpha(1)
-    else
-      frame:SetAlpha(.95)
-      nameplate:SetAlpha(tonumber(C.nameplates.notargalpha))
-    end
-
     -- queue update on visual target update
     if nameplate.cache.target ~= target then
       nameplate.cache.target = target
@@ -910,18 +1148,12 @@ ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
       update = true
     end
 
-    -- trigger update when unit was found
-    if nameplate.wait_for_scan and GetUnitData(name, true) then
-      nameplate.wait_for_scan = nil
-      update = true
-    end
-
     -- trigger update when name color changed
     local r, g, b = original.name:GetTextColor()
     if r + g + b ~= nameplate.cache.namecolor then
       nameplate.cache.namecolor = r + g + b
 
-      if namefightcolor then
+      if cfg_namefightcolor then
         if r > .9 and g < .2 and b < .2 then
           nameplate.name:SetTextColor(1,0.4,0.2,1) -- infight
         else
@@ -942,123 +1174,66 @@ ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
       update = true
     end
 
-    -- scan for debuff timeouts
-    if nameplate.debuffcache then
-      for id, data in pairs(nameplate.debuffcache) do
-        if ( not data.stop or data.stop < GetTime() ) and not data.empty then
-          data.empty = true
-          update = true
-        end
-      end
-    end
+    -- Note: Debuff timeout scanning removed - now event-driven via UNIT_AURA
 
     -- use timer based updates
-    if not nameplate.tick or nameplate.tick < GetTime() then
+    if not nameplate.tick or nameplate.tick < now then
       update = true
     end
 
     -- run full updates if required
     if update then
       nameplates:OnDataChanged(nameplate)
-      nameplate.tick = GetTime() + .5
+      nameplate.tick = now + .5
     end
 
-    -- target zoom
-    local w, h = nameplate.health:GetWidth(), nameplate.health:GetHeight()
-    if target and C.nameplates.targetzoom == "1" then
-      local zoomval = tonumber(C.nameplates.targetzoomval)+1
-      local wc = tonumber(C.nameplates.width)*zoomval
-      local hc = tonumber(C.nameplates.heighthealth)*(zoomval*.9)
+    -- target zoom (uses cached config values)
+    if target and cfg_targetzoom then
+      local w, h = nameplate.health:GetWidth(), nameplate.health:GetHeight()
+      local wc = cfg_width * cfg_zoomval
+      local hc = cfg_heighthealth * (cfg_zoomval * .9)
       local animation = false
 
       if wc >= w then
-        wc = w*1.05
-        nameplate.health:SetWidth(wc)
+        nameplate.health:SetWidth(w * 1.05)
         nameplate.health.zoomTransition = true
         animation = true
       end
 
       if hc >= h then
-        hc = h*1.05
-        nameplate.health:SetHeight(hc)
+        nameplate.health:SetHeight(h * 1.05)
         nameplate.health.zoomTransition = true
         animation = true
       end
 
-      if animation == false and not nameplate.health.zoomed then
+      if not animation and not nameplate.health.zoomed then
         nameplate.health:SetWidth(wc)
         nameplate.health:SetHeight(hc)
         nameplate.health.zoomTransition = nil
         nameplate.health.zoomed = true
       end
     elseif nameplate.health.zoomed or nameplate.health.zoomTransition then
-      local wc = tonumber(C.nameplates.width)
-      local hc = tonumber(C.nameplates.heighthealth)
+      local w, h = nameplate.health:GetWidth(), nameplate.health:GetHeight()
       local animation = false
 
-      if wc <= w then
-        wc = w*.95
-        nameplate.health:SetWidth(wc)
+      if cfg_width <= w then
+        nameplate.health:SetWidth(w * .95)
         animation = true
       end
 
-      if hc <= h then
-        hc = h*0.95
-        nameplate.health:SetHeight(hc)
+      if cfg_heighthealth <= h then
+        nameplate.health:SetHeight(h * .95)
         animation = true
       end
 
-      if animation == false then
-        nameplate.health:SetWidth(wc)
-        nameplate.health:SetHeight(hc)
+      if not animation then
+        nameplate.health:SetWidth(cfg_width)
+        nameplate.health:SetHeight(cfg_heighthealth)
         nameplate.health.zoomTransition = nil
         nameplate.health.zoomed = nil
       end
     end
 
-    -- castbar update
-    if C.nameplates["showcastbar"] == "1" and ( C.nameplates["targetcastbar"] == "0" or target ) then
-      local channel, cast, nameSubtext, text, texture, startTime, endTime, isTradeSkill
-
-      -- detect cast or channel bars
-      cast, nameSubtext, text, texture, startTime, endTime, isTradeSkill = UnitCastingInfo(target and "target" or name)
-      if not cast then channel, nameSubtext, text, texture, startTime, endTime, isTradeSkill = UnitChannelInfo(target and "target" or name) end
-
-      -- read enemy casts from SuperWoW if enabled
-      if superwow_active then
-        cast, nameSubtext, text, texture, startTime, endTime, isTradeSkill = UnitCastingInfo(nameplate.parent:GetName(1))
-        if not cast then channel, nameSubtext, text, texture, startTime, endTime, isTradeSkill = UnitChannelInfo(nameplate.parent:GetName(1)) end
-      end
-
-      if not cast and not channel then
-        nameplate.castbar:Hide()
-      elseif cast or channel then
-        local effect = cast or channel
-        local duration = endTime - startTime
-        local max = duration / 1000
-        local cur = GetTime() - startTime / 1000
-
-        -- invert castbar values while channeling
-        if channel then cur = max + startTime/1000 - GetTime() end
-
-        nameplate.castbar:SetMinMaxValues(0,  duration/1000)
-        nameplate.castbar:SetValue(cur)
-        nameplate.castbar.text:SetText(round(cur,1))
-        if C.nameplates.spellname == "1" then
-          nameplate.castbar.spell:SetText(effect)
-        else
-          nameplate.castbar.spell:SetText("")
-        end
-        nameplate.castbar:Show()
-
-        if texture then
-          nameplate.castbar.icon.tex:SetTexture(texture)
-          nameplate.castbar.icon.tex:SetTexCoord(.1,.9,.1,.9)
-        end
-      end
-    else
-      nameplate.castbar:Hide()
-    end
   end
 
   -- set nameplate game settings
@@ -1085,6 +1260,9 @@ ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
   nameplates:SetGameVariables()
 
   nameplates.UpdateConfig = function()
+    -- update cached config values
+    CacheConfig()
+
     -- update debuff filters
     DebuffFilterPopulate()
 
@@ -1093,11 +1271,12 @@ ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
 
     -- apply all config changes
     for plate in pairs(registry) do
+      plate.nameplate.lastAlpha = nil  -- force alpha recalculation
       nameplates.OnConfigChange(plate)
     end
   end
 
-  if ShaguPlates.client <= 11200 then
+  if ShaguPlatesX.client <= 11200 then
     -- handle vanilla only settings
     -- due to the secured lua api, those settings can't be applied to TBC and later.
     local hookOnConfigChange = nameplates.OnConfigChange
@@ -1141,45 +1320,45 @@ ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
     end
 
     local hookOnUpdate = nameplates.OnUpdate
-    nameplates.OnUpdate = function(self)
+    nameplates.OnUpdate = function(frame, state)
       -- initialize shortcut variables
-      local plate = (C.nameplates["overlap"] == "1" or C.nameplates["vertical_offset"] ~= "0") and this.nameplate or this
+      local plate = (C.nameplates["overlap"] == "1" or C.nameplates["vertical_offset"] ~= "0") and frame.nameplate or frame
       local clickable = C.nameplates["clickthrough"] ~= "1" and true or false
 
       -- disable all click events
       if not clickable then
-        this:EnableMouse(false)
-        this.nameplate:EnableMouse(false)
+        frame:EnableMouse(false)
+        frame.nameplate:EnableMouse(false)
       else
         plate:EnableMouse(clickable)
       end
 
       if C.nameplates["overlap"] == "1" then
-        if this:GetWidth() > 1 then
+        if frame:GetWidth() > 1 then
           -- set parent to 1 pixel to have them overlap each other
-          this:SetWidth(1)
-          this:SetHeight(1)
+          frame:SetWidth(1)
+          frame:SetHeight(1)
         end
       else
-        if not this.nameplate.dwidth then
+        if not frame.nameplate.dwidth then
           -- cache initial sizing value for comparison
-          this.nameplate.dwidth = floor(this.nameplate:GetWidth() * UIParent:GetScale())
+          frame.nameplate.dwidth = floor(frame.nameplate:GetWidth() * UIParent:GetScale())
         end
 
-        if floor(this:GetWidth()) ~= this.nameplate.dwidth then
+        if floor(frame:GetWidth()) ~= frame.nameplate.dwidth then
           -- align parent plate to the actual size
-          this:SetWidth(this.nameplate:GetWidth() * UIParent:GetScale())
-          this:SetHeight(this.nameplate:GetHeight() * UIParent:GetScale())
+          frame:SetWidth(frame.nameplate:GetWidth() * UIParent:GetScale())
+          frame:SetHeight(frame.nameplate:GetHeight() * UIParent:GetScale())
         end
       end
 
       -- disable click events while spell is targeting
-      local mouseEnabled = this.nameplate:IsMouseEnabled()
+      local mouseEnabled = frame.nameplate:IsMouseEnabled()
       if C.nameplates["clickthrough"] == "0" and C.nameplates["overlap"] == "1" and SpellIsTargeting() == mouseEnabled then
-        this.nameplate:EnableMouse(not mouseEnabled)
+        frame.nameplate:EnableMouse(not mouseEnabled)
       end
 
-      hookOnUpdate(self)
+      hookOnUpdate(frame, state)
     end
 
     -- enable mouselook on rightbutton down
@@ -1220,5 +1399,5 @@ ShaguPlates:RegisterModule("nameplates", "vanilla:tbc", function ()
     end)
   end
 
-  ShaguPlates.nameplates = nameplates
+  ShaguPlatesX.nameplates = nameplates
 end)

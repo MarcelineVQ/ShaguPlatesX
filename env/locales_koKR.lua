@@ -1,6 +1,6 @@
-ShaguPlates_locale["koKR"] = {}
+ShaguPlatesX_locale["koKR"] = {}
 
-ShaguPlates_locale["koKR"]["class"] = {
+ShaguPlatesX_locale["koKR"]["class"] = {
   ["흑마법사"] = "WARLOCK",
   ["전사"] = "WARRIOR",
   ["사냥꾼"] = "HUNTER",
@@ -12,18 +12,18 @@ ShaguPlates_locale["koKR"]["class"] = {
   ["도적"] = "ROGUE",
 }
 
-ShaguPlates_locale["koKR"]["healduration"] = {
+ShaguPlatesX_locale["koKR"]["healduration"] = {
   ["Rejuvenation"] = "회복의 지속시간이 3초만큼 증가합니다.",
   ["Renew"] = "소생의 지속시간이 3초만큼 증가합니다.",
 }
 
-ShaguPlates_locale["koKR"]["bagtypes"] = {
+ShaguPlatesX_locale["koKR"]["bagtypes"] = {
   ["화살통"] = "QUIVER",
   ["영혼의 가방"] = "SOULBAG",
   ["가방"] = "DEFAULT",
 }
 
-ShaguPlates_locale["koKR"]["itemtypes"] = {
+ShaguPlatesX_locale["koKR"]["itemtypes"] = {
   ["INVTYPE_WAND"] = "마법봉",
   ["INVTYPE_THROWN"] = "투척 무기",
   ["INVTYPE_GUN"] = "총",
@@ -31,17 +31,17 @@ ShaguPlates_locale["koKR"]["itemtypes"] = {
   ["INVTYPE_PROJECTILE"] = "투사체",
 }
 
-ShaguPlates_locale["koKR"]["hunterpaging"] = {
+ShaguPlatesX_locale["koKR"]["hunterpaging"] = {
   ["MELEE"] = "날개 절단",
   ["RANGED"] = "신비한 사격",
 }
 
-ShaguPlates_locale["koKR"]["customcast"] = {
+ShaguPlatesX_locale["koKR"]["customcast"] = {
   ["AIMEDSHOT"] = "조준 사격",
   ["MULTISHOT"] = "일제 사격",
 }
 
-ShaguPlates_locale["koKR"]["critters"] = {
+ShaguPlatesX_locale["koKR"]["critters"] = {
   '살무사',
   '딱정벌레',
   '종탑 박쥐',
@@ -127,7 +127,7 @@ ShaguPlates_locale["koKR"]["critters"] = {
   '위습',
 }
 
-ShaguPlates_locale["koKR"]["dyndebuffs"] = {
+ShaguPlatesX_locale["koKR"]["dyndebuffs"] = {
   ["Rupture"] = "파열",
   ["Kidney Shot"] = "급소 가격",
   ["Rend"] = "분쇄",
@@ -137,14 +137,14 @@ ShaguPlates_locale["koKR"]["dyndebuffs"] = {
   ["Gouge"] = "후려치기",
 }
 
-ShaguPlates_locale["koKR"]["judgements"] = {
+ShaguPlatesX_locale["koKR"]["judgements"] = {
   ["정의의 심판"] = true,
   ["빛의 심판"] = true,
   ["지혜의 심판"] = true,
   ["성전사의 심판"] = true,
 }
 
-ShaguPlates_locale["koKR"]["interrupts"] = {
+ShaguPlatesX_locale["koKR"]["interrupts"] = {
   ["방패 가격"] = true,
   ["자루 공격"] = true,
   ["발차기"] = true,
@@ -193,14 +193,14 @@ ShaguPlates_locale["koKR"]["interrupts"] = {
   ["고블린 박격포"] = true,
 }
 
-ShaguPlates_locale["koKR"]["resurrections"] = {
+ShaguPlatesX_locale["koKR"]["resurrections"] = {
   ["부활"] = true,
   ["환생"] = true,
   ["구원"] = true,
   ["고대의 영혼"] = true,
 }
 
-ShaguPlates_locale["koKR"]["spells"] = {
+ShaguPlatesX_locale["koKR"]["spells"] = {
   ['"씩씩이" 닭 모습']={t=1000,icon='Ability_Racial_BearForm'},
   ['100만 볼트']={t=2000,icon='Spell_Nature_ChainLightning'},
   ['Conjure Furis Felsteed DUMMY DND']={t=5000,icon='Temp'},
@@ -1425,7 +1425,7 @@ ShaguPlates_locale["koKR"]["spells"] = {
   ['힘 쇠약']={t=2000,icon='Spell_Holy_HarmUndeadAura'},
 }
 
-ShaguPlates_locale["koKR"]["debuffs"] = {
+ShaguPlatesX_locale["koKR"]["debuffs"] = {
   ['AE Charm']={[0]=300.0,},
   ['Hunter Epic Anti-Cheat DND']={[0]=60.0,},
   ['Summon Isalien DND']={[0]=600.0,},
@@ -2319,9 +2319,9 @@ ShaguPlates_locale["koKR"]["debuffs"] = {
 }
 
 -- custom entries not detected by DBC extractor
-ShaguPlates_locale["koKR"]["debuffs"]['냉기 돌']={[0]=8.0,} -- Cone of Cold
+ShaguPlatesX_locale["koKR"]["debuffs"]['냉기 돌']={[0]=8.0,} -- Cone of Cold
 
-ShaguPlates_locale["koKR"]["totems"] = {
+ShaguPlatesX_locale["koKR"]["totems"] = {
   ["질병 정화 토템"] = "spell_nature_diseasecleansingtotem",
   ["대지의 정령 토템"] = "spell_nature_earthelemental_totem",
   ["속박의 토템"] = "spell_nature_strengthofearthtotem02",
@@ -2350,7 +2350,7 @@ ShaguPlates_locale["koKR"]["totems"] = {
   ["천벌의 토템"] = "spell_nature_slowingtotem",
 }
 
-ShaguPlates_locale["koKR"]["icons"] = {
+ShaguPlatesX_locale["koKR"]["icons"] = {
   ["질병 해제"] = "Spell_Nature_NullifyDisease",
   ["독 해제"] = "Spell_Nature_NullifyPoison_02",
   ["독 해제 효과"] = "Spell_Nature_NullifyPoison_02",

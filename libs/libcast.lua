@@ -1,5 +1,5 @@
 -- load ShaguPlates environment
-setfenv(1, ShaguPlates:GetEnvironment())
+setfenv(1, ShaguPlatesX:GetEnvironment())
 
 --[[ libcast ]]--
 -- A ShaguPlates library that detects and saves all ongoing castbars of players, NPCs and enemies.
@@ -42,10 +42,10 @@ setfenv(1, ShaguPlates:GetEnvironment())
 --
 
 -- return instantly if we're not on a vanilla client
-if ShaguPlates.client > 11200 then return end
+if ShaguPlatesX.client > 11200 then return end
 
 -- return instantly when another libcast is already active
-if ShaguPlates.api.libcast then return end
+if ShaguPlatesX.api.libcast then return end
 
 local lastcasttex, lastrank, _
 local scanner = libtipscan:GetScanner("libcast")
@@ -150,6 +150,13 @@ end
 
 -- main data
 libcast.db = { [player] = {} }
+libcast.customcast = {}
+
+-- let the superwow module handle the rest if it can
+if SetAutoloot then
+  ShaguPlatesX.api.libcast = libcast
+  return
+end
 
 -- environmental casts
 libcast:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE")
@@ -416,4 +423,4 @@ hooksecurefunc("UseAction", function(slot, target, button)
 end, true)
 
 -- add libcast to ShaguPlates API
-ShaguPlates.api.libcast = libcast
+ShaguPlatesX.api.libcast = libcast

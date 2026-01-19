@@ -1,6 +1,6 @@
-ShaguPlates_locale["frFR"] = {}
+ShaguPlatesX_locale["frFR"] = {}
 
-ShaguPlates_locale["frFR"]["class"] = {
+ShaguPlatesX_locale["frFR"]["class"] = {
   ["Démoniste"] = "WARLOCK",
   ["Guerrier"] = "WARRIOR",
   ["Chasseur"] = "HUNTER",
@@ -12,18 +12,18 @@ ShaguPlates_locale["frFR"]["class"] = {
   ["Voleur"] = "ROGUE",
 }
 
-ShaguPlates_locale["frFR"]["healduration"] = {
+ShaguPlatesX_locale["frFR"]["healduration"] = {
   ["Rejuvenation"] = "Augmente la durée de votre sort Récupération de 3 sec.",
   ["Renew"] = "Augmente la durée de votre sort Rénovation de 3 sec.",
 }
 
-ShaguPlates_locale["frFR"]["bagtypes"] = {
+ShaguPlatesX_locale["frFR"]["bagtypes"] = {
   ["Carquois"] = "QUIVER",
   ["Sac d'âme"] = "SOULBAG",
   ["Conteneur"] = "DEFAULT",
 }
 
-ShaguPlates_locale["frFR"]["itemtypes"] = {
+ShaguPlatesX_locale["frFR"]["itemtypes"] = {
   ["INVTYPE_WAND"] = "Baguette",
   ["INVTYPE_THROWN"] = "Armes de jet",
   ["INVTYPE_GUN"] = "Arme à feu",
@@ -31,17 +31,17 @@ ShaguPlates_locale["frFR"]["itemtypes"] = {
   ["INVTYPE_PROJECTILE"] = "Projectile",
 }
 
-ShaguPlates_locale["frFR"]["hunterpaging"] = {
+ShaguPlatesX_locale["frFR"]["hunterpaging"] = {
   ["MELEE"] = "Coupure d'ailes",
   ["RANGED"] = "Tir des arcanes",
 }
 
-ShaguPlates_locale["frFR"]["customcast"] = {
+ShaguPlatesX_locale["frFR"]["customcast"] = {
   ["AIMEDSHOT"] = "Visée",
   ["MULTISHOT"] = "Flèches multiples",
 }
 
-ShaguPlates_locale["frFR"]["critters"] = {
+ShaguPlatesX_locale["frFR"]["critters"] = {
   'Aspic',
   'Hanneton',
   'Chauve-souris de clocher',
@@ -122,7 +122,7 @@ ShaguPlates_locale["frFR"]["critters"] = {
   'Feu follet',
 }
 
-ShaguPlates_locale["frFR"]["dyndebuffs"] = {
+ShaguPlatesX_locale["frFR"]["dyndebuffs"] = {
   ["Rupture"] = "Rupture",
   ["Kidney Shot"] = "Aiguillon perfide",
   ["Rend"] = "Pourfendre",
@@ -132,14 +132,14 @@ ShaguPlates_locale["frFR"]["dyndebuffs"] = {
   ["Gouge"] = "Suriner",
 }
 
-ShaguPlates_locale["frFR"]["judgements"] = {
+ShaguPlatesX_locale["frFR"]["judgements"] = {
   ["Jugement de justice"] = true,
   ["Jugement de lumière"] = true,
   ["Jugement de sagesse"] = true,
   ["Jugement du Croisé"] = true,
 }
 
-ShaguPlates_locale["frFR"]["interrupts"] = {
+ShaguPlatesX_locale["frFR"]["interrupts"] = {
   ["Coup de bouclier"] = true,
   ["Volée de coups"] = true,
   ["Coup de pied"] = true,
@@ -188,14 +188,14 @@ ShaguPlates_locale["frFR"]["interrupts"] = {
   ["Mortier des gobelins"] = true,
 }
 
-ShaguPlates_locale["frFR"]["resurrections"] = {
+ShaguPlatesX_locale["frFR"]["resurrections"] = {
   ["Résurrection"] = true,
   ["Renaissance"] = true,
   ["Rédemption"] = true,
   ["Esprit ancestral"] = true,
 }
 
-ShaguPlates_locale["frFR"]["spells"] = {
+ShaguPlatesX_locale["frFR"]["spells"] = {
   ['Accomplissement véritable']={t=500,icon='Spell_Shadow_Charm'},
   ['Acide corrosif']={t=1500,icon='Spell_Nature_Acid_01'},
   ['Acide d\'Hakkar']={t=1000,icon='Spell_Nature_Acid_01'},
@@ -1456,7 +1456,7 @@ ShaguPlates_locale["frFR"]["spells"] = {
   ['Œil d\'Immol\'thar']={t=2000,icon='Spell_Shadow_AntiMagicShell'},
 }
 
-ShaguPlates_locale["frFR"]["debuffs"] = {
+ShaguPlatesX_locale["frFR"]["debuffs"] = {
   ['AE Charme']={[0]=300.0,},
   ['Accomplissement véritable']={[0]=20.0,},
   ['Acide corrosif']={[0]=300.0,},
@@ -2385,9 +2385,9 @@ ShaguPlates_locale["frFR"]["debuffs"] = {
 }
 
 -- custom entries not detected by DBC extractor
-ShaguPlates_locale["frFR"]["debuffs"]['Cône de froid']={[0]=8.0,} -- Cone of Cold
+ShaguPlatesX_locale["frFR"]["debuffs"]['Cône de froid']={[0]=8.0,} -- Cone of Cold
 
-ShaguPlates_locale["frFR"]["totems"] = {
+ShaguPlatesX_locale["frFR"]["totems"] = {
   ["Totem de Purification des maladies"] = "spell_nature_diseasecleansingtotem",
   ["Totem élémentaire de terre"] = "spell_nature_earthelemental_totem",
   ["Totem de lien terrestre"] = "spell_nature_strengthofearthtotem02",
@@ -2416,7 +2416,7 @@ ShaguPlates_locale["frFR"]["totems"] = {
   ["Totem de courroux de l'air"] = "spell_nature_slowingtotem",
 }
 
-ShaguPlates_locale["frFR"]["icons"] = {
+ShaguPlatesX_locale["frFR"]["icons"] = {
   ["Abolir maladie"] = "Spell_Nature_NullifyDisease",
   ["Abolir le poison"] = "Spell_Nature_NullifyPoison_02",
   ["Effet Abolir le poison"] = "Spell_Nature_NullifyPoison_02",

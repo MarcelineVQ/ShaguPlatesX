@@ -1,4 +1,4 @@
-ShaguPlates_translation["koKR"] = {
+ShaguPlatesX_translation["koKR"] = {
   ["Abbreviate Numbers (4200 -> 4.2k)"] = "체력수치 약어 (4200 -> 4.2k)",
   ["Abbreviate Unit Names"] = nil,
   ["Always Show On Target Units"] = nil,
@@ -201,7 +201,7 @@ ShaguPlates_translation["koKR"] = {
   ["Square"] = nil,
   ["Standard Text Font"] = "기본 텍스트 폰트",
   ["Standard Text Font Size"] = "기본 텍스트 폰트크기",
-  ["SuperWoW Settings"] = nil,
+  ["Aggro Display Settings"] = nil,
   ["Target Nameplate Zoom Factor"] = nil,
   ["Thick Outline"] = nil,
   ["Threshold To Trust Health Estimation"] = nil,

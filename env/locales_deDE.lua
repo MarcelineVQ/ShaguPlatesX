@@ -1,6 +1,6 @@
-ShaguPlates_locale["deDE"] = {}
+ShaguPlatesX_locale["deDE"] = {}
 
-ShaguPlates_locale["deDE"]["class"] = {
+ShaguPlatesX_locale["deDE"]["class"] = {
   ["Hexenmeister"] = "WARLOCK",
   ["Krieger"] = "WARRIOR",
   ["Jäger"] = "HUNTER",
@@ -12,18 +12,18 @@ ShaguPlates_locale["deDE"]["class"] = {
   ["Schurke"] = "ROGUE",
 }
 
-ShaguPlates_locale["deDE"]["healduration"] = {
+ShaguPlatesX_locale["deDE"]["healduration"] = {
   ["Rejuvenation"] = "Erhöht die Dauer Eures Zaubers 'Verjüngung' um 3 Sek.",
   ["Renew"] = "Erhöht die Wirkungsdauer von 'Erneuerung' um 3 Sek.",
 }
 
-ShaguPlates_locale["deDE"]["bagtypes"] = {
+ShaguPlatesX_locale["deDE"]["bagtypes"] = {
   ["Köcher"] = "QUIVER",
   ["Seelentasche"] = "SOULBAG",
   ["Behälter"] = "DEFAULT",
 }
 
-ShaguPlates_locale["deDE"]["itemtypes"] = {
+ShaguPlatesX_locale["deDE"]["itemtypes"] = {
   ["INVTYPE_WAND"] = "Zauberstab",
   ["INVTYPE_THROWN"] = "Wurfwaffe",
   ["INVTYPE_GUN"] = "Schusswaffe",
@@ -31,17 +31,17 @@ ShaguPlates_locale["deDE"]["itemtypes"] = {
   ["INVTYPE_PROJECTILE"] = "Projektil",
 }
 
-ShaguPlates_locale["deDE"]["hunterpaging"] = {
+ShaguPlatesX_locale["deDE"]["hunterpaging"] = {
   ["MELEE"] = "Zurechtstutzen",
   ["RANGED"] = "Arkaner Schuss",
 }
 
-ShaguPlates_locale["deDE"]["customcast"] = {
+ShaguPlatesX_locale["deDE"]["customcast"] = {
   ["AIMEDSHOT"] = "Gezielter Schuss",
   ["MULTISHOT"] = "Mehrfach-Schuss",
 }
 
-ShaguPlates_locale["deDE"]["critters"] = {
+ShaguPlatesX_locale["deDE"]["critters"] = {
   'Otter',
   'Käfer',
   'Turmfledermaus',
@@ -127,7 +127,7 @@ ShaguPlates_locale["deDE"]["critters"] = {
   'Irrwisch',
 }
 
-ShaguPlates_locale["deDE"]["dyndebuffs"] = {
+ShaguPlatesX_locale["deDE"]["dyndebuffs"] = {
   ["Rupture"] = "Blutung",
   ["Kidney Shot"] = "Nierenhieb",
   ["Rend"] = "Verwunden",
@@ -137,14 +137,14 @@ ShaguPlates_locale["deDE"]["dyndebuffs"] = {
   ["Gouge"] = "Solarplexus",
 }
 
-ShaguPlates_locale["deDE"]["judgements"] = {
+ShaguPlatesX_locale["deDE"]["judgements"] = {
   ["Richturteil der Gerechtigkeit"] = true,
   ["Richturteil des Lichts"] = true,
   ["Richturteil der Weisheit"] = true,
   ["Richturteil des Kreuzfahrers"] = true,
 }
 
-ShaguPlates_locale["deDE"]["interrupts"] = {
+ShaguPlatesX_locale["deDE"]["interrupts"] = {
   ["Schildhieb"] = true,
   ["Zuschlagen"] = true,
   ["Tritt"] = true,
@@ -193,14 +193,14 @@ ShaguPlates_locale["deDE"]["interrupts"] = {
   ["Goblin-Mörser"] = true,
 }
 
-ShaguPlates_locale["deDE"]["resurrections"] = {
+ShaguPlatesX_locale["deDE"]["resurrections"] = {
   ["Auferstehung"] = true,
   ["Wiedergeburt"] = true,
   ["Erlösung"] = true,
   ["Geist der Ahnen"] = true,
 }
 
-ShaguPlates_locale["deDE"]["spells"] = {
+ShaguPlatesX_locale["deDE"]["spells"] = {
   ['Dämmerungstrickfalle']={t=1500,icon='Temp'},
   ['Aasskarabäus beschwören']={t=2000,icon='Spell_Shadow_CarrionSwarm'},
   ['Abbau-Schwarm']={t=3000,icon='Spell_Holy_Dizzy'},
@@ -1455,7 +1455,7 @@ ShaguPlates_locale["deDE"]["spells"] = {
   ['Überragender Heilungszauberschutz']={t=2000,icon='Spell_Holy_LayOnHands'},
 }
 
-ShaguPlates_locale["deDE"]["debuffs"] = {
+ShaguPlatesX_locale["deDE"]["debuffs"] = {
   ['AE Charm']={[0]=300.0,},
   ['Ablenkende Spucke']={[0]=15.0,},
   ['Ablenkender Schmerz']={[0]=15.0,},
@@ -2388,9 +2388,9 @@ ShaguPlates_locale["deDE"]["debuffs"] = {
 }
 
 -- custom entries not detected by DBC extractor
-ShaguPlates_locale["deDE"]["debuffs"]['Kältekegel']={[0]=8.0,} -- Cone of Cold
+ShaguPlatesX_locale["deDE"]["debuffs"]['Kältekegel']={[0]=8.0,} -- Cone of Cold
 
-ShaguPlates_locale["deDE"]["totems"] = {
+ShaguPlatesX_locale["deDE"]["totems"] = {
   ["Totem der Krankheitsreinigung"] = "spell_nature_diseasecleansingtotem",
   ["Totem des Erdelementars"] = "spell_nature_earthelemental_totem",
   ["Totem der Erdbindung"] = "spell_nature_strengthofearthtotem02",
@@ -2419,7 +2419,7 @@ ShaguPlates_locale["deDE"]["totems"] = {
   ["Totem des stürmischen Zorns"] = "spell_nature_slowingtotem",
 }
 
-ShaguPlates_locale["deDE"]["icons"] = {
+ShaguPlatesX_locale["deDE"]["icons"] = {
   ["Krankheit aufheben"] = "Spell_Nature_NullifyDisease",
   ["Vergiftung aufheben"] = "Spell_Nature_NullifyPoison_02",
   ["Vergiftung aufheben - Effekt"] = "Spell_Nature_NullifyPoison_02",

@@ -1,7 +1,7 @@
-ShaguPlates.api = { }
+ShaguPlatesX.api = { }
 
 -- load ShaguPlates environment
-setfenv(1, ShaguPlates:GetEnvironment())
+setfenv(1, ShaguPlatesX:GetEnvironment())
 
 -- Client API shortcuts
 gfind = string.gmatch or string.gfind
@@ -13,7 +13,7 @@ mod = math.mod or mod
 --                              characters (bytes) in the string.
 -- 'subject'    [string]        String to split.
 -- return:      [list]          a list of strings.
-function ShaguPlates.api.strsplit(delimiter, subject)
+function ShaguPlatesX.api.strsplit(delimiter, subject)
   if not subject then return nil end
   local delimiter, fields = delimiter or ":", {}
   local pattern = string.format("([^%s]+)", delimiter)
@@ -25,7 +25,7 @@ end
 -- Returns true if a table is empty or not existing, otherwise false.
 -- 'tbl'         [table]        the table that shall be checked
 -- return:      [boolean]       result of the check.
-function ShaguPlates.api.isempty(tbl)
+function ShaguPlatesX.api.isempty(tbl)
   if not tbl then return true end
   for k, v in pairs(tbl) do
     return false
@@ -42,10 +42,10 @@ end
 -- return:      [boolean]       true when the current version is smaller or equal
 --                              to the given value, otherwise returns nil.
 local major, minor, fix = nil, nil, nil
-function ShaguPlates.api.checkversion(chkmajor, chkminor, chkfix)
+function ShaguPlatesX.api.checkversion(chkmajor, chkminor, chkfix)
   if not major and not minor and not fix then
     -- load and convert current version
-    major, minor, fix = ShaguPlates.api.strsplit(".", tostring(ShaguPlates_config.version))
+    major, minor, fix = ShaguPlatesX.api.strsplit(".", tostring(ShaguPlatesX_config.version))
     major, minor, fix = tonumber(major) or 0, tonumber(minor) or 0, tonumber(fix) or 0
   end
 
@@ -54,29 +54,13 @@ function ShaguPlates.api.checkversion(chkmajor, chkminor, chkfix)
   return curversion <= chkversion and true or nil
 end
 
--- [ UnitInRange ]
--- Returns whether a party/raid member is nearby.
--- It takes care of the rangecheck module if existing.
--- unit         [string]        A unit to query (string, unitID)
--- return:      [bool]          "1" if in range otherwise "nil"
-local RangeCache = {}
-function ShaguPlates.api.UnitInRange(unit)
-  if not UnitExists(unit) or not UnitIsVisible(unit) then
-    return nil
-  elseif CheckInteractDistance(unit, 4) then
-    return 1
-  else
-    return librange:UnitInSpellRange(unit)
-  end
-end
-
 -- [ RunOOC ]
 -- Runs a function once, as soon as the combat lockdown fades.
 -- func         [function]      The function that shall run ooc.
 -- return:      [bool]          true if the function was added,
 --                              nil if the function already exists in queue
 local queue, frame = {}
-function ShaguPlates.api.RunOOC(func)
+function ShaguPlatesX.api.RunOOC(func)
   if not frame then
     frame = CreateFrame("Frame")
     frame:SetScript("OnUpdate", function()
@@ -96,7 +80,7 @@ end
 -- unit         [string]        A unit to query (string, unitID)
 -- buff         [string]        The texture of the buff.
 -- return:      [bool]          true if unit has buff otherwise "nil"
-function ShaguPlates.api.UnitHasBuff(unit, buff)
+function ShaguPlatesX.api.UnitHasBuff(unit, buff)
   local hasbuff = nil
   for i=1,32 do
     if UnitBuff(unit, i) == buff then
@@ -112,7 +96,7 @@ end
 -- Returns an escape string for the unit aswell as the RGB values
 -- unit         [string]        the unitstring
 -- return:      [table]         string, r, g, b
-function ShaguPlates.api.GetUnitColor(unitstr)
+function ShaguPlatesX.api.GetUnitColor(unitstr)
   local _, class = UnitClass(unitstr)
 
   local r, g, b = .8, .8, .8
@@ -120,14 +104,14 @@ function ShaguPlates.api.GetUnitColor(unitstr)
     r, g, b = RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b
   end
 
-  return ShaguPlates.api.rgbhex(r,g,b), r, g, b
+  return ShaguPlatesX.api.rgbhex(r,g,b), r, g, b
 end
 
 -- [ strvertical ]
 -- Creates vertical text using linebreaks. Multibyte char friendly.
 -- 'str'        [string]        String to columnize.
 -- return:      [string]        the string tranformed to a column.
-function ShaguPlates.api.strvertical(str)
+function ShaguPlatesX.api.strvertical(str)
   local _, len = string.gsub(str,"[^\128-\193]", "")
   if (len == string.len(str)) then
     return string.gsub(str, "(.)", "%1\n")
@@ -141,7 +125,7 @@ end
 -- 'input'      [float]         the number that should be rounded.
 -- 'places'     [int]           amount of places after the comma.
 -- returns:     [float]         rounded number.
-function ShaguPlates.api.round(input, places)
+function ShaguPlatesX.api.round(input, places)
   if not places then places = 0 end
   if type(input) == "number" and type(places) == "number" then
     local pow = 1
@@ -156,7 +140,7 @@ end
 -- 'min'        [number]        minimum value.
 -- 'max'        [number]        maximum value.
 -- returns:     [number]        clamped value: 'x', 'min' or 'max' value itself.
-function ShaguPlates.api.clamp(x, min, max)
+function ShaguPlatesX.api.clamp(x, min, max)
   if type(x) == "number" and type(min) == "number" and type(max) == "number" then
     return x < min and min or x > max and max or x
   else
@@ -168,7 +152,7 @@ end
 -- Returns integral and fractional part of a number.
 -- 'f'          [float]        the number to breakdown.
 -- returns:     [int],[float]  whole and fractional part.
-function ShaguPlates.api.modf(f)
+function ShaguPlatesX.api.modf(f)
   if modf then return modf(f) end
   if f > 0 then
     return math.floor(f), mod(f,1)
@@ -180,7 +164,7 @@ end
 -- Lists all registeres slash commands
 -- 'text'       [string]        optional, a specific command to find
 -- return:      [list]          a list of all matching slash commands
-function ShaguPlates.api.GetSlashCommands(text)
+function ShaguPlatesX.api.GetSlashCommands(text)
   local cmds
   for k, v in pairs(_G) do
     if strfind(k, "^SLASH_") and (not text or v == text) then
@@ -199,11 +183,11 @@ end
 -- 'func'       [function]    the function that should be assigned
 -- 'force'      [boolean]     force assign the command even if aleady provided
 --                            by another function/addon.
-function ShaguPlates.api.RegisterSlashCommand(name, cmds, func, force)
+function ShaguPlatesX.api.RegisterSlashCommand(name, cmds, func, force)
   local counter = 1
 
   for _, cmd in pairs(cmds) do
-    if force or not ShaguPlates.api.GetSlashCommands(cmd) then
+    if force or not ShaguPlatesX.api.GetSlashCommands(cmd) then
       _G["SLASH_"..name..counter] = cmd
       counter = counter + 1
     end
@@ -217,7 +201,7 @@ end
 -- 'pat'        [string]         unformatted pattern
 -- returns:     [numbers]        capture indexes
 local capture_cache = {}
-function ShaguPlates.api.GetCaptures(pat)
+function ShaguPlatesX.api.GetCaptures(pat)
   local r = capture_cache
   if not r[pat] then
     for a, b, c, d, e in gfind(gsub(pat, "%((.+)%)", "%1"), gsub(pat, "%d%$", "%%(.-)$")) do
@@ -234,7 +218,7 @@ end
 -- 'pattern'    [string]         unformatted pattern
 -- returns:     [string]         simplified gfind compatible pattern
 local sanitize_cache = {}
-function ShaguPlates.api.SanitizePattern(pattern)
+function ShaguPlatesX.api.SanitizePattern(pattern)
   if not sanitize_cache[pattern] then
     local ret = pattern
     -- escape magic characters
@@ -262,10 +246,10 @@ end
 local a, b, c, d, e
 local _, va, vb, vc, vd, ve
 local ra, rb, rc, rd, re
-function ShaguPlates.api.cmatch(str, pat)
+function ShaguPlatesX.api.cmatch(str, pat)
   -- read capture indexes
   a, b, c, d, e = GetCaptures(pat)
-  _, _, va, vb, vc, vd, ve = string.find(str, ShaguPlates.api.SanitizePattern(pat))
+  _, _, va, vb, vc, vd, ve = string.find(str, ShaguPlatesX.api.SanitizePattern(pat))
 
   -- put entries into the proper return values
   ra = e == 1 and ve or d == 1 and vd or c == 1 and vc or b == 1 and vb or va
@@ -281,7 +265,7 @@ end
 -- Returns an itemLink for the given itemname
 -- 'name'       [string]         name of the item
 -- returns:     [string]         entire itemLink for the given item
-function ShaguPlates.api.GetItemLinkByName(name)
+function ShaguPlatesX.api.GetItemLinkByName(name)
   for itemID = 1, 25818 do
     local itemName, hyperLink, itemQuality = GetItemInfo(itemID)
     if (itemName and itemName == name) then
@@ -295,7 +279,7 @@ end
 -- Returns information about how many of a given item the player has.
 -- 'itemName'   [string]         name of the item
 -- returns:     [int]            the number of the given item
-function ShaguPlates.api.GetItemCount(itemName)
+function ShaguPlatesX.api.GetItemCount(itemName)
   local count = 0
   for bag = 4, 0, -1 do
     for slot = 1, GetContainerNumSlots(bag) do
@@ -321,7 +305,7 @@ end
 -- 'item'       [string]         name of the item
 -- returns:     [int]            bag
 --              [int]            slot
-function ShaguPlates.api.FindItem(item)
+function ShaguPlatesX.api.FindItem(item)
   for bag = 4, 0, -1 do
     for slot = 1, GetContainerNumSlots(bag) do
       local itemLink = GetContainerItemLink(bag,slot)
@@ -343,7 +327,7 @@ end
 -- Available bagtypes are "BAG", "KEYRING", "SOULBAG", "QUIVER" and "SPECIAL"
 -- 'bag'        [int]        the bag id
 -- returns:     [string]     the type of the bag, e.g "QUIVER"
-function ShaguPlates.api.GetBagFamily(bag)
+function ShaguPlatesX.api.GetBagFamily(bag)
   if bag == -2 then return "KEYRING" end
   if bag == 0 then return "BAG" end -- backpack
   if bag == -1 then return "BAG" end -- bank
@@ -366,15 +350,15 @@ end
 -- Abbreviates a number from 1234 to 1.23k
 -- 'number'     [number]           the number that should be abbreviated
 -- 'returns:    [string]           the abbreviated value
-function ShaguPlates.api.Abbreviate(number)
-  if ShaguPlates_config.unitframes.abbrevnum == "1" then
+function ShaguPlatesX.api.Abbreviate(number)
+  if ShaguPlatesX_config.unitframes.abbrevnum == "1" then
     local sign = number < 0 and -1 or 1
     number = math.abs(number)
 
     if number > 1000000 then
-      return ShaguPlates.api.round(number/1000000*sign,2) .. "m"
+      return ShaguPlatesX.api.round(number/1000000*sign,2) .. "m"
     elseif number > 1000 then
-      return ShaguPlates.api.round(number/1000*sign,2) .. "k"
+      return ShaguPlatesX.api.round(number/1000*sign,2) .. "k"
     end
   end
 
@@ -384,7 +368,7 @@ end
 -- [ SendChatMessageWide ]
 -- Sends a message to widest audience the player can broadcast to
 -- 'msg'        [string]          the message to send
-function ShaguPlates.api.SendChatMessageWide(msg)
+function ShaguPlatesX.api.SendChatMessageWide(msg)
   local channel = "SAY"
   if UnitInRaid("player") then
     if ( IsRaidLeader() or IsRaidOfficer() ) then
@@ -412,8 +396,8 @@ do -- create a scope so we don't have to worry about upvalue collisions
   for i=1, MAX_RAID_MEMBERS do
     raid[i] = "raid"..i
   end
-  function ShaguPlates.api.GroupInfoByName(name,group)
-    unitinfo = ShaguPlates.api.wipe(unitinfo)
+  function ShaguPlatesX.api.GroupInfoByName(name,group)
+    unitinfo = ShaguPlatesX.api.wipe(unitinfo)
     if group == "party" then
       for i=0, MAX_PARTY_MEMBERS do
         local unitName = UnitName(party[i])
@@ -464,7 +448,7 @@ end
 -- Sets a function to be called automatically once an addon gets loaded
 -- 'addon'      [string]            addon or variable name
 -- 'func'       [function]          function that should run
-function ShaguPlates.api.HookAddonOrVariable(addon, func)
+function ShaguPlatesX.api.HookAddonOrVariable(addon, func)
   local lurker = CreateFrame("Frame", nil)
   lurker.func = func
   lurker:RegisterEvent("ADDON_LOADED")
@@ -489,7 +473,7 @@ end
 -- Add functions to a FIFO queue for execution after a short delay.
 -- '...'        [vararg]        function, [arguments]
 local timer
-function ShaguPlates.api.QueueFunction(a1,a2,a3,a4,a5,a6,a7,a8,a9)
+function ShaguPlatesX.api.QueueFunction(a1,a2,a3,a4,a5,a6,a7,a8,a9)
   if not timer then
     timer = CreateFrame("Frame")
     timer.queue = {}
@@ -520,7 +504,7 @@ end
 -- 'money'      [int]           the amount of coppy (GetMoney())
 -- return:      [string]        a colorized string which is split into
 --                              gold,silver and copper values.
-function ShaguPlates.api.CreateGoldString(money)
+function ShaguPlatesX.api.CreateGoldString(money)
   if type(money) ~= "number" then return "-" end
 
   local gold = floor(money/ 100 / 100)
@@ -542,7 +526,7 @@ end
 -- 'blacklist'  [table]         A list of frames that should be deactivated for mouse usage
 local function OnDragStart() this:StartMoving() end
 local function OnDragStop() this:StopMovingOrSizing() end
-function ShaguPlates.api.EnableMovable(name, addon, blacklist)
+function ShaguPlatesX.api.EnableMovable(name, addon, blacklist)
   if addon then
     local scan = CreateFrame("Frame")
     scan:RegisterEvent("ADDON_LOADED")
@@ -587,7 +571,7 @@ end
 -- This is used to create a replicate of the actual table.
 -- 'src'        [table]        the table that should be copied.
 -- return:      [table]        the replicated table.
-function ShaguPlates.api.CopyTable(src)
+function ShaguPlatesX.api.CopyTable(src)
   local lookup_table = {}
   local function _copy(src)
     if type(src) ~= "table" then
@@ -609,7 +593,7 @@ end
 -- Empties a table and returns it
 -- 'src'      [table]         the table that should be emptied.
 -- return:    [table]         the emptied table.
-function ShaguPlates.api.wipe(src)
+function ShaguPlatesX.api.wipe(src)
   -- notes: table.insert, table.remove will have undefined behavior
   -- when used on tables emptied this way because Lua removes nil
   -- entries from tables after an indeterminate time.
@@ -630,7 +614,7 @@ end
 -- Loads the positions of a Frame.
 -- 'frame'      [frame]        the frame that should be positioned.
 -- 'init'       [bool]         treats the current position as initial data
-function ShaguPlates.api.LoadMovable(frame, init)
+function ShaguPlatesX.api.LoadMovable(frame, init)
   -- update position data
   if not frame.posdata or init then
     frame.posdata = { scale = frame:GetScale(), pos = {} }
@@ -639,19 +623,19 @@ function ShaguPlates.api.LoadMovable(frame, init)
     end
   end
 
-  if ShaguPlates_config["position"][frame:GetName()] then
-    if ShaguPlates_config["position"][frame:GetName()]["parent"] then
-      frame:SetParent(_G[ShaguPlates_config["position"][frame:GetName()]["parent"]])
+  if ShaguPlatesX_config["position"][frame:GetName()] then
+    if ShaguPlatesX_config["position"][frame:GetName()]["parent"] then
+      frame:SetParent(_G[ShaguPlatesX_config["position"][frame:GetName()]["parent"]])
     end
 
-    if ShaguPlates_config["position"][frame:GetName()]["scale"] then
-      frame:SetScale(ShaguPlates_config["position"][frame:GetName()].scale)
+    if ShaguPlatesX_config["position"][frame:GetName()]["scale"] then
+      frame:SetScale(ShaguPlatesX_config["position"][frame:GetName()].scale)
     end
 
-    if ShaguPlates_config["position"][frame:GetName()]["xpos"] then
-      local anchor = ShaguPlates_config["position"][frame:GetName()]["anchor"] or "TOPLEFT"
+    if ShaguPlatesX_config["position"][frame:GetName()]["xpos"] then
+      local anchor = ShaguPlatesX_config["position"][frame:GetName()]["anchor"] or "TOPLEFT"
       frame:ClearAllPoints()
-      frame:SetPoint(anchor, ShaguPlates_config["position"][frame:GetName()].xpos, ShaguPlates_config["position"][frame:GetName()].ypos)
+      frame:SetPoint(anchor, ShaguPlatesX_config["position"][frame:GetName()].xpos, ShaguPlatesX_config["position"][frame:GetName()].ypos)
     end
   elseif frame.posdata and frame.posdata.pos[1] then
     frame:ClearAllPoints()
@@ -667,7 +651,7 @@ end
 -- [ Save Movable ]
 -- Save the positions of a Frame.
 -- 'frame'      [frame]        the frame that should be saved.
-function ShaguPlates.api.SaveMovable(frame, scale)
+function ShaguPlatesX.api.SaveMovable(frame, scale)
   local anchor, _, _, xpos, ypos = frame:GetPoint()
   C.position[frame:GetName()] = C.position[frame:GetName()] or {}
   C.position[frame:GetName()]["xpos"] = round(xpos)
@@ -684,15 +668,15 @@ end
 -- It also creates an entry in the movables table.
 -- 'frame'      [frame]        the frame that should be updated.
 -- 'init'       [bool]         treats the current position as initial data
-function ShaguPlates.api.UpdateMovable(frame, init)
+function ShaguPlatesX.api.UpdateMovable(frame, init)
   local name = frame:GetName()
 
-  if ShaguPlates_config.global.offscreen == "0" then
+  if ShaguPlatesX_config.global.offscreen == "0" then
     frame:SetClampedToScreen(true)
   end
 
-  if not ShaguPlates.movables[name] then
-    ShaguPlates.movables[name] = frame
+  if not ShaguPlatesX.movables[name] then
+    ShaguPlatesX.movables[name] = frame
   end
 
   LoadMovable(frame, init)
@@ -701,9 +685,9 @@ end
 -- [ Remove Movable ]
 -- Removes a Frame from the movable list.
 -- 'frame'      [frame]        the frame that should be removed.
-function ShaguPlates.api.RemoveMovable(frame)
+function ShaguPlatesX.api.RemoveMovable(frame)
   local name = frame:GetName()
-  ShaguPlates.movables[name] = nil
+  ShaguPlatesX.movables[name] = nil
 end
 
 -- [ AlignToPosition ]
@@ -712,7 +696,7 @@ end
 -- 'anchor'     [frame]     the frame where it should be aligned to
 -- 'position'   [string]    where it should appear, takes the following:
 --                          "TOP", "RIGHT", "BOTTOM", "LEFT"
-function ShaguPlates.api.AlignToPosition(frame, anchor, position, spacing)
+function ShaguPlatesX.api.AlignToPosition(frame, anchor, position, spacing)
   frame:ClearAllPoints()
   if position == "TOP" and anchor then
     frame:SetPoint("BOTTOMLEFT", anchor, "TOPLEFT", 0, (spacing or 0))
@@ -738,7 +722,7 @@ end
 -- 'parent'     [frame]        the frame's anchor point
 -- 'spacing'    [number]       the padding that should be used between the
 --                             frame and its parent frame
-function ShaguPlates.api.SetAutoPoint(frame, parent, spacing)
+function ShaguPlatesX.api.SetAutoPoint(frame, parent, spacing)
   --[[
 
           a     b       max
@@ -807,7 +791,7 @@ end
 -- Returns the best anchor of a frame, based on its position
 -- 'self'       [frame]        the frame that should be checked
 -- returns:     [string]       the name of the best anchor
-function ShaguPlates.api.GetBestAnchor(self)
+function ShaguPlatesX.api.GetBestAnchor(self)
   local scale = self:GetScale()
   local x, y = self:GetCenter()
   local a = GetScreenWidth()  / scale / 3
@@ -842,7 +826,7 @@ end
 -- 'self'       [frame]        the frame that should get another anchor.
 -- 'anchor'     [string]       the new anchor that shall be used
 -- returns:     anchor, x, y   can directly be used in SetPoint()
-function ShaguPlates.api.ConvertFrameAnchor(self, anchor)
+function ShaguPlatesX.api.ConvertFrameAnchor(self, anchor)
   local scale, x, y, _ = self:GetScale(), nil, nil, nil
 
   if anchor == "CENTER" then
@@ -877,9 +861,9 @@ end
 -- Queries the ShaguPlates setting strings and extract its color codes
 -- returns r,g,b,a
 local color_cache = {}
-function ShaguPlates.api.GetStringColor(colorstr)
+function ShaguPlatesX.api.GetStringColor(colorstr)
   if not color_cache[colorstr] then
-    local r, g, b, a = ShaguPlates.api.strsplit(",", colorstr)
+    local r, g, b, a = ShaguPlatesX.api.strsplit(",", colorstr)
     color_cache[colorstr] = { r, g, b, a }
   end
   return unpack(color_cache[colorstr])
@@ -893,7 +877,7 @@ end
 -- 'a'          [number]          optional alpha component
 -- returns color string in the form of '|caarrggbb'
 local _r, _g, _b, _a
-function ShaguPlates.api.rgbhex(r, g, b, a)
+function ShaguPlatesX.api.rgbhex(r, g, b, a)
   if type(r) == "table" then
     if r.r then
       _r, _g, _b, _a = r.r, r.g, r.b, (r.a or 1)
@@ -919,24 +903,24 @@ end
 -- [ GetBorderSize ]
 -- Returns the configure value of a border and its pixel scaled version.
 -- 'pref' allows to specifiy a custom border (i.e unitframes, panel)
-function ShaguPlates.api.GetBorderSize(pref)
-  if not ShaguPlates.borders then ShaguPlates.borders = {} end
+function ShaguPlatesX.api.GetBorderSize(pref)
+  if not ShaguPlatesX.borders then ShaguPlatesX.borders = {} end
 
   -- set to default border if accessing a wrong border type
-  if not pref or not ShaguPlates_config.appearance.border[pref] or ShaguPlates_config.appearance.border[pref] == "-1" then
+  if not pref or not ShaguPlatesX_config.appearance.border[pref] or ShaguPlatesX_config.appearance.border[pref] == "-1" then
     pref = "default"
   end
 
-  if ShaguPlates.borders[pref] then
+  if ShaguPlatesX.borders[pref] then
     -- return already cached values
-    return ShaguPlates.borders[pref][1], ShaguPlates.borders[pref][2]
+    return ShaguPlatesX.borders[pref][1], ShaguPlatesX.borders[pref][2]
   else
     -- add new borders to the ShaguPlates tree
-    local raw = tonumber(ShaguPlates_config.appearance.border[pref])
+    local raw = tonumber(ShaguPlatesX_config.appearance.border[pref])
     if raw == -1 then raw = 3 end
 
     local scaled = raw * GetPerfectPixel()
-    ShaguPlates.borders[pref] = { raw, scaled }
+    ShaguPlatesX.borders[pref] = { raw, scaled }
 
     return raw, scaled
   end
@@ -946,38 +930,38 @@ end
 -- Returns a number that equals a real pixel on regular scaled frames.
 -- Respects the current UI-scale and calculates a real pixel based on
 -- the screen resolution and the 768px sized drawlayer.
-function ShaguPlates.api.GetPerfectPixel()
-  if ShaguPlates.pixel then return ShaguPlates.pixel end
+function ShaguPlatesX.api.GetPerfectPixel()
+  if ShaguPlatesX.pixel then return ShaguPlatesX.pixel end
 
-  if ShaguPlates_config.appearance.border.pixelperfect == "1" then
+  if ShaguPlatesX_config.appearance.border.pixelperfect == "1" then
     local scale = GetCVar("uiScale")
     local resolution = GetCVar("gxResolution")
     local _, _, screenwidth, screenheight = strfind(resolution, "(.+)x(.+)")
 
-    ShaguPlates.pixel = 768 / screenheight / scale
-    ShaguPlates.pixel = ShaguPlates.pixel > 1 and 1 or ShaguPlates.pixel
+    ShaguPlatesX.pixel = 768 / screenheight / scale
+    ShaguPlatesX.pixel = ShaguPlatesX.pixel > 1 and 1 or ShaguPlatesX.pixel
 
     -- autodetect and zoom for HiDPI displays
-    if ShaguPlates_config.appearance.border.hidpi == "1" then
-      ShaguPlates.pixel = ShaguPlates.pixel < .5 and ShaguPlates.pixel * 2 or ShaguPlates.pixel
+    if ShaguPlatesX_config.appearance.border.hidpi == "1" then
+      ShaguPlatesX.pixel = ShaguPlatesX.pixel < .5 and ShaguPlatesX.pixel * 2 or ShaguPlatesX.pixel
     end
   else
-    ShaguPlates.pixel = .7
+    ShaguPlatesX.pixel = .7
   end
 
-  ShaguPlates.backdrop = {
+  ShaguPlatesX.backdrop = {
     bgFile = "Interface\\BUTTONS\\WHITE8X8", tile = false, tileSize = 0,
-    edgeFile = "Interface\\BUTTONS\\WHITE8X8", edgeSize = ShaguPlates.pixel,
-    insets = {left = -ShaguPlates.pixel, right = -ShaguPlates.pixel, top = -ShaguPlates.pixel, bottom = -ShaguPlates.pixel},
+    edgeFile = "Interface\\BUTTONS\\WHITE8X8", edgeSize = ShaguPlatesX.pixel,
+    insets = {left = -ShaguPlatesX.pixel, right = -ShaguPlatesX.pixel, top = -ShaguPlatesX.pixel, bottom = -ShaguPlatesX.pixel},
   }
 
-  ShaguPlates.backdrop_thin = {
+  ShaguPlatesX.backdrop_thin = {
     bgFile = "Interface\\BUTTONS\\WHITE8X8", tile = false, tileSize = 0,
-    edgeFile = "Interface\\BUTTONS\\WHITE8X8", edgeSize = ShaguPlates.pixel,
+    edgeFile = "Interface\\BUTTONS\\WHITE8X8", edgeSize = ShaguPlatesX.pixel,
     insets = {left = 0, right = 0, top = 0, bottom = 0},
   }
 
-  return ShaguPlates.pixel
+  return ShaguPlatesX.pixel
 end
 
 -- [ Create Backdrop ]
@@ -987,7 +971,7 @@ end
 -- 'legacy'     [bool]          use legacy backdrop instead of creating frames.
 -- 'transp'     [number]        set default transparency
 local backdrop, b, level, rawborder, border, br, bg, bb, ba, er, eg, eb, ea
-function ShaguPlates.api.CreateBackdrop(f, inset, legacy, transp, backdropSetting)
+function ShaguPlatesX.api.CreateBackdrop(f, inset, legacy, transp, backdropSetting)
   -- exit if now frame was given
   if not f then return end
 
@@ -1002,12 +986,12 @@ function ShaguPlates.api.CreateBackdrop(f, inset, legacy, transp, backdropSettin
 
   -- detect if blizzard backdrops shall be used
   local blizz = C.appearance.border.force_blizz == "1" and true or nil
-  backdrop = blizz and ShaguPlates.backdrop_blizz_full or rawborder == 1 and ShaguPlates.backdrop_thin or ShaguPlates.backdrop
+  backdrop = blizz and ShaguPlatesX.backdrop_blizz_full or rawborder == 1 and ShaguPlatesX.backdrop_thin or ShaguPlatesX.backdrop
   border = blizz and math.max(border, 3) or border
 
   -- get the color settings
-  br, bg, bb, ba = ShaguPlates.api.GetStringColor(ShaguPlates_config.appearance.border.background)
-  er, eg, eb, ea = ShaguPlates.api.GetStringColor(ShaguPlates_config.appearance.border.color)
+  br, bg, bb, ba = ShaguPlatesX.api.GetStringColor(ShaguPlatesX_config.appearance.border.background)
+  er, eg, eb, ea = ShaguPlatesX.api.GetStringColor(ShaguPlatesX_config.appearance.border.color)
 
   if transp and transp < tonumber(ba) then ba = transp end
 
@@ -1046,8 +1030,8 @@ function ShaguPlates.api.CreateBackdrop(f, inset, legacy, transp, backdropSettin
 
     if blizz then
       if not f.backdrop_border then
-        local border = CreateFrame("Frame", nil, f.backdrop)
-        border:SetFrameLevel(level + 2)
+        local border = CreateFrame("Frame", nil, f)
+        border:SetFrameLevel(level + 1)
         f.backdrop_border = border
 
         local hookSetBackdropBorderColor = f.backdrop.SetBackdropBorderColor
@@ -1058,7 +1042,7 @@ function ShaguPlates.api.CreateBackdrop(f, inset, legacy, transp, backdropSettin
       end
 
       f.backdrop_border:SetAllPoints(f.backdrop)
-      f.backdrop_border:SetBackdrop(ShaguPlates.backdrop_blizz_border)
+      f.backdrop_border:SetBackdrop(ShaguPlatesX.backdrop_blizz_border)
       f.backdrop_border:SetBackdropBorderColor(er, eg, eb , ea)
     end
   end
@@ -1067,11 +1051,11 @@ end
 -- [ Create Shadow ]
 -- Creates a ShaguPlates compatible frame as shadow element
 -- 'f'          [frame]         the frame which should get a backdrop.
-function ShaguPlates.api.CreateBackdropShadow(f)
+function ShaguPlatesX.api.CreateBackdropShadow(f)
   -- exit if now frame was given
   if not f then return end
 
-  if f.backdrop_shadow or ShaguPlates_config.appearance.border.shadow ~= "1" then
+  if f.backdrop_shadow or ShaguPlatesX_config.appearance.border.shadow ~= "1" then
     return
   end
 
@@ -1079,16 +1063,16 @@ function ShaguPlates.api.CreateBackdropShadow(f)
   f.backdrop_shadow = CreateFrame("Frame", nil, anchor)
   f.backdrop_shadow:SetFrameStrata("BACKGROUND")
   f.backdrop_shadow:SetFrameLevel(1)
-  f.backdrop_shadow:SetPoint("TOPLEFT", anchor, "TOPLEFT", -5, 5)
-  f.backdrop_shadow:SetPoint("BOTTOMRIGHT", anchor, "BOTTOMRIGHT", 5, -5)
-  f.backdrop_shadow:SetBackdrop(ShaguPlates.backdrop_shadow)
-  f.backdrop_shadow:SetBackdropBorderColor(0, 0, 0, tonumber(ShaguPlates_config.appearance.border.shadow_intensity))
+  f.backdrop_shadow:SetPoint("TOPLEFT", anchor, "TOPLEFT", -7, 7)
+  f.backdrop_shadow:SetPoint("BOTTOMRIGHT", anchor, "BOTTOMRIGHT", 7, -7)
+  f.backdrop_shadow:SetBackdrop(ShaguPlatesX.backdrop_shadow)
+  f.backdrop_shadow:SetBackdropBorderColor(0,0,0,tonumber(ShaguPlatesX_config.appearance.border.shadow_intensity))
 end
 
 -- [ Bar Layout Options ] --
 -- 'barsize'  size of bar in number of buttons
--- returns:   array of options as strings for ShaguPlates.gui.bar
-function ShaguPlates.api.BarLayoutOptions(barsize)
+-- returns:   array of options as strings for ShaguPlatesX.gui.bar
+function ShaguPlatesX.api.BarLayoutOptions(barsize)
   assert(barsize > 0 and barsize <= NUM_ACTIONBAR_BUTTONS,"BarLayoutOptions: barsize "..tostring(barsize).." is invalid")
   local options = {}
   for i,layout in ipairs(pfGridmath[barsize]) do
@@ -1098,16 +1082,16 @@ function ShaguPlates.api.BarLayoutOptions(barsize)
 end
 
 -- [ Bar Layout Formfactor ] --
--- 'option'  string option as used in ShaguPlates_config.bars[bar].option
+-- 'option'  string option as used in ShaguPlatesX_config.bars[bar].option
 -- returns:  integer formfactor
 local formfactors = {}
 setmetatable(formfactors, {__mode = "v"}) -- weak table so values not referenced are collected on next gc
-function ShaguPlates.api.BarLayoutFormfactor(option)
+function ShaguPlatesX.api.BarLayoutFormfactor(option)
   if formfactors[option] then
     return formfactors[option]
   else
     for barsize,_ in ipairs(pfGridmath) do
-      local options = ShaguPlates.api.BarLayoutOptions(barsize)
+      local options = ShaguPlatesX.api.BarLayoutOptions(barsize)
       for i,opt in ipairs(options) do
         if opt == option then
           formfactors[option] = i
@@ -1123,9 +1107,9 @@ end
 -- 'barsize'    integer number of buttons,
 -- 'formfactor' string formfactor in cols x rows,
 -- 'padding'    the spacing between buttons
-function ShaguPlates.api.BarLayoutSize(bar,barsize,formfactor,iconsize,bordersize,padding)
+function ShaguPlatesX.api.BarLayoutSize(bar,barsize,formfactor,iconsize,bordersize,padding)
   assert(barsize > 0 and barsize <= NUM_ACTIONBAR_BUTTONS,"BarLayoutSize: barsize "..tostring(barsize).." is invalid")
-  local formfactor = ShaguPlates.api.BarLayoutFormfactor(formfactor)
+  local formfactor = ShaguPlatesX.api.BarLayoutFormfactor(formfactor)
   local cols, rows = unpack(pfGridmath[barsize][formfactor])
   local width = (iconsize + bordersize*2+padding) * cols + padding
   local height = (iconsize + bordersize*2+padding) * rows + padding
@@ -1141,9 +1125,9 @@ end
 -- 'iconsize'     size of the button
 -- 'bordersize'   default bordersize
 -- 'padding'      the spacing between buttons
-function ShaguPlates.api.BarButtonAnchor(button,basename,buttonindex,barsize,formfactor,iconsize,bordersize,padding)
+function ShaguPlatesX.api.BarButtonAnchor(button,basename,buttonindex,barsize,formfactor,iconsize,bordersize,padding)
   assert(barsize > 0 and barsize <= NUM_ACTIONBAR_BUTTONS,"BarButtonAnchor: barsize "..tostring(barsize).." is invalid")
-  local formfactor = ShaguPlates.api.BarLayoutFormfactor(formfactor)
+  local formfactor = ShaguPlatesX.api.BarLayoutFormfactor(formfactor)
   local parent = button:GetParent()
   local cols, rows = unpack(pfGridmath[barsize][formfactor])
   if buttonindex == 1 then
@@ -1157,7 +1141,7 @@ end
 
 -- [ Enable Autohide ] --
 -- 'frame'  the frame that should be hidden
-function ShaguPlates.api.EnableAutohide(frame, timeout, combat)
+function ShaguPlatesX.api.EnableAutohide(frame, timeout, combat)
   if not frame then return end
   local timeout = timeout
 
@@ -1199,7 +1183,7 @@ end
 
 -- [ Disable Autohide ] --
 -- 'frame'  the frame that should get the autohide removed
-function ShaguPlates.api.DisableAutohide(frame)
+function ShaguPlatesX.api.DisableAutohide(frame)
   if not frame then return end
   if not frame.hover then return end
 
@@ -1213,14 +1197,14 @@ end
 -- 'remaining'   the time in seconds that should be converted
 -- return        a colored string including a time unit (m/h/d)
 local color_day, color_hour, color_minute, color_low, color_normal
-function ShaguPlates.api.GetColoredTimeString(remaining)
+function ShaguPlatesX.api.GetColoredTimeString(remaining)
   if not remaining then return "" end
 
   -- Show days if remaining is > 99 Hours (99 * 60 * 60)
   if remaining > 356400 then
     if not color_day then
-      local r,g,b,a = ShaguPlates.api.GetStringColor(C.appearance.cd.daycolor)
-      color_day = ShaguPlates.api.rgbhex(r,g,b)
+      local r,g,b,a = ShaguPlatesX.api.GetStringColor(C.appearance.cd.daycolor)
+      color_day = ShaguPlatesX.api.rgbhex(r,g,b)
     end
 
     return color_day .. round(remaining / 86400) .. "|rd"
@@ -1228,8 +1212,8 @@ function ShaguPlates.api.GetColoredTimeString(remaining)
   -- Show hours if remaining is > 99 Minutes (99 * 60)
   elseif remaining > 5940 then
     if not color_hour then
-      local r,g,b,a = ShaguPlates.api.GetStringColor(C.appearance.cd.hourcolor)
-      color_hour = ShaguPlates.api.rgbhex(r,g,b)
+      local r,g,b,a = ShaguPlatesX.api.GetStringColor(C.appearance.cd.hourcolor)
+      color_hour = ShaguPlatesX.api.rgbhex(r,g,b)
     end
 
     return color_hour .. round(remaining / 3600) .. "|rh"
@@ -1237,17 +1221,17 @@ function ShaguPlates.api.GetColoredTimeString(remaining)
   -- Show minutes if remaining is > 99 Seconds (99)
   elseif remaining > 99 then
     if not color_minute then
-      local r,g,b,a = ShaguPlates.api.GetStringColor(C.appearance.cd.minutecolor)
-      color_minute = ShaguPlates.api.rgbhex(r,g,b)
+      local r,g,b,a = ShaguPlatesX.api.GetStringColor(C.appearance.cd.minutecolor)
+      color_minute = ShaguPlatesX.api.rgbhex(r,g,b)
     end
 
     return color_minute .. round(remaining / 60) .. "|rm"
 
   -- Show milliseconds on low
-  elseif remaining <= 5 and ShaguPlates_config.appearance.cd.milliseconds == "1" then
+  elseif remaining <= 5 and ShaguPlatesX_config.appearance.cd.milliseconds == "1" then
     if not color_low then
-      local r,g,b,a = ShaguPlates.api.GetStringColor(C.appearance.cd.lowcolor)
-      color_low = ShaguPlates.api.rgbhex(r,g,b)
+      local r,g,b,a = ShaguPlatesX.api.GetStringColor(C.appearance.cd.lowcolor)
+      color_low = ShaguPlatesX.api.rgbhex(r,g,b)
     end
 
     return color_low .. string.format("%.1f", round(remaining,1))
@@ -1255,8 +1239,8 @@ function ShaguPlates.api.GetColoredTimeString(remaining)
   -- Show seconds on low
   elseif remaining <= 5 then
     if not color_low then
-      local r,g,b,a = ShaguPlates.api.GetStringColor(C.appearance.cd.lowcolor)
-      color_low = ShaguPlates.api.rgbhex(r,g,b)
+      local r,g,b,a = ShaguPlatesX.api.GetStringColor(C.appearance.cd.lowcolor)
+      color_low = ShaguPlatesX.api.rgbhex(r,g,b)
     end
 
     return color_low .. round(remaining)
@@ -1264,8 +1248,8 @@ function ShaguPlates.api.GetColoredTimeString(remaining)
   -- Show seconds on normal
   elseif remaining >= 0 then
     if not color_normal then
-      local r, g, b, a = ShaguPlates.api.GetStringColor(C.appearance.cd.normalcolor)
-      color_normal = ShaguPlates.api.rgbhex(r,g,b)
+      local r, g, b, a = ShaguPlatesX.api.GetStringColor(C.appearance.cd.normalcolor)
+      color_normal = ShaguPlatesX.api.rgbhex(r,g,b)
     end
     return color_normal .. round(remaining)
 
@@ -1279,7 +1263,7 @@ end
 -- 'perc'     percentage (0-1)
 -- return r,g,b and hexcolor
 local gradientcolors = {}
-function ShaguPlates.api.GetColorGradient(perc)
+function ShaguPlatesX.api.GetColorGradient(perc)
   perc = perc > 1 and 1 or perc
   perc = perc < 0 and 0 or perc
   perc = floor(perc*100)/100
@@ -1301,7 +1285,7 @@ function ShaguPlates.api.GetColorGradient(perc)
     local r = round(r1 + (r2 - r1) * perc, 4)
     local g = round(g1 + (g2 - g1) * perc, 4)
     local b = round(b1 + (b2 - b1) * perc, 4)
-    local h = ShaguPlates.api.rgbhex(r,g,b)
+    local h = ShaguPlatesX.api.rgbhex(r,g,b)
 
     gradientcolors[index] = {}
     gradientcolors[index].r = r
@@ -1323,7 +1307,7 @@ end
 -- 'layer'      [string]
 -- 'arg1'       [string]
 -- return object
-function ShaguPlates.api.GetNoNameObject(frame, objtype, layer, arg1, arg2)
+function ShaguPlatesX.api.GetNoNameObject(frame, objtype, layer, arg1, arg2)
   local arg1 = arg1 and gsub(arg1, "([%+%-%*%(%)%?%[%]%^])", "%%%1")
   local arg2 = arg2 and gsub(arg2, "([%+%-%*%(%)%?%[%]%^])", "%%%1")
 

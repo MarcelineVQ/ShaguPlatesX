@@ -1,5 +1,5 @@
 -- load ShaguPlates environment
-setfenv(1, ShaguPlates:GetEnvironment())
+setfenv(1, ShaguPlatesX:GetEnvironment())
 
 do -- statusbars
   local animations = {}
@@ -8,7 +8,7 @@ do -- statusbars
 
   local animate = CreateFrame("Frame", "pfStatusBarAnimation", UIParent)
   animate:SetScript("OnUpdate", function()
-    stepsize = tonumber(ShaguPlates_config.unitframes.animation_speed)
+    stepsize = tonumber(ShaguPlatesX_config.unitframes.animation_speed)
 
     for bar in pairs(animations) do
       if not bar.val_ or abs(bar.val_ - bar.val) < stepsize or bar.instant then
@@ -34,7 +34,7 @@ do -- statusbars
 
       if self.mode == "vertical" then
         height = self:GetHeight()
-        if ShaguPlates.expansion == "vanilla" then height = height / self:GetEffectiveScale() end
+        if ShaguPlatesX.expansion == "vanilla" then height = height / self:GetEffectiveScale() end
         point = height / (self.max - self.min) * (val - self.min)
 
         -- keep values in limits
@@ -53,7 +53,7 @@ do -- statusbars
         self.bg:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 0, point)
       else
         width = self:GetWidth()
-        if ShaguPlates.expansion == "vanilla" then width = width / self:GetEffectiveScale() end
+        if ShaguPlatesX.expansion == "vanilla" then width = width / self:GetEffectiveScale() end
         point = width / (self.max - self.min) * (val - self.min)
 
         -- keep values in limits
@@ -113,11 +113,11 @@ do -- statusbars
     end,
   }
 
-  function ShaguPlates.api.CreateStatusBar(name, parent)
+  function ShaguPlatesX.api.CreateStatusBar(name, parent)
     local f = CreateFrame("Button", name, parent)
     f:EnableMouse(nil)
 
-    f.bar = f:CreateTexture(nil, "NORMAL")
+    f.bar = f:CreateTexture(nil, "HIGH")
     f.bar:SetPoint("TOPLEFT", f, "TOPLEFT", 0, 0)
     f.bar:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", 0, 0)
 
@@ -186,11 +186,11 @@ do -- dropdown
   end
 
   local function ListButtonOnEnter()
-    this.button:SetBackdropBorderColor(this.button.cr,this.button.cg,this.button.cb,(this.button.ca or 1))
+    this.button:SetBackdropBorderColor(this.button.cr,this.button.cg,this.button.cb,1)
   end
 
   local function ListButtonOnLeave()
-    this.button:SetBackdropBorderColor(this.button.rr,this.button.rg,this.button.rb,(this.button.ra or 1))
+    this.button:SetBackdropBorderColor(this.button.rr,this.button.rg,this.button.rb,1)
   end
 
   local handlers = {
@@ -294,7 +294,7 @@ do -- dropdown
 
         frame.text = frame:CreateFontString(nil, "OVERLAY")
         frame.text:SetFontObject(GameFontWhite)
-        frame.text:SetFont(ShaguPlates.font_default, ShaguPlates_config.global.font_size-1, "OUTLINE")
+        frame.text:SetFont(ShaguPlatesX.font_default, ShaguPlatesX_config.global.font_size-1, "OUTLINE")
         frame.text:SetJustifyH("RIGHT")
         frame.text:SetPoint("LEFT", frame, "LEFT", 2, 0)
         frame.text:SetPoint("RIGHT", frame.icon, "LEFT", -2, 0)
@@ -317,7 +317,7 @@ do -- dropdown
       frame:Show()
     end,
   }
-  function ShaguPlates.api.CreateDropDownButton(name, parent)
+  function ShaguPlatesX.api.CreateDropDownButton(name, parent)
     local frame = CreateFrame("Button", name, parent)
     frame:SetScript("OnEnter", ListButtonOnEnter)
     frame:SetScript("OnLeave", ListButtonOnLeave)
@@ -337,7 +337,7 @@ do -- dropdown
 
     local text = frame:CreateFontString(nil, "OVERLAY")
     text:SetFontObject(GameFontWhite)
-    text:SetFont(ShaguPlates.font_default, ShaguPlates_config.global.font_size-1, "OUTLINE")
+    text:SetFont(ShaguPlatesX.font_default, ShaguPlatesX_config.global.font_size-1, "OUTLINE")
     text:SetPoint("RIGHT", button, "LEFT", -4, 0)
     text:SetJustifyH("RIGHT")
 
@@ -362,7 +362,7 @@ do -- dropdown
   end
 end
 
-function ShaguPlates.api.CreateTabChild(self, title, bwidth, bheight, bottom, static)
+function ShaguPlatesX.api.CreateTabChild(self, title, bwidth, bheight, bottom, static)
   -- create tab button
   local b = CreateFrame("Button", "pfConfig" .. title .. "Button", self, "UIPanelButtonTemplate")
   b:SetText(title)
@@ -455,7 +455,7 @@ function ShaguPlates.api.CreateTabChild(self, title, bwidth, bheight, bottom, st
   return ret
 end
 
-function ShaguPlates.api.CreateTabFrame(parent, align, outside)
+function ShaguPlatesX.api.CreateTabFrame(parent, align, outside)
   local f = CreateFrame("Frame", nil, parent)
 
   f:SetPoint("TOPLEFT", parent, "TOPLEFT", -5, 5)
@@ -469,12 +469,12 @@ function ShaguPlates.api.CreateTabFrame(parent, align, outside)
   f.bottomcount = 1
 
   -- Create Child Frame
-  f.CreateTabChild = ShaguPlates.api.CreateTabChild
+  f.CreateTabChild = ShaguPlatesX.api.CreateTabChild
 
   return f
 end
 
-function ShaguPlates.api.CreateScrollFrame(name, parent)
+function ShaguPlatesX.api.CreateScrollFrame(name, parent)
   local f = CreateFrame("ScrollFrame", name, parent)
 
   -- create slider
@@ -482,7 +482,7 @@ function ShaguPlates.api.CreateScrollFrame(name, parent)
   f.slider:SetOrientation('VERTICAL')
   f.slider:SetPoint("TOPLEFT", f, "TOPRIGHT", -7, 0)
   f.slider:SetPoint("BOTTOMRIGHT", 0, 0)
-  f.slider:SetThumbTexture(ShaguPlates.media["img:col"])
+  f.slider:SetThumbTexture(ShaguPlatesX.media["img:col"])
   f.slider.thumb = f.slider:GetThumbTexture()
   f.slider.thumb:SetHeight(50)
   f.slider.thumb:SetTexture(.3,1,.8,.5)
@@ -535,7 +535,7 @@ function ShaguPlates.api.CreateScrollFrame(name, parent)
   return f
 end
 
-function ShaguPlates.api.CreateScrollChild(name, parent)
+function ShaguPlatesX.api.CreateScrollChild(name, parent)
   local f = CreateFrame("Frame", name, parent)
 
   -- dummy values required
@@ -554,7 +554,7 @@ end
 
 -- [ CreateTextBox ]
 -- Creates and returns a default ShaguPlates skinned EditBox
-function ShaguPlates.api.CreateTextBox(name, parent)
+function ShaguPlatesX.api.CreateTextBox(name, parent)
   local f = CreateFrame("EditBox", name, parent)
   f:SetScript("OnEscapePressed", function() this:ClearFocus() end)
   f:SetAutoFocus(false)
@@ -567,7 +567,7 @@ end
 -- [ EnableClickRotate ]
 -- Enables Modelframes to be rotated by click-drag
 -- 'frame'    [frame]         the modelframe that should be used
-function ShaguPlates.api.EnableClickRotate(frame)
+function ShaguPlatesX.api.EnableClickRotate(frame)
   frame:EnableMouse(true)
   HookScript(frame, "OnUpdate", function()
     if this.rotate then
@@ -596,15 +596,15 @@ end
 
 local function SetHighlightEnter()
   if this.locked then return end
-  (this.backdrop or this):SetBackdropBorderColor(this.cr,this.cg,this.cb,(this.ca or 1))
+  (this.backdrop or this):SetBackdropBorderColor(this.cr,this.cg,this.cb,1)
 end
 
 local function SetHighlightLeave()
   if this.locked then return end
-  (this.backdrop or this):SetBackdropBorderColor(this.rr,this.rg,this.rb,(this.ra or 1))
+  (this.backdrop or this):SetBackdropBorderColor(this.rr,this.rg,this.rb,1)
 end
 
-function ShaguPlates.api.SetHighlight(frame, cr, cg, cb)
+function ShaguPlatesX.api.SetHighlight(frame, cr, cg, cb)
   if not frame then return end
   if not cr or not cg or not cb then
     local _, class = UnitClass("player")
@@ -612,8 +612,8 @@ function ShaguPlates.api.SetHighlight(frame, cr, cg, cb)
     cr, cg, cb = color.r , color.g, color.b
   end
 
-  frame.cr, frame.cg, frame.cb = cr, cg, cb, ca
-  frame.rr, frame.rg, frame.rb, frame.ra = GetStringColor(ShaguPlates_config.appearance.border.color)
+  frame.cr, frame.cg, frame.cb = cr, cg, cb
+  frame.rr, frame.rg, frame.rb = GetStringColor(ShaguPlatesX_config.appearance.border.color)
 
   if not frame.pfEnterLeave then
     if not frame.HookScript then frame.HookScript = HookScript end
@@ -635,7 +635,7 @@ function ShaguPlates.api.SetHighlight(frame, cr, cg, cb)
   end
 end
 
-function ShaguPlates.api.HandleIcon(frame, icon)
+function ShaguPlatesX.api.HandleIcon(frame, icon)
   if not frame or not icon then return end
 
   SetAllPointsOffset(icon, frame, 3)
@@ -650,7 +650,7 @@ end
 -- 'cb'                [int]           mouseover color (blue), defaults to classcolor.
 -- 'icon'              [texture]       the button icon that should be skinned.
 -- 'disableHighlight'  [bool]          disable mouseover highlight.
-function ShaguPlates.api.SkinButton(button, cr, cg, cb, icon, disableHighlight)
+function ShaguPlatesX.api.SkinButton(button, cr, cg, cb, icon, disableHighlight)
   local b = _G[button]
   if not b then b = button end
   if not b then return end
@@ -659,7 +659,7 @@ function ShaguPlates.api.SkinButton(button, cr, cg, cb, icon, disableHighlight)
     local color = RAID_CLASS_COLORS[class]
     cr, cg, cb = color.r , color.g, color.b
   end
-  ShaguPlates.api.CreateBackdrop(b, nil, true)
+  ShaguPlatesX.api.CreateBackdrop(b, nil, true)
   b:SetNormalTexture("")
   b:SetHighlightTexture("")
   b:SetPushedTexture("")
@@ -678,7 +678,7 @@ function ShaguPlates.api.SkinButton(button, cr, cg, cb, icon, disableHighlight)
     b:SetPushedTexture(nil)
   end
 
-  b:SetFont(ShaguPlates.font_default, ShaguPlates_config.global.font_size, "OUTLINE")
+  b:SetFont(ShaguPlatesX.font_default, ShaguPlatesX_config.global.font_size, "OUTLINE")
 
   b.LockHighlight = function()
     b:SetBackdropBorderColor(cr,cg,cb,1)
@@ -687,7 +687,7 @@ function ShaguPlates.api.SkinButton(button, cr, cg, cb, icon, disableHighlight)
 
   b.UnlockHighlight = function()
     if not MouseIsOver(b) then
-      b:SetBackdropBorderColor(GetStringColor(ShaguPlates_config.appearance.border.color))
+      b:SetBackdropBorderColor(GetStringColor(ShaguPlatesX_config.appearance.border.color))
     end
     b.locked = false
   end
@@ -696,7 +696,7 @@ end
 -- [ Skin Collapse Button ]
 -- Applies ShaguPlates skin to collapse/expand buttons:
 -- 'button'   [frame/string]  the button that should be skinned.
-function ShaguPlates.api.SkinCollapseButton(button, all)
+function ShaguPlatesX.api.SkinCollapseButton(button, all)
   local b = _G[button]
   if not b then b = button end
   if not b then return end
@@ -732,8 +732,8 @@ end
 -- [ Skin Rotate Button]
 -- Applies ShaguPlates skin to rotation buttons like in character pane:
 -- 'button'     [frame/string]  the button that should be skinned.
-function ShaguPlates.api.SkinRotateButton(button)
-  ShaguPlates.api.CreateBackdrop(button)
+function ShaguPlatesX.api.SkinRotateButton(button)
+  ShaguPlatesX.api.CreateBackdrop(button)
 
   local _, class = UnitClass("player")
   local color = RAID_CLASS_COLORS[class]
@@ -757,7 +757,7 @@ end
 -- 'parentFrame' [frame]    will anchor to the top right of the parent.
 -- 'offsetX'     [integer]  offsets the button horizontally
 -- 'offsetY'     [integer]  offsets the button vertically
-function ShaguPlates.api.SkinCloseButton(button, parentFrame, offsetX, offsetY)
+function ShaguPlatesX.api.SkinCloseButton(button, parentFrame, offsetX, offsetY)
   if not button then return end
 
   SkinButton(button, 1, .25, .25)
@@ -771,13 +771,13 @@ function ShaguPlates.api.SkinCloseButton(button, parentFrame, offsetX, offsetY)
   end
 
   button.texture = button:CreateTexture("pfQuestionDialogCloseTex")
-  button.texture:SetTexture(ShaguPlates.media["img:close"])
+  button.texture:SetTexture(ShaguPlatesX.media["img:close"])
   button.texture:ClearAllPoints()
   button.texture:SetAllPoints(button)
   button.texture:SetVertexColor(1,.25,.25,1)
 end
 
-function ShaguPlates.api.SkinArrowButton(button, dir, size)
+function ShaguPlatesX.api.SkinArrowButton(button, dir, size)
   if not button then return end
 
   SkinButton(button)
@@ -800,7 +800,7 @@ function ShaguPlates.api.SkinArrowButton(button, dir, size)
     SetAllPointsOffset(button.icon, button, 3)
   end
 
-  button.icon:SetTexture(ShaguPlates.media["img:"..dir])
+  button.icon:SetTexture(ShaguPlatesX.media["img:"..dir])
 
   if not button.pficonfade then
     local button, state = button, nil
@@ -818,15 +818,15 @@ function ShaguPlates.api.SkinArrowButton(button, dir, size)
   end
 end
 
-function ShaguPlates.api.SkinScrollbar(frame, always)
+function ShaguPlatesX.api.SkinScrollbar(frame, always)
   local parent = frame:GetParent()
   local name = frame:GetName()
   local up = _G[name .. "ScrollUpButton"]
   local down = _G[name .. "ScrollDownButton"]
   local thumb = frame:GetThumbTexture()
 
-  ShaguPlates.api.SkinArrowButton(up, "up")
-  ShaguPlates.api.SkinArrowButton(down, "down")
+  ShaguPlatesX.api.SkinArrowButton(up, "up")
+  ShaguPlatesX.api.SkinArrowButton(down, "down")
 
   if not frame.bg then
     frame.bg = CreateFrame("Frame", nil, frame)
@@ -856,7 +856,7 @@ end
 -- Clears points and centers a frame
 -- 'frame'           [frame] the frame that should be centered.
 -- 'relativeFrame'   [frame] frame that should be used for centering if not use ui parent.
-function ShaguPlates.api.CenterFrame(frame, relativeFrame)
+function ShaguPlatesX.api.CenterFrame(frame, relativeFrame)
   frame:ClearAllPoints()
   if relativeFrame then
     frame:SetPoint("CENTER", relativeFrame, "CENTER", 0, 0)
@@ -869,7 +869,7 @@ end
 -- Strips all textures off a frame.
 -- 'frame'     [frame]   the frame that should be stripped.
 -- 'layer'     [string]  texture layer.
-function ShaguPlates.api.StripTextures(frame, hide, layer)
+function ShaguPlatesX.api.StripTextures(frame, hide, layer)
   if not frame then return end
   for _,v in ipairs({frame:GetRegions()}) do
     if v.SetTexture then
@@ -887,12 +887,12 @@ function ShaguPlates.api.StripTextures(frame, hide, layer)
   end
 end
 
-function ShaguPlates.api.SetAllPointsOffset(frame, parent, offset)
+function ShaguPlatesX.api.SetAllPointsOffset(frame, parent, offset)
   frame:SetPoint("TOPLEFT", parent, "TOPLEFT", offset, -offset)
   frame:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT", -offset, offset)
 end
 
-function ShaguPlates.api.SkinCheckbox(frame, size)
+function ShaguPlatesX.api.SkinCheckbox(frame, size)
   if not frame then return end
   frame:SetNormalTexture("")
   frame:SetPushedTexture("")
@@ -910,7 +910,7 @@ function ShaguPlates.api.SkinCheckbox(frame, size)
   end
 end
 
-function ShaguPlates.api.SkinDropDown(frame, cr, cg, cb, useSmall)
+function ShaguPlatesX.api.SkinDropDown(frame, cr, cg, cb, useSmall)
   if not frame then return end
   StripTextures(frame)
   CreateBackdrop(frame)
@@ -933,7 +933,7 @@ function ShaguPlates.api.SkinDropDown(frame, cr, cg, cb, useSmall)
 
   if not button.icon then
     button.icon = button:CreateTexture(nil, "OVERLAY")
-    button.icon:SetTexture(ShaguPlates.media["img:down"])
+    button.icon:SetTexture(ShaguPlatesX.media["img:down"])
     button.icon:SetVertexColor(1,.9,.1)
     button.icon:SetAlpha(.8)
     SetAllPointsOffset(button.icon, button.backdrop, 5)
@@ -976,7 +976,7 @@ function ShaguPlates.api.SkinDropDown(frame, cr, cg, cb, useSmall)
   frame.button = button
 end
 
-function ShaguPlates.api.SkinTab(frame, fixed)
+function ShaguPlatesX.api.SkinTab(frame, fixed)
   frame:SetHeight(20)
   StripTextures(frame)
   CreateBackdrop(frame)
@@ -991,7 +991,7 @@ function ShaguPlates.api.SkinTab(frame, fixed)
   end
 end
 
-function ShaguPlates.api.SkinSlider(frame)
+function ShaguPlatesX.api.SkinSlider(frame)
   local orientation = frame:GetOrientation()
   local thumb = frame:GetThumbTexture()
 
@@ -1038,7 +1038,7 @@ end
 -- 'no'         [function]      function that is triggered on 'Cancel' button.
 -- 'editbox'    [bool]          if set, a inputfield will be shown. it can be.
 --                              accessed with "GetParent().input".
-function ShaguPlates.api.CreateQuestionDialog(text, yes, no, editbox, onclose)
+function ShaguPlatesX.api.CreateQuestionDialog(text, yes, no, editbox, onclose)
   -- do not allow multiple instances of question dialogs
   if _G["pfQuestionDialog"] and _G["pfQuestionDialog"]:IsShown() then
     _G["pfQuestionDialog"]:Hide()
@@ -1082,8 +1082,8 @@ function ShaguPlates.api.CreateQuestionDialog(text, yes, no, editbox, onclose)
 
   question:SetScript("OnHide", onclose)
 
-  ShaguPlates.api.CreateBackdrop(question, nil, nil, .85)
-  ShaguPlates.api.CreateBackdropShadow(question)
+  ShaguPlatesX.api.CreateBackdrop(question, nil, nil, .85)
+  ShaguPlatesX.api.CreateBackdropShadow(question)
 
   -- text
   question.text = question:CreateFontString("Status", "LOW", "GameFontNormal")
@@ -1095,7 +1095,7 @@ function ShaguPlates.api.CreateQuestionDialog(text, yes, no, editbox, onclose)
   -- editbox
   if editbox then
     question.input = CreateFrame("EditBox", "pfQuestionDialogEdit", question)
-    ShaguPlates.api.CreateBackdrop(question.input)
+    ShaguPlatesX.api.CreateBackdrop(question.input)
     question.input:SetTextColor(.2,1,.8,1)
     question.input:SetJustifyH("CENTER")
     question.input:SetAutoFocus(false)
@@ -1110,7 +1110,7 @@ function ShaguPlates.api.CreateQuestionDialog(text, yes, no, editbox, onclose)
 
   -- buttons
   question.yes = CreateFrame("Button", "pfQuestionDialogYes", question, "UIPanelButtonTemplate")
-  ShaguPlates.api.SkinButton(question.yes)
+  ShaguPlatesX.api.SkinButton(question.yes)
   question.yes:SetWidth(100)
   question.yes:SetHeight(22)
   question.yes:SetText(yescap)
@@ -1126,7 +1126,7 @@ function ShaguPlates.api.CreateQuestionDialog(text, yes, no, editbox, onclose)
   end
 
   question.no = CreateFrame("Button", "pfQuestionDialogNo", question, "UIPanelButtonTemplate")
-  ShaguPlates.api.SkinButton(question.no)
+  ShaguPlatesX.api.SkinButton(question.no)
   question.no:SetWidth(100)
   question.no:SetHeight(22)
   question.no:SetText(nocap)
@@ -1143,11 +1143,11 @@ function ShaguPlates.api.CreateQuestionDialog(text, yes, no, editbox, onclose)
 
   question.close = CreateFrame("Button", "pfQuestionDialogClose", question)
   question.close:SetPoint("TOPRIGHT", -border, -border)
-  ShaguPlates.api.CreateBackdrop(question.close)
+  ShaguPlatesX.api.CreateBackdrop(question.close)
   question.close:SetHeight(10)
   question.close:SetWidth(10)
   question.close.texture = question.close:CreateTexture("pfQuestionDialogCloseTex")
-  question.close.texture:SetTexture(ShaguPlates.media["img:close"])
+  question.close.texture:SetTexture(ShaguPlatesX.media["img:close"])
   question.close.texture:ClearAllPoints()
   question.close.texture:SetAllPoints(question.close)
   question.close.texture:SetVertexColor(1,.25,.25,1)
@@ -1156,7 +1156,7 @@ function ShaguPlates.api.CreateQuestionDialog(text, yes, no, editbox, onclose)
   end)
 
   question.close:SetScript("OnLeave", function ()
-    ShaguPlates.api.CreateBackdrop(this)
+    ShaguPlatesX.api.CreateBackdrop(this)
   end)
 
   question.close:SetScript("OnClick", function()
@@ -1187,7 +1187,7 @@ end
 -- 'time'       [number]        time in seconds till the popup will be faded
 -- 'parent'     [frame]         frame which will be used as parent for the dialog (defaults to UIParent)
 -- 'height'     [number]        manual height of the popup (defaults to 100)
-function ShaguPlates.api.CreateInfoBox(text, time, parent, height)
+function ShaguPlatesX.api.CreateInfoBox(text, time, parent, height)
   if not text then return end
   if not time then time = 5 end
   if not parent then parent = UIParent end
@@ -1225,14 +1225,14 @@ function ShaguPlates.api.CreateInfoBox(text, time, parent, height)
     infobox.text:SetFontObject(GameFontWhite)
 
     infobox.timeout = CreateFrame("StatusBar", nil, infobox)
-    infobox.timeout:SetStatusBarTexture(ShaguPlates.media["img:bar"])
+    infobox.timeout:SetStatusBarTexture(ShaguPlatesX.media["img:bar"])
     infobox.timeout:SetStatusBarColor(.3,1,.8,1)
 
     infobox:ClearAllPoints()
     infobox.text:SetAllPoints(infobox)
-    infobox.text:SetFont(ShaguPlates.font_default, 14, "OUTLINE")
+    infobox.text:SetFont(ShaguPlatesX.font_default, 14, "OUTLINE")
 
-    ShaguPlates.api.CreateBackdrop(infobox)
+    ShaguPlatesX.api.CreateBackdrop(infobox)
     infobox:SetPoint("TOP", 0, -25)
 
     infobox.timeout:ClearAllPoints()
@@ -1256,7 +1256,7 @@ function ShaguPlates.api.CreateInfoBox(text, time, parent, height)
   infobox:Show()
 end
 
-function ShaguPlates.api.SkinMoneyInputFrame(frame)
+function ShaguPlatesX.api.SkinMoneyInputFrame(frame)
   local gold_editbox = _G[frame:GetName().."Gold"]
   StripTextures(gold_editbox, true, "BACKGROUND")
   CreateBackdrop(gold_editbox, nil, true)

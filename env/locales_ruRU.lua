@@ -1,6 +1,6 @@
-ShaguPlates_locale["ruRU"] = {}
+ShaguPlatesX_locale["ruRU"] = {}
 
-ShaguPlates_locale["ruRU"]["class"] = {
+ShaguPlatesX_locale["ruRU"]["class"] = {
   ["Чернокнижник"] = "WARLOCK",
   ["Воин"] = "WARRIOR",
   ["Охотник"] = "HUNTER",
@@ -12,18 +12,18 @@ ShaguPlates_locale["ruRU"]["class"] = {
   ["Разбойник"] = "ROGUE",
 }
 
-ShaguPlates_locale["ruRU"]["healduration"] = {
+ShaguPlatesX_locale["ruRU"]["healduration"] = {
   ["Rejuvenation"] = "Увеличивает время действия \"Омоложения\" на 3 сек.",
   ["Renew"] = "Продлевает действие \"Обновления\" на 3 сек.",
 }
 
-ShaguPlates_locale["ruRU"]["bagtypes"] = {
+ShaguPlatesX_locale["ruRU"]["bagtypes"] = {
   ["Колчан"] = "QUIVER",
   ["Сумка душ"] = "SOULBAG",
   ["Сумка"] = "DEFAULT",
 }
 
-ShaguPlates_locale["ruRU"]["itemtypes"] = {
+ShaguPlatesX_locale["ruRU"]["itemtypes"] = {
   ["INVTYPE_WAND"] = "Жезл",
   ["INVTYPE_THROWN"] = "Метательное",
   ["INVTYPE_GUN"] = "Огнестрельное",
@@ -31,17 +31,17 @@ ShaguPlates_locale["ruRU"]["itemtypes"] = {
   ["INVTYPE_PROJECTILE"] = "Боеприпасы",
 }
 
-ShaguPlates_locale["ruRU"]["hunterpaging"] = {
+ShaguPlatesX_locale["ruRU"]["hunterpaging"] = {
   ["MELEE"] = "Подрезать крылья",
   ["RANGED"] = "Чародейский выстрел",
 }
 
-ShaguPlates_locale["ruRU"]["customcast"] = {
+ShaguPlatesX_locale["ruRU"]["customcast"] = {
   ["AIMEDSHOT"] = "Прицельный выстрел",
   ["MULTISHOT"] = "Залп",
 }
 
-ShaguPlates_locale["ruRU"]["critters"] = {
+ShaguPlatesX_locale["ruRU"]["critters"] = {
   'Аспид',
   'Жук',
   'Чердачный нетопырь',
@@ -127,7 +127,7 @@ ShaguPlates_locale["ruRU"]["critters"] = {
   'Огонек',
 }
 
-ShaguPlates_locale["ruRU"]["dyndebuffs"] = {
+ShaguPlatesX_locale["ruRU"]["dyndebuffs"] = {
   ["Rupture"] = "Рваная рана",
   ["Kidney Shot"] = "Удар по почкам",
   ["Rend"] = "Кровопускание",
@@ -137,14 +137,14 @@ ShaguPlates_locale["ruRU"]["dyndebuffs"] = {
   ["Gouge"] = "Парализующий удар",
 }
 
-ShaguPlates_locale["ruRU"]["judgements"] = {
+ShaguPlatesX_locale["ruRU"]["judgements"] = {
   ["Правосудие справедливости"] = true,
   ["Правосудие света"] = true,
   ["Правосудие мудрости"] = true,
   ["Правосудие воина света"] = true,
 }
 
-ShaguPlates_locale["ruRU"]["interrupts"] = {
+ShaguPlatesX_locale["ruRU"]["interrupts"] = {
   ["Удар щитом"] = true,
   ["Зуботычина"] = true,
   ["Пинок"] = true,
@@ -193,14 +193,14 @@ ShaguPlates_locale["ruRU"]["interrupts"] = {
   ["Гоблинская мортира"] = true,
 }
 
-ShaguPlates_locale["ruRU"]["resurrections"] = {
+ShaguPlatesX_locale["ruRU"]["resurrections"] = {
   ["Воскрешение"] = true,
   ["Возрождение"] = true,
   ["Искупление"] = true,
   ["Дух предков"] = true,
 }
 
-ShaguPlates_locale["ruRU"]["spells"] = {
+ShaguPlatesX_locale["ruRU"]["spells"] = {
   [' Пробуждение каменного дворфа - визуальный эффект']={t=1500,icon='Spell_Nature_Earthquake'},
   ['"Отчаянный" снова принимает облик цыпленка"']={t=1000,icon='Ability_Racial_BearForm'},
   ['[PH] Активатор Опоры']={t=5000,icon='Temp'},
@@ -1462,7 +1462,7 @@ ShaguPlates_locale["ruRU"]["spells"] = {
   ['Ящеричья молния']={t=2000,icon='Spell_Nature_Lightning'},
 }
 
-ShaguPlates_locale["ruRU"]["debuffs"] = {
+ShaguPlatesX_locale["ruRU"]["debuffs"] = {
   ['"Дар Артаса"']={[0]=180.0,},
   ['Windsor Dismisses Horse DND']={[0]=55.0,},
   ['[PH] Хрустальное тело - таймер']={[0]=7200.0,},
@@ -2393,9 +2393,9 @@ ShaguPlates_locale["ruRU"]["debuffs"] = {
 }
 
 -- custom entries not detected by DBC extractor
-ShaguPlates_locale["ruRU"]["debuffs"]['Конус холода']={[0]=8.0,} -- Cone of Cold
+ShaguPlatesX_locale["ruRU"]["debuffs"]['Конус холода']={[0]=8.0,} -- Cone of Cold
 
-ShaguPlates_locale["ruRU"]["totems"] = {
+ShaguPlatesX_locale["ruRU"]["totems"] = {
   ["Тотем очищения от болезней"] = "spell_nature_diseasecleansingtotem",
   ["Тотем элементаля земли"] = "spell_nature_earthelemental_totem",
   ["Тотем оков земли"] = "spell_nature_strengthofearthtotem02",
@@ -2424,7 +2424,7 @@ ShaguPlates_locale["ruRU"]["totems"] = {
   ["Тотем гнева воздуха"] = "spell_nature_slowingtotem",
 }
 
-ShaguPlates_locale["ruRU"]["icons"] = {
+ShaguPlatesX_locale["ruRU"]["icons"] = {
   ["Рассеяние болезни"] = "Spell_Nature_NullifyDisease",
   ["Выведение яда"] = "Spell_Nature_NullifyPoison_02",
   ["Устранение эффекта яда"] = "Spell_Nature_NullifyPoison_02",

@@ -1,49 +1,11 @@
 -- skip module initialization on every other client than turtle-wow
 if not TargetHPText or not TargetHPPercText then return end
 
-ShaguPlates:RegisterModule("turtle-wow", "vanilla", function ()
-  -- custom debuff durations
-  L["debuffs"]["Hand of Reckoning"] = {[0]=3.0}
-  L["debuffs"]['Insect Swarm'] = {[0]=18.0}
-  L["debuffs"]['Moonfire'] = {[1]=9.0,[2]=18.0,[3]=18.0,[4]=18.0,[5]=18.0,[6]=18.0,[7]=18.0,[8]=18.0,[9]=18.0,[10]=18.0,[0]=18.0}
-
-  -- add custom spell logic to libdebuff
-  HookScript(libdebuff, "OnEvent", function()
-    if event == "CHAT_MSG_SPELL_SELF_DAMAGE" then
-      -- refresh paladin judgements on holy strike
-      -- taken from: https://github.com/doorknob6/ShaguPlates-turtle/blob/master/modules/debuffs.lua
-      local holystrike = string.find(string.sub(arg1,6,17), "Holy Strike")
-      --arg2 is spell dmg when it hits, nil when it misses
-      if holystrike and arg2 then
-        for seal in L["judgements"] do
-          local name = UnitName("target")
-          local level = UnitLevel("target")
-          if name and libdebuff.objects[name] then
-            if level and
-              libdebuff.objects[name][level] and
-              libdebuff.objects[name][level][seal] then
-              libdebuff:AddEffect(name, level, seal)
-            elseif libdebuff.objects[name][0] and
-              libdebuff.objects[name][0][seal] then
-              libdebuff:AddEffect(name, 0, seal)
-            end
-          end
-        end
-      end
-
-      -- refresh Immolate duration after cast Conflagrate
-      local conflagrate = string.find(string.sub(arg1,6,17), "Conflagrate")
-      --arg2 is spell dmg when it hits, nil when it misses
-      if conflagrate and arg2 then
-        local name = UnitName("target")
-        local level = UnitLevel("target")
-        if libdebuff.objects[name] and libdebuff.objects[name][level] and libdebuff.objects[name][level]["Immolate"] then
-          local duration = libdebuff.objects[name][level]["Immolate"].duration
-          libdebuff:UpdateDuration(name, level, "Immolate", duration - 3)
-        end
-      end
-    end
-  end)
+ShaguPlatesX:RegisterModule("turtle-wow", "vanilla", function ()
+  -- TODO: Implement debuff refresh special cases via UNIT_CASTEVENT:
+  -- 1. Paladin: Refresh judgement debuffs when Holy Strike lands
+  -- 2. Warlock: Reduce Immolate duration by 3s after Conflagrate lands
+  -- See todo.md for details
 
   -- turtle wow totemic recall clear totem indicators
   local _, class = UnitClass("player")
@@ -78,7 +40,7 @@ ShaguPlates:RegisterModule("turtle-wow", "vanilla", function ()
       GameMenuButtonOptions:SetPoint("TOP", GameMenuButtonShop, "BOTTOM", 0, -16)
 
       -- apply ShaguPlates skin to the new shop button
-      if ShaguPlates.skin["Game Menu"] and ShaguPlates_config["disabled"]["skin_Game Menu"] ~= "1" then
+      if ShaguPlatesX.skin["Game Menu"] and ShaguPlatesX_config["disabled"]["skin_Game Menu"] ~= "1" then
         local font = GameMenuButtonShop:GetFontString()
         font:SetTextColor(1,1,1,1)
         SkinButton(GameMenuButtonShop)
@@ -86,13 +48,13 @@ ShaguPlates:RegisterModule("turtle-wow", "vanilla", function ()
     end
 
     -- add druids tree of life and fast travel form to autoshift
-    if ShaguPlates.autoshift then
-      table.insert(ShaguPlates.autoshift.shapeshifts, "ability_druid_treeoflife")
-      table.insert(ShaguPlates.autoshift.shapeshifts, "ability_druid_stagform")
+    if ShaguPlatesX.autoshift then
+      table.insert(ShaguPlatesX.autoshift.shapeshifts, "ability_druid_treeoflife")
+      table.insert(ShaguPlatesX.autoshift.shapeshifts, "ability_druid_stagform")
     end
 
     -- apply chat styles to hardcore chat
-    if ShaguPlates.chat and ShaguPlates.chat.left then
+    if ShaguPlatesX.chat and ShaguPlatesX.chat.left then
       -- read and parse chat bracket settings
       local left = "|r" .. string.sub(C.chat.text.bracket, 1, 1)
       local right = string.sub(C.chat.text.bracket, 2, 2) .. "|r"
@@ -101,18 +63,18 @@ ShaguPlates:RegisterModule("turtle-wow", "vanilla", function ()
     end
 
     -- disable some new spells from tracking frame
-    if ShaguPlates.tracking then
-      ShaguPlates.tracking.invalidSpells["Earthshaker Slam"] = true
+    if ShaguPlatesX.tracking then
+      ShaguPlatesX.tracking.invalidSpells["Earthshaker Slam"] = true
 
       -- reload spells and menu
-      ShaguPlates.tracking:RefreshSpells()
-      ShaguPlates.tracking:RefreshMenu()
+      ShaguPlatesX.tracking:RefreshSpells()
+      ShaguPlatesX.tracking:RefreshMenu()
     end
 
     -- disable turtle wow's map window implementation
-    if ShaguPlates.map and not Cartographer and not METAMAP_TITLE then
+    if ShaguPlatesX.map and not Cartographer and not METAMAP_TITLE then
       _G.WorldMapFrame_Maximize()
-      ShaguPlates.map.loader:GetScript("OnEvent")()
+      ShaguPlatesX.map.loader:GetScript("OnEvent")()
 
       _G.WorldMapFrame_Minimize = function() return end
       _G.WorldMapFrame_Maximize = function() return end
@@ -127,7 +89,7 @@ ShaguPlates:RegisterModule("turtle-wow", "vanilla", function ()
       WorldMapFrameTitle:Hide()
     end
 
-    if ShaguPlates.panel and pfPanelWidgetClock then
+    if ShaguPlatesX.panel and pfPanelWidgetClock then
       pfPanelWidgetClock.Tooltip = function()
         GameTooltip:ClearLines()
         GameTooltip_SetDefaultAnchor(GameTooltip, this)
@@ -183,7 +145,7 @@ ShaguPlates:RegisterModule("turtle-wow", "vanilla", function ()
 
     -- skin title dropdown menu
     -- taken from: https://github.com/doorknob6/ShaguPlates-turtle/blob/master/skins/turtle/character.lua
-    if TWTitles and ShaguPlates.skin["Character"] and ShaguPlates_config["disabled"]["skin_Character"] ~= "1" then
+    if TWTitles and ShaguPlatesX.skin["Character"] and ShaguPlatesX_config["disabled"]["skin_Character"] ~= "1" then
       CharacterLevelText:SetPoint("TOP", CharacterNameText, "BOTTOM", 0, -2)
       SkinDropDown(TWTitles)
       TWTitles:SetPoint("TOP", CharacterGuildText, "BOTTOM", 0, -2)
@@ -192,62 +154,8 @@ ShaguPlates:RegisterModule("turtle-wow", "vanilla", function ()
     end
   end)
 
-  -- add Trueshot recognition to to custom castbars.
-  if not libcast.customcast["steadyshot"] then
-    -- add trueshot to ShaguPlates's custom casts
-    local player = UnitName("player")
-
-    -- add locales
-    ShaguPlates_locale["enUS"]["customcast"]["TRUESHOT"] = "Steady Shot"
-    ShaguPlates_locale["zhCN"]["customcast"]["TRUESHOT"] = "稳固射击"
-    local trueshot = L["customcast"]["TRUESHOT"] or ""
-
-    libcast.customcast[strlower(trueshot)] = function(begin, duration)
-      if begin then
-        -- cast time is 1sec, however it takes 1.4sec to fire in average
-        local duration = duration or 1400
-
-        for i=1,32 do
-          if UnitBuff("player", i) == "Interface\\Icons\\Racial_Troll_Berserk" then
-            local berserk = 0.3
-            if((UnitHealth("player")/UnitHealthMax("player")) >= 0.40) then
-              berserk = (1.30 - (UnitHealth("player") / UnitHealthMax("player"))) / 3
-            end
-
-            duration = duration / (1 + berserk)
-          elseif UnitBuff("player", i) == "Interface\\Icons\\Ability_Hunter_RunningShot" then
-            duration = duration / 1.4
-          elseif UnitBuff("player", i) == "Interface\\Icons\\Ability_Warrior_InnerRage" then
-            duration = duration / 1.3
-          elseif UnitBuff("player", i) == "Interface\\Icons\\Inv_Trinket_Naxxramas04" then
-            duration = duration / 1.2
-          end
-        end
-
-        local _,_, lag = GetNetStats()
-        local start = GetTime() + lag/1000
-
-        -- add cast action to the database
-        libcast.db[player].cast = trueshot
-        libcast.db[player].rank = lastrank
-        libcast.db[player].start = start
-        libcast.db[player].casttime = duration
-        libcast.db[player].icon = "Interface\\Icons\\Ability_hunter_steadyshot"
-        libcast.db[player].channel = nil
-      else
-        -- remove cast action to the database
-        libcast.db[player].cast = nil
-        libcast.db[player].rank = nil
-        libcast.db[player].start = nil
-        libcast.db[player].casttime = nil
-        libcast.db[player].icon = nil
-        libcast.db[player].channel = nil
-      end
-    end
-  end
-
   -- add skin to twow's talent inspect frame
-  if ShaguPlates.skin["Inspect"] and ShaguPlates_config["disabled"]["skin_Inspect"] ~= "1" then
+  if not (ShaguPlatesX_config["disabled"] and ShaguPlatesX_config["disabled"]["skin_Inspect"]  == "1") then
     local initialized = false
 
     HookAddonOrVariable("Blizzard_InspectUI", function()
@@ -279,7 +187,7 @@ ShaguPlates:RegisterModule("turtle-wow", "vanilla", function ()
           if talent then
             StripTextures(talent)
             SkinButton(talent, nil, nil, nil, _G["TWTalentFrameTalent" .. i .. "IconTexture"])
-            _G["TWTalentFrameTalent" .. i .. "Rank"]:SetFont(ShaguPlates.font_default, C.global.font_size, "OUTLINE")
+            _G["TWTalentFrameTalent" .. i .. "Rank"]:SetFont(ShaguPlatesX.font_default, C.global.font_size, "OUTLINE")
           end
         end
 
@@ -291,7 +199,7 @@ ShaguPlates:RegisterModule("turtle-wow", "vanilla", function ()
 
   -- rearrange twow's profession window additions
   HookAddonOrVariable("Blizzard_TradeSkillUI", function()
-    if TradeSkillSkillCheckButton and ShaguPlates.skin["Profession"] and ShaguPlates_config["disabled"]["skin_Profession"] ~= "1" then
+    if TradeSkillSkillCheckButton and ShaguPlatesX.skin["Profession"] and ShaguPlatesX_config["disabled"]["skin_Profession"] ~= "1" then
       SkinCheckbox(TradeSkillSkillCheckButton)
       TradeSkillSkillCheckButton:SetWidth(24)
       TradeSkillSkillCheckButton:SetHeight(24)

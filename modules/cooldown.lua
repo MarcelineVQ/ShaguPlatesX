@@ -1,4 +1,4 @@
-ShaguPlates:RegisterModule("cooldown", "vanilla:tbc", function ()
+ShaguPlatesX:RegisterModule("cooldown", "vanilla:tbc", function ()
   -- cache values
   local lowcolor    = {strsplit(",", C.appearance.cd.lowcolor)}
   local normalcolor = {strsplit(",", C.appearance.cd.normalcolor)}
@@ -58,7 +58,7 @@ ShaguPlates:RegisterModule("cooldown", "vanilla:tbc", function ()
   local function pfCreateCoolDown(cooldown, start, duration)
     cooldown.pfCooldownText = CreateFrame("Frame", "pfCooldownFrame", cooldown:GetParent())
     cooldown.pfCooldownText:SetAllPoints(cooldown)
-    cooldown.pfCooldownText:SetFrameLevel(cooldown:GetParent():GetFrameLevel() + 2)
+    cooldown.pfCooldownText:SetFrameLevel(cooldown:GetParent():GetFrameLevel() + 1)
     cooldown.pfCooldownText.text = cooldown.pfCooldownText:CreateFontString("pfCooldownFrameText", "OVERLAY")
 
     if not cooldown.pfCooldownType then
@@ -134,7 +134,7 @@ ShaguPlates:RegisterModule("cooldown", "vanilla:tbc", function ()
     end
   end
 
-  if ShaguPlates.expansion == "vanilla" then
+  if ShaguPlatesX.expansion == "vanilla" then
     -- vanilla does not have a cooldown frame type, so we hook the
     -- regular SetTimer function that each one is calling.
     hooksecurefunc("CooldownFrame_SetTimer", SetCooldown)

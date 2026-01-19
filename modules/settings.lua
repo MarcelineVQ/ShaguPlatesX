@@ -1,4 +1,4 @@
-ShaguPlates:RegisterModule("gui", "vanilla:tbc", function ()
+ShaguPlatesX:RegisterModule("gui", "vanilla:tbc", function ()
   local Reload, U, CreateConfig, CreateTabFrame, CreateArea, CreateGUIEntry, EntryUpdate
 
   -- "searchDB" gets populated when CreateConfig is called. The table holds
@@ -11,7 +11,7 @@ ShaguPlates:RegisterModule("gui", "vanilla:tbc", function ()
   do -- Core Functions/Variables
     function Reload()
       CreateQuestionDialog(T["Some settings need to reload the UI to take effect.\nDo you want to reload now?"], function()
-        ShaguPlates.gui.settingChanged = nil
+        ShaguPlatesX.gui.settingChanged = nil
         ReloadUI()
       end)
     end
@@ -20,8 +20,8 @@ ShaguPlates:RegisterModule("gui", "vanilla:tbc", function ()
       local ufunc
       if ShaguPlates[key] and ShaguPlates[key].UpdateConfig then
         ufunc = function() return ShaguPlates[key]:UpdateConfig() end
-      elseif ShaguPlates.uf and ShaguPlates.uf[key] and ShaguPlates.uf[key].UpdateConfig then
-        ufunc = function() return ShaguPlates.uf[key]:UpdateConfig() end
+      elseif ShaguPlatesX.uf and ShaguPlatesX.uf[key] and ShaguPlatesX.uf[key].UpdateConfig then
+        ufunc = function() return ShaguPlatesX.uf[key]:UpdateConfig() end
       end
       if ufunc then
         rawset(tab,key,ufunc)
@@ -50,8 +50,8 @@ ShaguPlates:RegisterModule("gui", "vanilla:tbc", function ()
     end
 
     function CreateConfig(ufunc, caption, category, config, widget, values, skip, named, type, expansion)
-      local disabled = expansion and not strfind(expansion, ShaguPlates.expansion)
-      if disabled and ShaguPlates_config.gui.showdisabled == "0" then return end
+      local disabled = expansion and not strfind(expansion, ShaguPlatesX.expansion)
+      if disabled and ShaguPlatesX_config.gui.showdisabled == "0" then return end
 
       -- this object placement
       if this.objectCount == nil then
@@ -95,7 +95,7 @@ ShaguPlates:RegisterModule("gui", "vanilla:tbc", function ()
 
         -- caption
         frame.caption = frame:CreateFontString("Status", "LOW", "GameFontWhite")
-        frame.caption:SetFont(ShaguPlates.font_default, C.global.font_size)
+        frame.caption:SetFont(ShaguPlatesX.font_default, C.global.font_size)
         frame.caption:SetPoint("LEFT", frame, "LEFT", 3, 1)
         frame.caption:SetJustifyH("LEFT")
         frame.caption:SetText(caption)
@@ -187,7 +187,7 @@ ShaguPlates:RegisterModule("gui", "vanilla:tbc", function ()
 
             if not this:GetParent():IsShown() then
               category[config] = r .. "," .. g .. "," .. b .. "," .. a
-              if ufunc then ufunc() else ShaguPlates.gui.settingChanged = true end
+              if ufunc then ufunc() else ShaguPlatesX.gui.settingChanged = true end
             end
           end
 
@@ -253,7 +253,7 @@ ShaguPlates:RegisterModule("gui", "vanilla:tbc", function ()
           if ( type and type ~= "number" ) or tonumber(this:GetText()) then
             if this:GetText() ~= this:GetParent().category[this:GetParent().config] then
               this:GetParent().category[this:GetParent().config] = this:GetText()
-              if ufunc then ufunc() else ShaguPlates.gui.settingChanged = true end
+              if ufunc then ufunc() else ShaguPlatesX.gui.settingChanged = true end
             end
             this:SetTextColor(1,1,1,1)
           else
@@ -303,7 +303,7 @@ ShaguPlates:RegisterModule("gui", "vanilla:tbc", function ()
             this:GetParent().category[this:GetParent().config] = "0"
           end
 
-          if ufunc then ufunc() else ShaguPlates.gui.settingChanged = true end
+          if ufunc then ufunc() else ShaguPlatesX.gui.settingChanged = true end
         end)
 
         if category[config] == "1" then frame.input:SetChecked() end
@@ -318,7 +318,7 @@ ShaguPlates:RegisterModule("gui", "vanilla:tbc", function ()
       if widget == "dropdown" and values then
         frame.input = CreateDropDownButton(nil, frame)
         frame.input:SetBackdrop(nil)
-        frame.input.menuframe:SetParent(ShaguPlates.gui)
+        frame.input.menuframe:SetParent(ShaguPlatesX.gui)
 
         frame.input:SetPoint("RIGHT", frame, "RIGHT", 0, 0)
         frame.input:SetWidth(180)
@@ -335,7 +335,7 @@ ShaguPlates:RegisterModule("gui", "vanilla:tbc", function ()
             entry.func = function()
               if category[config] ~= value then
                 category[config] = value
-                if ufunc then ufunc() else ShaguPlates.gui.settingChanged = true end
+                if ufunc then ufunc() else ShaguPlatesX.gui.settingChanged = true end
               end
             end
 
@@ -369,7 +369,7 @@ ShaguPlates:RegisterModule("gui", "vanilla:tbc", function ()
             if id ~= sel then newconf = newconf .. "#" .. val end
           end
           category[config] = newconf
-          if ufunc then ufunc() else ShaguPlates.gui.settingChanged = true end
+          if ufunc then ufunc() else ShaguPlatesX.gui.settingChanged = true end
           frame.input:UpdateMenu()
         end)
 
@@ -384,14 +384,14 @@ ShaguPlates:RegisterModule("gui", "vanilla:tbc", function ()
         frame.add:SetScript("OnClick", function()
           CreateQuestionDialog(T["New entry:"], function()
             category[config] = category[config] .. "#" .. this:GetParent().input:GetText()
-            if ufunc then ufunc() else ShaguPlates.gui.settingChanged = true end
+            if ufunc then ufunc() else ShaguPlatesX.gui.settingChanged = true end
             frame.input:UpdateMenu()
           end, false, true)
         end)
 
         frame.input = CreateDropDownButton(nil, frame)
         frame.input:SetBackdrop(nil)
-        frame.input.menuframe:SetParent(ShaguPlates.gui)
+        frame.input.menuframe:SetParent(ShaguPlatesX.gui)
         frame.input:SetPoint("RIGHT", frame.add, "LEFT", -2, 0)
         frame.input:SetWidth(140)
         frame.input:SetMenu(function()
@@ -438,7 +438,7 @@ ShaguPlates:RegisterModule("gui", "vanilla:tbc", function ()
 
       -- text
       f.text = f:CreateFontString(nil, "LOW", "GameFontWhite")
-      f.text:SetFont(ShaguPlates.font_default, C.global.font_size)
+      f.text:SetFont(ShaguPlatesX.font_default, C.global.font_size)
       f.text:SetAllPoints()
       f.text:SetText(title)
 
@@ -498,160 +498,160 @@ ShaguPlates:RegisterModule("gui", "vanilla:tbc", function ()
 
     function CreateGUIEntry(parent, title, populate)
       -- create main menu if not yet exists
-      if not ShaguPlates.gui.frames[parent] then
-        ShaguPlates.gui.frames[parent] = CreateTabFrame(ShaguPlates.gui.frames, parent)
+      if not ShaguPlatesX.gui.frames[parent] then
+        ShaguPlatesX.gui.frames[parent] = CreateTabFrame(ShaguPlatesX.gui.frames, parent)
         if title then
-          ShaguPlates.gui.frames[parent].area = CreateArea(ShaguPlates.gui.frames, parent, nil)
+          ShaguPlatesX.gui.frames[parent].area = CreateArea(ShaguPlatesX.gui.frames, parent, nil)
         else
           -- populate area when no submenus are given
-          ShaguPlates.gui.frames[parent].area = CreateArea(ShaguPlates.gui.frames, parent, populate)
+          ShaguPlatesX.gui.frames[parent].area = CreateArea(ShaguPlatesX.gui.frames, parent, populate)
           return
         end
       end
 
       -- create submenus when title was given
-      if title and not ShaguPlates.gui.frames[parent][title] then
-        ShaguPlates.gui.frames[parent][title] = CreateTabFrame(ShaguPlates.gui.frames[parent], title)
-        ShaguPlates.gui.frames[parent][title].area = CreateArea(ShaguPlates.gui.frames[parent], title, populate)
+      if title and not ShaguPlatesX.gui.frames[parent][title] then
+        ShaguPlatesX.gui.frames[parent][title] = CreateTabFrame(ShaguPlatesX.gui.frames[parent], title)
+        ShaguPlatesX.gui.frames[parent][title].area = CreateArea(ShaguPlatesX.gui.frames[parent], title, populate)
       end
     end
   end
 
   do -- GUI Frame
     -- main frame
-    ShaguPlates.gui = CreateFrame("Frame", "pfConfigGUI", UIParent)
-    ShaguPlates.gui:SetMovable(true)
-    ShaguPlates.gui:EnableMouse(true)
-    ShaguPlates.gui:SetWidth(512)
-    ShaguPlates.gui:SetHeight(512)
-    ShaguPlates.gui:SetFrameStrata("DIALOG")
-    ShaguPlates.gui:SetPoint("CENTER", 0, 0)
-    ShaguPlates.gui:Hide()
+    ShaguPlatesX.gui = CreateFrame("Frame", "pfConfigGUI", UIParent)
+    ShaguPlatesX.gui:SetMovable(true)
+    ShaguPlatesX.gui:EnableMouse(true)
+    ShaguPlatesX.gui:SetWidth(512)
+    ShaguPlatesX.gui:SetHeight(512)
+    ShaguPlatesX.gui:SetFrameStrata("DIALOG")
+    ShaguPlatesX.gui:SetPoint("CENTER", 0, 0)
+    ShaguPlatesX.gui:Hide()
 
-    ShaguPlates.gui:SetScript("OnShow",function()
-      ShaguPlates.gui.settingChanged = ShaguPlates.gui.delaySettingChanged
-      ShaguPlates.gui.delaySettingChanged = nil
+    ShaguPlatesX.gui:SetScript("OnShow",function()
+      ShaguPlatesX.gui.settingChanged = ShaguPlatesX.gui.delaySettingChanged
+      ShaguPlatesX.gui.delaySettingChanged = nil
 
       -- exit unlock mode
-      if ShaguPlates.unlock and ShaguPlates.unlock:IsShown() then
-        ShaguPlates.unlock:Hide()
+      if ShaguPlatesX.unlock and ShaguPlatesX.unlock:IsShown() then
+        ShaguPlatesX.unlock:Hide()
       end
 
       -- exit hoverbind mode
-      if ShaguPlates.hoverbind and ShaguPlates.hoverbind:IsShown() then
-        ShaguPlates.hoverbind:Hide()
+      if ShaguPlatesX.hoverbind and ShaguPlatesX.hoverbind:IsShown() then
+        ShaguPlatesX.hoverbind:Hide()
       end
     end)
 
-    ShaguPlates.gui:SetScript("OnHide",function()
+    ShaguPlatesX.gui:SetScript("OnHide",function()
       if ColorPickerFrame and ColorPickerFrame:IsShown() then
         ColorPickerFrame:Hide()
       end
 
-      if ShaguPlates.gui.settingChanged then
-        ShaguPlates.gui:Reload()
+      if ShaguPlatesX.gui.settingChanged then
+        ShaguPlatesX.gui:Reload()
       end
-      ShaguPlates.gui:Hide()
+      ShaguPlatesX.gui:Hide()
     end)
 
-    ShaguPlates.gui:SetScript("OnMouseDown",function()
+    ShaguPlatesX.gui:SetScript("OnMouseDown",function()
       this:StartMoving()
     end)
 
-    ShaguPlates.gui:SetScript("OnMouseUp",function()
+    ShaguPlatesX.gui:SetScript("OnMouseUp",function()
       this:StopMovingOrSizing()
     end)
 
-    CreateBackdrop(ShaguPlates.gui, nil, true, .85)
-    CreateBackdropShadow(ShaguPlates.gui)
+    CreateBackdrop(ShaguPlatesX.gui, nil, true, .85)
+    CreateBackdropShadow(ShaguPlatesX.gui)
     table.insert(UISpecialFrames, "pfConfigGUI")
 
     -- make some locals available to thirdparty
-    ShaguPlates.gui.Reload = Reload
-    ShaguPlates.gui.CreateConfig = CreateConfig
-    ShaguPlates.gui.CreateGUIEntry = CreateGUIEntry
-    ShaguPlates.gui.UpdaterFunctions = U
+    ShaguPlatesX.gui.Reload = Reload
+    ShaguPlatesX.gui.CreateConfig = CreateConfig
+    ShaguPlatesX.gui.CreateGUIEntry = CreateGUIEntry
+    ShaguPlatesX.gui.UpdaterFunctions = U
 
     -- decorations
-    ShaguPlates.gui.title = ShaguPlates.gui:CreateFontString("Status", "LOW", "GameFontNormal")
-    ShaguPlates.gui.title:SetFontObject(GameFontWhite)
-    ShaguPlates.gui.title:SetPoint("TOPLEFT", ShaguPlates.gui, "TOPLEFT", 8, -8)
-    ShaguPlates.gui.title:SetJustifyH("LEFT")
-    ShaguPlates.gui.title:SetFont(ShaguPlates.media["Fonts\\FRIZQT__.TTF"], 12)
-    ShaguPlates.gui.title:SetText("|cffffcc00Shagu|rPlates")
+    ShaguPlatesX.gui.title = ShaguPlatesX.gui:CreateFontString("Status", "LOW", "GameFontNormal")
+    ShaguPlatesX.gui.title:SetFontObject(GameFontWhite)
+    ShaguPlatesX.gui.title:SetPoint("TOPLEFT", ShaguPlatesX.gui, "TOPLEFT", 8, -8)
+    ShaguPlatesX.gui.title:SetJustifyH("LEFT")
+    ShaguPlatesX.gui.title:SetFont(ShaguPlatesX.media["Fonts\\FRIZQT__.TTF"], 12)
+    ShaguPlatesX.gui.title:SetText("|cffffcc00Shagu|rPlates")
 
-    ShaguPlates.gui.version = ShaguPlates.gui:CreateFontString("Status", "LOW", "GameFontNormal")
-    ShaguPlates.gui.version:SetFontObject(GameFontWhite)
-    ShaguPlates.gui.version:SetPoint("LEFT", ShaguPlates.gui.title, "RIGHT", 0, 0)
-    ShaguPlates.gui.version:SetJustifyH("LEFT")
-    ShaguPlates.gui.version:SetFont(ShaguPlates.media["Fonts\\FRIZQT__.TTF"], 10)
-    ShaguPlates.gui.version:SetText("|cff555555[|r" .. ShaguPlates.version.string.. "|cff555555]|r")
+    ShaguPlatesX.gui.version = ShaguPlatesX.gui:CreateFontString("Status", "LOW", "GameFontNormal")
+    ShaguPlatesX.gui.version:SetFontObject(GameFontWhite)
+    ShaguPlatesX.gui.version:SetPoint("LEFT", ShaguPlatesX.gui.title, "RIGHT", 0, 0)
+    ShaguPlatesX.gui.version:SetJustifyH("LEFT")
+    ShaguPlatesX.gui.version:SetFont(ShaguPlatesX.media["Fonts\\FRIZQT__.TTF"], 10)
+    ShaguPlatesX.gui.version:SetText("|cff555555[|r" .. ShaguPlatesX.version.string.. "|cff555555]|r")
 
-    ShaguPlates.gui.close = CreateFrame("Button", "pfQuestionDialogClose", ShaguPlates.gui)
-    ShaguPlates.gui.close:SetPoint("TOPRIGHT", -7, -7)
-    ShaguPlates.api.CreateBackdrop(ShaguPlates.gui.close)
-    ShaguPlates.gui.close:SetHeight(10)
-    ShaguPlates.gui.close:SetWidth(10)
-    ShaguPlates.gui.close.texture = ShaguPlates.gui.close:CreateTexture("pfQuestionDialogCloseTex")
-    ShaguPlates.gui.close.texture:SetTexture(ShaguPlates.media["img:close"])
-    ShaguPlates.gui.close.texture:ClearAllPoints()
-    ShaguPlates.gui.close.texture:SetAllPoints(ShaguPlates.gui.close)
-    ShaguPlates.gui.close.texture:SetVertexColor(1,.25,.25,1)
-    ShaguPlates.gui.close:SetScript("OnEnter", function ()
+    ShaguPlatesX.gui.close = CreateFrame("Button", "pfQuestionDialogClose", ShaguPlatesX.gui)
+    ShaguPlatesX.gui.close:SetPoint("TOPRIGHT", -7, -7)
+    ShaguPlatesX.api.CreateBackdrop(ShaguPlatesX.gui.close)
+    ShaguPlatesX.gui.close:SetHeight(10)
+    ShaguPlatesX.gui.close:SetWidth(10)
+    ShaguPlatesX.gui.close.texture = ShaguPlatesX.gui.close:CreateTexture("pfQuestionDialogCloseTex")
+    ShaguPlatesX.gui.close.texture:SetTexture(ShaguPlatesX.media["img:close"])
+    ShaguPlatesX.gui.close.texture:ClearAllPoints()
+    ShaguPlatesX.gui.close.texture:SetAllPoints(ShaguPlatesX.gui.close)
+    ShaguPlatesX.gui.close.texture:SetVertexColor(1,.25,.25,1)
+    ShaguPlatesX.gui.close:SetScript("OnEnter", function ()
       this.backdrop:SetBackdropBorderColor(1,.25,.25,1)
     end)
 
-    ShaguPlates.gui.close:SetScript("OnLeave", function ()
-      ShaguPlates.api.CreateBackdrop(this)
+    ShaguPlatesX.gui.close:SetScript("OnLeave", function ()
+      ShaguPlatesX.api.CreateBackdrop(this)
     end)
 
-    ShaguPlates.gui.close:SetScript("OnClick", function()
+    ShaguPlatesX.gui.close:SetScript("OnClick", function()
      this:GetParent():Hide()
     end)
 
     -- root layer
-    ShaguPlates.gui.frames = {}
-    ShaguPlates.gui.frames.area = CreateFrame("Frame", nil, ShaguPlates.gui)
-    ShaguPlates.gui.frames.area:SetPoint("TOPLEFT", 7, -25)
-    ShaguPlates.gui.frames.area:SetPoint("BOTTOMRIGHT", -7, 37)
-    CreateBackdrop(ShaguPlates.gui.frames.area)
+    ShaguPlatesX.gui.frames = {}
+    ShaguPlatesX.gui.frames.area = CreateFrame("Frame", nil, ShaguPlatesX.gui)
+    ShaguPlatesX.gui.frames.area:SetPoint("TOPLEFT", 7, -25)
+    ShaguPlatesX.gui.frames.area:SetPoint("BOTTOMRIGHT", -7, 37)
+    CreateBackdrop(ShaguPlatesX.gui.frames.area)
 
     -- reset
-    ShaguPlates.gui.reset = CreateFrame("Button", nil, ShaguPlates.gui)
-    ShaguPlates.gui.reset:SetPoint("TOPLEFT", ShaguPlates.gui.frames.area.backdrop, "BOTTOMLEFT", 0, -5)
-    ShaguPlates.gui.reset:SetWidth(150)
-    ShaguPlates.gui.reset:SetHeight(25)
-    ShaguPlates.gui.reset:SetText(T["Load Defaults"])
-    ShaguPlates.gui.reset:SetScript("OnClick", function()
+    ShaguPlatesX.gui.reset = CreateFrame("Button", nil, ShaguPlatesX.gui)
+    ShaguPlatesX.gui.reset:SetPoint("TOPLEFT", ShaguPlatesX.gui.frames.area.backdrop, "BOTTOMLEFT", 0, -5)
+    ShaguPlatesX.gui.reset:SetWidth(150)
+    ShaguPlatesX.gui.reset:SetHeight(25)
+    ShaguPlatesX.gui.reset:SetText(T["Load Defaults"])
+    ShaguPlatesX.gui.reset:SetScript("OnClick", function()
       CreateQuestionDialog(T["Do you really want to reset |cffffaaaaEVERYTHING|r?"],
         function()
-          _G["ShaguPlates_init"] = {}
-          _G["ShaguPlates_config"] = {}
-          _G["ShaguPlates_playerDB"] = {}
-          _G["ShaguPlates_profiles"] = {}
-          _G["ShaguPlates_cache"] = {}
-          ShaguPlates:LoadConfig()
+          _G["ShaguPlatesX_init"] = {}
+          _G["ShaguPlatesX_config"] = {}
+          _G["ShaguPlatesX_playerDB"] = {}
+          _G["ShaguPlatesX_profiles"] = {}
+          _G["ShaguPlatesX_cache"] = {}
+          ShaguPlatesX:LoadConfig()
           this:GetParent():Hide()
-          ShaguPlates.gui:Reload()
+          ShaguPlatesX.gui:Reload()
         end)
     end)
-    SkinButton(ShaguPlates.gui.reset)
+    SkinButton(ShaguPlatesX.gui.reset)
 
     -- save
-    ShaguPlates.gui.save = CreateFrame("Button", nil, ShaguPlates.gui)
-    ShaguPlates.gui.save:SetPoint("TOPRIGHT", ShaguPlates.gui.frames.area.backdrop, "BOTTOMRIGHT", 0, -5)
-    ShaguPlates.gui.save:SetWidth(150)
-    ShaguPlates.gui.save:SetHeight(25)
-    ShaguPlates.gui.save:SetText(T["Save & Reload"])
-    ShaguPlates.gui.save:SetScript("OnClick", function()
-      ShaguPlates.gui:Hide()
+    ShaguPlatesX.gui.save = CreateFrame("Button", nil, ShaguPlatesX.gui)
+    ShaguPlatesX.gui.save:SetPoint("TOPRIGHT", ShaguPlatesX.gui.frames.area.backdrop, "BOTTOMRIGHT", 0, -5)
+    ShaguPlatesX.gui.save:SetWidth(150)
+    ShaguPlatesX.gui.save:SetHeight(25)
+    ShaguPlatesX.gui.save:SetText(T["Save & Reload"])
+    ShaguPlatesX.gui.save:SetScript("OnClick", function()
+      ShaguPlatesX.gui:Hide()
     end)
-    SkinButton(ShaguPlates.gui.save)
+    SkinButton(ShaguPlatesX.gui.save)
   end
 
   do -- DropDown Menus
     -- [[ Static Dropdowns ]] --
-    ShaguPlates.gui.dropdowns = {
+    ShaguPlatesX.gui.dropdowns = {
       ["languages"] = {
         -- "deDE:German",
         -- "enGB:British English",
@@ -971,56 +971,61 @@ ShaguPlates:RegisterModule("gui", "vanilla:tbc", function ()
 
     -- add locale dependent client fonts to the list
     if GetLocale() == "enUS" or GetLocale() == "frFR" or GetLocale() == "deDE" or GetLocale() == "ruRU" then
-      table.insert(ShaguPlates.gui.dropdowns.fonts, "Fonts\\ARIALN.TTF:ARIALN")
-      table.insert(ShaguPlates.gui.dropdowns.fonts, "Fonts\\FRIZQT__.TTF:FRIZQT")
-      table.insert(ShaguPlates.gui.dropdowns.fonts, "Fonts\\MORPHEUS.TTF:MORPHEUS")
-      table.insert(ShaguPlates.gui.dropdowns.fonts, "Fonts\\SKURRI.TTF:SKURRI")
+      table.insert(ShaguPlatesX.gui.dropdowns.fonts, "Fonts\\ARIALN.TTF:ARIALN")
+      table.insert(ShaguPlatesX.gui.dropdowns.fonts, "Fonts\\FRIZQT__.TTF:FRIZQT")
+      table.insert(ShaguPlatesX.gui.dropdowns.fonts, "Fonts\\MORPHEUS.TTF:MORPHEUS")
+      table.insert(ShaguPlatesX.gui.dropdowns.fonts, "Fonts\\SKURRI.TTF:SKURRI")
     elseif GetLocale() == "koKR" then
-      table.insert(ShaguPlates.gui.dropdowns.fonts, "Fonts\\2002.TTF:2002")
-      table.insert(ShaguPlates.gui.dropdowns.fonts, "Fonts\\2002B.TTF:2002B")
-      table.insert(ShaguPlates.gui.dropdowns.fonts, "Fonts\\ARIALN.TTF:ARIALN")
-      table.insert(ShaguPlates.gui.dropdowns.fonts, "Fonts\\FRIZQT__.TTF:FRIZQT")
-      table.insert(ShaguPlates.gui.dropdowns.fonts, "Fonts\\K_Damage.TTF:K_Damage")
-      table.insert(ShaguPlates.gui.dropdowns.fonts, "Fonts\\K_Pagetext.TTF:K_Pagetext")
+      table.insert(ShaguPlatesX.gui.dropdowns.fonts, "Fonts\\2002.TTF:2002")
+      table.insert(ShaguPlatesX.gui.dropdowns.fonts, "Fonts\\2002B.TTF:2002B")
+      table.insert(ShaguPlatesX.gui.dropdowns.fonts, "Fonts\\ARIALN.TTF:ARIALN")
+      table.insert(ShaguPlatesX.gui.dropdowns.fonts, "Fonts\\FRIZQT__.TTF:FRIZQT")
+      table.insert(ShaguPlatesX.gui.dropdowns.fonts, "Fonts\\K_Damage.TTF:K_Damage")
+      table.insert(ShaguPlatesX.gui.dropdowns.fonts, "Fonts\\K_Pagetext.TTF:K_Pagetext")
     elseif GetLocale() == "zhCN" then
-      table.insert(ShaguPlates.gui.dropdowns.fonts, "Fonts\\ARIALN.TTF:ARIALN")
-      table.insert(ShaguPlates.gui.dropdowns.fonts, "Fonts\\FRIZQT__.TTF:FRIZQT")
-      table.insert(ShaguPlates.gui.dropdowns.fonts, "Fonts\\FZBWJW.TTF:FZBWJW")
-      table.insert(ShaguPlates.gui.dropdowns.fonts, "Fonts\\FZJZJW.TTF:FZJZJW")
-      table.insert(ShaguPlates.gui.dropdowns.fonts, "Fonts\\FZLBJW.TTF:FZLBJW")
-      table.insert(ShaguPlates.gui.dropdowns.fonts, "Fonts\\FZXHJW.TTF:FZXHJW")
-      table.insert(ShaguPlates.gui.dropdowns.fonts, "Fonts\\FZXHLJW.TTF:FZXHLJW")
+      table.insert(ShaguPlatesX.gui.dropdowns.fonts, "Fonts\\ARIALN.TTF:ARIALN")
+      table.insert(ShaguPlatesX.gui.dropdowns.fonts, "Fonts\\FRIZQT__.TTF:FRIZQT")
+      table.insert(ShaguPlatesX.gui.dropdowns.fonts, "Fonts\\FZBWJW.TTF:FZBWJW")
+      table.insert(ShaguPlatesX.gui.dropdowns.fonts, "Fonts\\FZJZJW.TTF:FZJZJW")
+      table.insert(ShaguPlatesX.gui.dropdowns.fonts, "Fonts\\FZLBJW.TTF:FZLBJW")
+      table.insert(ShaguPlatesX.gui.dropdowns.fonts, "Fonts\\FZXHJW.TTF:FZXHJW")
+      table.insert(ShaguPlatesX.gui.dropdowns.fonts, "Fonts\\FZXHLJW.TTF:FZXHLJW")
     end
 
-    ShaguPlates.gui.dropdowns.loot_rarity = {}
+    ShaguPlatesX.gui.dropdowns.loot_rarity = {}
     for i=0, getn(_G.ITEM_QUALITY_COLORS)-2  do
       local entry = string.format("%d:%s", i, string.format("%s%s%s", _G.ITEM_QUALITY_COLORS[i].hex, _G[string.format("ITEM_QUALITY%d_DESC",i)], FONT_COLOR_CODE_CLOSE))
-      table.insert(ShaguPlates.gui.dropdowns.loot_rarity, entry)
+      table.insert(ShaguPlatesX.gui.dropdowns.loot_rarity, entry)
     end
 
-    ShaguPlates.gui.dropdowns.screenshot_battle = {
+    ShaguPlatesX.gui.dropdowns.screenshot_battle = {
       "0:".._G.NONE,
       "1:"..T["Won"],
       "2:"..T["Ended"],
     }
-    ShaguPlates.gui.dropdowns.screenshot_loot = {"0:".._G.NONE}
+    ShaguPlatesX.gui.dropdowns.screenshot_loot = {"0:".._G.NONE}
     for i=3, 5 do
       local entry = string.format("%d:%s", i, string.format("%s%s%s", _G.ITEM_QUALITY_COLORS[i].hex, _G[string.format("ITEM_QUALITY%d_DESC",i)], FONT_COLOR_CODE_CLOSE))
-        table.insert(ShaguPlates.gui.dropdowns.screenshot_loot, entry)
+        table.insert(ShaguPlatesX.gui.dropdowns.screenshot_loot, entry)
     end
   end
 
   do -- Generate Config UI
     CreateGUIEntry(T["Nameplates"], nil, function()
+      CreateConfig(nil, T["Addon Compatibility"], nil, nil, "header")
+      CreateConfig(nil, T["Disable ShaguTweaks Nameplate Library"], C.global, "override_shagutweaks_nameplates", "checkbox")
+      CreateConfig(nil, T["Disable ShaguTweaks Target Frame Libraries"], C.global, "override_shagutweaks_targetlibs", "checkbox")
+      CreateConfig(nil, T["Disable SuperAPI Castlib"], C.global, "override_superapi_castlib", "checkbox")
+
       CreateConfig(nil, T["Use Blizzard Borders"], C.appearance.border, "force_blizz", "checkbox")
-      CreateConfig(nil, T["Standard Text Font"], C.global, "font_unit", "dropdown", ShaguPlates.gui.dropdowns.fonts)
+      CreateConfig(nil, T["Standard Text Font"], C.global, "font_unit", "dropdown", ShaguPlatesX.gui.dropdowns.fonts)
       CreateConfig(nil, T["Standard Text Font Size"], C.global, "font_unit_size")
-      CreateConfig(nil, T["Menu Font"], C.global, "font_default", "dropdown", ShaguPlates.gui.dropdowns.fonts)
+      CreateConfig(nil, T["Menu Font"], C.global, "font_default", "dropdown", ShaguPlatesX.gui.dropdowns.fonts)
       CreateConfig(nil, T["Menu Font Size"], C.global, "font_size")
-      CreateConfig(U["nameplates"], T["Font Style"], C.nameplates.name, "fontstyle", "dropdown", ShaguPlates.gui.dropdowns.fontstyle)
+      CreateConfig(U["nameplates"], T["Font Style"], C.nameplates.name, "fontstyle", "dropdown", ShaguPlatesX.gui.dropdowns.fontstyle)
       CreateConfig(nil, T["Background Color"], C.appearance.border, "background", "color")
       CreateConfig(nil, T["Border Color"], C.appearance.border, "color", "color")
-      CreateConfig(U["nameplates"], T["Border Size"], C.appearance.border, "nameplates", "dropdown", ShaguPlates.gui.dropdowns.border)
+      CreateConfig(U["nameplates"], T["Border Size"], C.appearance.border, "nameplates", "dropdown", ShaguPlatesX.gui.dropdowns.border)
       CreateConfig(nil, T["Enable Pixel Perfect Borders"], C.appearance.border, "pixelperfect", "checkbox")
       CreateConfig(nil, T["Scale Border On HiDPI Displays"], C.appearance.border, "hidpi", "checkbox")
       CreateConfig(U["nameplates"], T["Vertical Offset (|cffffaaaaExperimental|r)"], C.nameplates, "vertical_offset", nil, nil, nil, nil, nil, "vanilla")
@@ -1031,8 +1036,8 @@ ShaguPlates:RegisterModule("gui", "vanilla:tbc", function ()
       CreateConfig(U["nameplates"], T["Draw Glow Around Target Nameplate"], C.nameplates, "targetglow", "checkbox")
       CreateConfig(U["nameplates"], T["Glow Color Around Target Nameplate"], C.nameplates, "glowcolor", "color")
       CreateConfig(U["nameplates"], T["Zoom Target Nameplate"], C.nameplates, "targetzoom", "checkbox")
-      CreateConfig(U["nameplates"], T["Target Nameplate Zoom Factor"], C.nameplates, "targetzoomval", "dropdown", ShaguPlates.gui.dropdowns.percent_small)
-      CreateConfig(U["nameplates"], T["Inactive Nameplate Alpha"], C.nameplates, "notargalpha","dropdown", ShaguPlates.gui.dropdowns.percent_small)
+      CreateConfig(U["nameplates"], T["Target Nameplate Zoom Factor"], C.nameplates, "targetzoomval", "dropdown", ShaguPlatesX.gui.dropdowns.percent_small)
+      CreateConfig(U["nameplates"], T["Inactive Nameplate Alpha"], C.nameplates, "notargalpha","dropdown", ShaguPlatesX.gui.dropdowns.percent_small)
       CreateConfig(U["nameplates"], T["Red Name Text On Infight Units"], C.nameplates, "namefightcolor", "checkbox")
       CreateConfig(U["nameplates"], T["Nameplate Width"], C.nameplates, "width")
       CreateConfig(U["nameplates"], T["Enable Class Colors On Enemies"], C.nameplates, "enemyclassc", "checkbox")
@@ -1045,7 +1050,7 @@ ShaguPlates:RegisterModule("gui", "vanilla:tbc", function ()
       CreateConfig(U["nameplates"], T["Replace Totems With Icons"], C.nameplates, "totemicons", "checkbox")
 
       CreateConfig(nil, T["Raid Icon"], nil, nil, "header")
-      CreateConfig(U["nameplates"], T["Raid Icon Position"], C.nameplates, "raidiconpos", "dropdown", ShaguPlates.gui.dropdowns.positions)
+      CreateConfig(U["nameplates"], T["Raid Icon Position"], C.nameplates, "raidiconpos", "dropdown", ShaguPlatesX.gui.dropdowns.positions)
       CreateConfig(U["nameplates"], T["Raid Icon X-Offset"], C.nameplates, "raidiconoffx")
       CreateConfig(U["nameplates"], T["Raid Icon Y-Offset"], C.nameplates, "raidiconoffy")
       CreateConfig(U["nameplates"], T["Raid Icon Size"], C.nameplates, "raidiconsize")
@@ -1058,13 +1063,13 @@ ShaguPlates:RegisterModule("gui", "vanilla:tbc", function ()
 
       CreateConfig(nil, T["Debuffs"], nil, nil, "header")
       CreateConfig(U["nameplates"], T["Enable Debuffs"], C.nameplates, "showdebuffs", "checkbox")
-      CreateConfig(U["nameplates"], T["Debuff Position"], C.nameplates.debuffs, "position", "dropdown", ShaguPlates.gui.dropdowns.debuffposition)
+      CreateConfig(U["nameplates"], T["Debuff Position"], C.nameplates.debuffs, "position", "dropdown", ShaguPlatesX.gui.dropdowns.debuffposition)
       CreateConfig(U["nameplates"], T["Estimate Debuffs"], C.nameplates, "guessdebuffs", "checkbox")
       CreateConfig(U["nameplates"], T["Debuff Icon Offset"], C.nameplates, "debuffoffset")
       CreateConfig(U["nameplates"], T["Debuff Icon Size"], C.nameplates, "debuffsize")
       CreateConfig(U["nameplates"], T["Show Debuff Stacks"], C.nameplates.debuffs, "showstacks", "checkbox")
       CreateConfig(U["nameplates"], T["Only Show Own Debuffs (|cffffaaaaExperimental|r)"], C.nameplates, "selfdebuff", "checkbox")
-      CreateConfig(U["nameplates"], T["Filter Mode"], C.nameplates.debuffs, "filter", "dropdown", ShaguPlates.gui.dropdowns.buffbarfilter)
+      CreateConfig(U["nameplates"], T["Filter Mode"], C.nameplates.debuffs, "filter", "dropdown", ShaguPlatesX.gui.dropdowns.buffbarfilter)
       CreateConfig(U["nameplates"], T["Blacklist"], C.nameplates.debuffs, "blacklist", "list")
       CreateConfig(U["nameplates"], T["Whitelist"], C.nameplates.debuffs, "whitelist", "list")
 
@@ -1079,10 +1084,10 @@ ShaguPlates:RegisterModule("gui", "vanilla:tbc", function ()
       CreateConfig(nil, T["Healthbar"], nil, nil, "header")
       CreateConfig(U["nameplates"], T["Healthbar Vertical Offset"], C.nameplates.health, "offset")
       CreateConfig(U["nameplates"], T["Healthbar Height"], C.nameplates, "heighthealth")
-      CreateConfig(U["nameplates"], T["Healthbar Texture"], C.nameplates, "healthtexture", "dropdown", ShaguPlates.gui.dropdowns.uf_bartexture)
-      CreateConfig(U["nameplates"], T["Show Health Points"], C.nameplates, "showhp", "checkbox")
-      CreateConfig(U["nameplates"], T["Health Text Position"], C.nameplates, "hptextpos", "dropdown", ShaguPlates.gui.dropdowns.textalign)
-      CreateConfig(U["nameplates"], T["Health Text Format"], C.nameplates, "hptextformat", "dropdown", ShaguPlates.gui.dropdowns.hpformat)
+      CreateConfig(U["nameplates"], T["Healthbar Texture"], C.nameplates, "healthtexture", "dropdown", ShaguPlatesX.gui.dropdowns.uf_bartexture)
+      CreateConfig(nil, T["Show Health Points"], C.nameplates, "showhp", "checkbox")
+      CreateConfig(U["nameplates"], T["Health Text Position"], C.nameplates, "hptextpos", "dropdown", ShaguPlatesX.gui.dropdowns.textalign)
+      CreateConfig(U["nameplates"], T["Health Text Format"], C.nameplates, "hptextformat", "dropdown", ShaguPlatesX.gui.dropdowns.hpformat)
       CreateConfig(U["nameplates"], T["Hide Healthbar On Enemy NPCs"], C.nameplates, "enemynpc", "checkbox")
       CreateConfig(U["nameplates"], T["Hide Healthbar On Enemy Players"], C.nameplates, "enemyplayer", "checkbox")
       CreateConfig(U["nameplates"], T["Hide Healthbar On Neutral NPCs"], C.nameplates, "neutralnpc", "checkbox")
@@ -1094,7 +1099,7 @@ ShaguPlates:RegisterModule("gui", "vanilla:tbc", function ()
       CreateConfig(U["nameplates"], T["Always Show On Target Units"], C.nameplates, "target", "checkbox")
       CreateConfig(U["nameplates"], T["Vertical Healthbar"], C.nameplates, "verticalhealth", "checkbox")
 
-      CreateConfig(nil, T["SuperWoW Settings"], nil, nil, "header")
+      CreateConfig(nil, T["Aggro Display Settings"], nil, nil, "header")
       CreateConfig(U["nameplates"], T["Overwrite Border Color With Combat State"], C.nameplates, "outcombatstate", "checkbox")
       CreateConfig(U["nameplates"], T["Overwrite Health Color With Combat State"], C.nameplates, "barcombatstate", "checkbox")
       CreateConfig(U["nameplates"], T["Overwrite If Unit Is Attacking You"], C.nameplates, "ccombatthreat", "checkbox")
@@ -1106,10 +1111,6 @@ ShaguPlates:RegisterModule("gui", "vanilla:tbc", function ()
       CreateConfig(U["nameplates"], T["Unit Is Attacking No One Color"], C.nameplates, "combatstun", "color")
       CreateConfig(U["nameplates"], T["Unit Is Casting Color"], C.nameplates, "combatcasting", "color")
 
-      CreateConfig(nil, T["Health Point Estimation"], nil, nil, "header")
-      CreateConfig(nil, T["Estimate Enemy Health Points"], C.global, "libhealth", "checkbox")
-      CreateConfig(nil, T["Threshold To Trust Health Estimation"], C.global, "libhealth_hit", "dropdown", ShaguPlates.gui.dropdowns.uf_rangecheckinterval)
-      CreateConfig(nil, T["Required Damage In Percent"], C.global, "libhealth_dmg", "dropdown", ShaguPlates.gui.dropdowns.percent_small)
       CreateConfig(nil, T["Abbreviate Numbers (4200 -> 4.2k)"], C.unitframes, "abbrevnum", "checkbox")
       CreateConfig(nil, T["Abbreviate Unit Names"], C.unitframes, "abbrevname", "checkbox")
 
@@ -1121,7 +1122,7 @@ ShaguPlates:RegisterModule("gui", "vanilla:tbc", function ()
       CreateConfig(nil, T["Cooldown Color (Hours)"], C.appearance.cd, "hourcolor", "color")
       CreateConfig(nil, T["Cooldown Color (Days)"], C.appearance.cd, "daycolor", "color")
       CreateConfig(nil, T["Cooldown Text Threshold"], C.appearance.cd, "threshold")
-      CreateConfig(nil, T["Cooldown Text Font"], C.appearance.cd, "font", "dropdown", ShaguPlates.gui.dropdowns.fonts)
+      CreateConfig(nil, T["Cooldown Text Font"], C.appearance.cd, "font", "dropdown", ShaguPlatesX.gui.dropdowns.fonts)
       CreateConfig(nil, T["Cooldown Text Font Size"], C.appearance.cd, "font_size")
       CreateConfig(nil, T["Cooldown Text Font Size (Blizzard Frames)"], C.appearance.cd, "font_size_blizz")
       CreateConfig(nil, T["Cooldown Text Font Size (Foreign Frames)"], C.appearance.cd, "font_size_foreign")
@@ -1132,7 +1133,7 @@ ShaguPlates:RegisterModule("gui", "vanilla:tbc", function ()
       CreateConfig(nil, T["Use Dynamic Font Size"], C.appearance.cd, "dynamicsize", "checkbox")
 
       CreateConfig(nil, T["Regional Settings"], nil, nil, "header")
-      CreateConfig(nil, T["Language"], C.global, "language", "dropdown", ShaguPlates.gui.dropdowns.languages)
+      CreateConfig(nil, T["Language"], C.global, "language", "dropdown", ShaguPlatesX.gui.dropdowns.languages)
       CreateConfig(nil, T["Enable Region Compatible Font"], C.global, "force_region", "checkbox")
 
       CreateConfig(nil, T["Config UI Settings"], nil, nil, "header")

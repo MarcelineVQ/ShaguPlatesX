@@ -1,6 +1,6 @@
 -- load ShaguPlates environment
-setfenv(1, ShaguPlates:GetEnvironment())
-if ShaguPlates.expansion ~= "tbc" then return end
+setfenv(1, ShaguPlatesX:GetEnvironment())
+if ShaguPlatesX.expansion ~= "tbc" then return end
 
 -- [[ Constants ]]--
 CASTBAR_EVENT_CAST_DELAY = "UNIT_SPELLCAST_DELAYED"
@@ -48,7 +48,7 @@ end
 
 -- the function GetContainerNumSlots returns numbers for keyrings in tbc
 function GetContainerNumSlots(bag)
-  if bag == -2 and ShaguPlates.bag and not ShaguPlates.bag.showKeyring then
+  if bag == -2 and ShaguPlatesX.bag and not ShaguPlatesX.bag.showKeyring then
     return 0
   else
     return _G.GetContainerNumSlots(bag)

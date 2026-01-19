@@ -1,4 +1,4 @@
-ShaguPlates_translation["enUS"] = {
+ShaguPlatesX_translation["enUS"] = {
   ["Abbreviate Numbers (4200 -> 4.2k)"] = nil,
   ["Abbreviate Unit Names"] = nil,
   ["Always Show On Target Units"] = nil,
@@ -201,7 +201,7 @@ ShaguPlates_translation["enUS"] = {
   ["Square"] = nil,
   ["Standard Text Font"] = nil,
   ["Standard Text Font Size"] = nil,
-  ["SuperWoW Settings"] = nil,
+  ["Aggro Display Settings"] = nil,
   ["Target Nameplate Zoom Factor"] = nil,
   ["Thick Outline"] = nil,
   ["Threshold To Trust Health Estimation"] = nil,

@@ -1,6 +1,6 @@
-ShaguPlates_locale["enUS"] = {}
+ShaguPlatesX_locale["enUS"] = {}
 
-ShaguPlates_locale["enUS"]["class"] = {
+ShaguPlatesX_locale["enUS"]["class"] = {
   ["Warlock"] = "WARLOCK",
   ["Warrior"] = "WARRIOR",
   ["Hunter"] = "HUNTER",
@@ -12,18 +12,18 @@ ShaguPlates_locale["enUS"]["class"] = {
   ["Rogue"] = "ROGUE",
 }
 
-ShaguPlates_locale["enUS"]["healduration"] = {
+ShaguPlatesX_locale["enUS"]["healduration"] = {
   ["Rejuvenation"] = "Increases the duration of your Rejuvenation spell by 3 sec.",
   ["Renew"] = "Increases the duration of your Renew spell by 3 sec.",
 }
 
-ShaguPlates_locale["enUS"]["bagtypes"] = {
+ShaguPlatesX_locale["enUS"]["bagtypes"] = {
   ["Quiver"] = "QUIVER",
   ["Soul Bag"] = "SOULBAG",
   ["Bag"] = "DEFAULT",
 }
 
-ShaguPlates_locale["enUS"]["itemtypes"] = {
+ShaguPlatesX_locale["enUS"]["itemtypes"] = {
   ["INVTYPE_WAND"] = "Wand",
   ["INVTYPE_THROWN"] = "Thrown",
   ["INVTYPE_GUN"] = "Gun",
@@ -31,17 +31,17 @@ ShaguPlates_locale["enUS"]["itemtypes"] = {
   ["INVTYPE_PROJECTILE"] = "Projectile",
 }
 
-ShaguPlates_locale["enUS"]["hunterpaging"] = {
+ShaguPlatesX_locale["enUS"]["hunterpaging"] = {
   ["MELEE"] = "Wing Clip",
   ["RANGED"] = "Arcane Shot",
 }
 
-ShaguPlates_locale["enUS"]["customcast"] = {
+ShaguPlatesX_locale["enUS"]["customcast"] = {
   ["AIMEDSHOT"] = "Aimed Shot",
   ["MULTISHOT"] = "Multi-Shot",
 }
 
-ShaguPlates_locale["enUS"]["critters"] = {
+ShaguPlatesX_locale["enUS"]["critters"] = {
   'Adder',
   'Beetle',
   'Belfry Bat',
@@ -127,7 +127,7 @@ ShaguPlates_locale["enUS"]["critters"] = {
   'Wisp',
 }
 
-ShaguPlates_locale["enUS"]["dyndebuffs"] = {
+ShaguPlatesX_locale["enUS"]["dyndebuffs"] = {
   ["Rupture"] = "Rupture",
   ["Kidney Shot"] = "Kidney Shot",
   ["Rend"] = "Rend",
@@ -137,14 +137,14 @@ ShaguPlates_locale["enUS"]["dyndebuffs"] = {
   ["Gouge"] = "Gouge",
 }
 
-ShaguPlates_locale["enUS"]["judgements"] = {
+ShaguPlatesX_locale["enUS"]["judgements"] = {
   ["Judgement of Justice"] = true,
   ["Judgement of Light"] = true,
   ["Judgement of Wisdom"] = true,
   ["Judgement of the Crusader"] = true,
 }
 
-ShaguPlates_locale["enUS"]["interrupts"] = {
+ShaguPlatesX_locale["enUS"]["interrupts"] = {
   ["Shield Bash"] = true,
   ["Pummel"] = true,
   ["Kick"] = true,
@@ -193,14 +193,14 @@ ShaguPlates_locale["enUS"]["interrupts"] = {
   ["Goblin Mortar"] = true,
 }
 
-ShaguPlates_locale["enUS"]["resurrections"] = {
+ShaguPlatesX_locale["enUS"]["resurrections"] = {
   ["Resurrection"] = true,
   ["Rebirth"] = true,
   ["Redemption"] = true,
   ["Ancestral Spirit"] = true,
 }
 
-ShaguPlates_locale["enUS"]["spells"] = {
+ShaguPlatesX_locale["enUS"]["spells"] = {
   ['"Plucky" Resumes Chicken Form']={t=1000,icon='Ability_Racial_BearForm'},
   ['Abomination Spit']={t=2500,icon='Spell_Nature_CorrosiveBreath'},
   ['Acid Spit']={t=3000,icon='Spell_Nature_Acid_01'},
@@ -1468,7 +1468,7 @@ ShaguPlates_locale["enUS"]["spells"] = {
   ['[PH] Teleport to Undercity']={t=2000,icon='Temp'},
 }
 
-ShaguPlates_locale["enUS"]["debuffs"] = {
+ShaguPlatesX_locale["enUS"]["debuffs"] = {
   ['AE Charm']={[0]=300.0,},
   ['Abomination Spit']={[0]=10.0,},
   ['Acid Slime']={[0]=30.0,},
@@ -1812,7 +1812,7 @@ ShaguPlates_locale["enUS"]["debuffs"] = {
   ['Fixate']={[0]=10.0,},
   ['Flame Buffet']={[0]=45.0,},
   ['Flame Lash']={[0]=45.0,},
-  ['Flame Shock']={[0]=12.0,},
+  ['Flame Shock']={[0]=15.0,},
   ['Flameshocker\'s Revenge']={[0]=2.0,},
   ['Flameshocker\'s Touch']={[0]=3.0,},
   ['Flash Freeze']={[0]=5.0,},
@@ -2330,6 +2330,7 @@ ShaguPlates_locale["enUS"]["debuffs"] = {
   ['Tranquilizing Poison']={[0]=8.0,},
   ['Trap']={[0]=10.0,},
   ['Trelane\'s Freezing Touch']={[0]=12.0,},
+  ['Tremor']={[0]=8.0,},
   ['Trip']={[0]=3.0,},
   ['True Fulfillment']={[0]=20.0,},
   ['Tunneler Acid']={[0]=30.0,},
@@ -2404,9 +2405,9 @@ ShaguPlates_locale["enUS"]["debuffs"] = {
 }
 
 -- custom entries not detected by DBC extractor
-ShaguPlates_locale["enUS"]["debuffs"]['Cone of Cold']={[0]=8.0,} -- Cone of Cold
+ShaguPlatesX_locale["enUS"]["debuffs"]['Cone of Cold']={[0]=8.0,} -- Cone of Cold
 
-ShaguPlates_locale["enUS"]["totems"] = {
+ShaguPlatesX_locale["enUS"]["totems"] = {
   ["Disease Cleansing Totem"] = "spell_nature_diseasecleansingtotem",
   ["Earth Elemental Totem"] = "spell_nature_earthelemental_totem",
   ["Earthbind Totem"] = "spell_nature_strengthofearthtotem02",
@@ -2435,7 +2436,7 @@ ShaguPlates_locale["enUS"]["totems"] = {
   ["Wrath of Air Totem"] = "spell_nature_slowingtotem",
 }
 
-ShaguPlates_locale["enUS"]["icons"] = {
+ShaguPlatesX_locale["enUS"]["icons"] = {
   ["Abolish Disease"] = "Spell_Nature_NullifyDisease",
   ["Abolish Poison"] = "Spell_Nature_NullifyPoison_02",
   ["Abolish Poison Effect"] = "Spell_Nature_NullifyPoison_02",

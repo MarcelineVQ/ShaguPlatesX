@@ -1,6 +1,6 @@
 -- load ShaguPlates environment
-setfenv(1, ShaguPlates:GetEnvironment())
-if ShaguPlates.expansion ~= "vanilla" then return end
+setfenv(1, ShaguPlatesX:GetEnvironment())
+if ShaguPlatesX.expansion ~= "vanilla" then return end
 
 -- [[ Constants ]]--
 CASTBAR_EVENT_CAST_DELAY = "SPELLCAST_DELAYED"
@@ -37,23 +37,23 @@ UNITFRAME_SECURE_TEMPLATE = nil
 function hooksecurefunc(name, func, append)
   if not _G[name] then return end
 
-  ShaguPlates.hooks[tostring(func)] = {}
-  ShaguPlates.hooks[tostring(func)]["old"] = _G[name]
-  ShaguPlates.hooks[tostring(func)]["new"] = func
+  ShaguPlatesX.hooks[tostring(func)] = {}
+  ShaguPlatesX.hooks[tostring(func)]["old"] = _G[name]
+  ShaguPlatesX.hooks[tostring(func)]["new"] = func
 
   if append then
-    ShaguPlates.hooks[tostring(func)]["function"] = function(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
-      ShaguPlates.hooks[tostring(func)]["old"](a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
-      ShaguPlates.hooks[tostring(func)]["new"](a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
+    ShaguPlatesX.hooks[tostring(func)]["function"] = function(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
+      ShaguPlatesX.hooks[tostring(func)]["old"](a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
+      ShaguPlatesX.hooks[tostring(func)]["new"](a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
     end
   else
-    ShaguPlates.hooks[tostring(func)]["function"] = function(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
-      ShaguPlates.hooks[tostring(func)]["new"](a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
-      ShaguPlates.hooks[tostring(func)]["old"](a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
+    ShaguPlatesX.hooks[tostring(func)]["function"] = function(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
+      ShaguPlatesX.hooks[tostring(func)]["new"](a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
+      ShaguPlatesX.hooks[tostring(func)]["old"](a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
     end
   end
 
-  _G[name] = ShaguPlates.hooks[tostring(func)]["function"]
+  _G[name] = ShaguPlatesX.hooks[tostring(func)]["function"]
 end
 
 do -- GetItemInfo

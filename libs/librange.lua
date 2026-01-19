@@ -1,5 +1,5 @@
 -- load ShaguPlates environment
-setfenv(1, ShaguPlates:GetEnvironment())
+setfenv(1, ShaguPlatesX:GetEnvironment())
 
 --[[ librange ]]--
 -- A ShaguPlates library that detects and caches distance to units.
@@ -9,7 +9,7 @@ setfenv(1, ShaguPlates:GetEnvironment())
 --
 
 -- return instantly when another librange is already active
-if ShaguPlates.api.librange then return end
+if ShaguPlatesX.api.librange then return end
 
 local _, class = UnitClass("player")
 local librange = CreateFrame("Frame", "pfRangecheck", UIParent)
@@ -41,7 +41,7 @@ local spells = {
 
 -- use native IsSpellInRange checker for tbc and skip
 -- the whole targeting approach that is required for vanilla
-if ShaguPlates.expansion == "tbc" then
+if ShaguPlatesX.expansion == "tbc" then
   local spell
   librange:RegisterEvent("LEARNED_SPELL_IN_TAB")
   librange:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -71,7 +71,7 @@ if ShaguPlates.expansion == "tbc" then
   end
 
   -- add librange to ShaguPlates API
-  ShaguPlates.api.librange = librange
+  ShaguPlatesX.api.librange = librange
   return
 end
 
@@ -121,7 +121,7 @@ librange:RegisterEvent("PLAYER_ENTER_COMBAT")
 librange:RegisterEvent("PLAYER_LEAVE_COMBAT")
 librange:SetScript("OnEvent", function()
   -- disable range checking activities
-  if ShaguPlates_config.unitframes.rangecheck == "0" or not spells[class] then
+  if ShaguPlatesX_config.unitframes.rangecheck == "0" or not spells[class] then
     this:Hide()
     return
   end
@@ -175,7 +175,7 @@ librange:SetScript("OnUpdate", function()
       end
 
       -- suspend for various conditions
-      if ShaguPlates.loot and ShaguPlates.loot:IsShown() then return nil end
+      if ShaguPlatesX.loot and ShaguPlatesX.loot:IsShown() then return nil end
       if LootFrame and LootFrame:IsShown() then return nil end
       if InspectFrame and InspectFrame:IsShown() then return nil end
       if TradeFrame and TradeFrame:IsShown() then return nil end
@@ -282,4 +282,4 @@ function librange:UnitInSpellRange(unit)
 end
 
 -- add librange to ShaguPlates API
-ShaguPlates.api.librange = librange
+ShaguPlatesX.api.librange = librange

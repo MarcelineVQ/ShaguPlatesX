@@ -1,4 +1,4 @@
-ShaguPlates_translation["ruRU"] = {
+ShaguPlatesX_translation["ruRU"] = {
   ["Abbreviate Numbers (4200 -> 4.2k)"] = "Сокращать числа (4200 -> 4.2k)",
   ["Abbreviate Unit Names"] = "Сокращать имена юнитов",
   ["Always Show On Target Units"] = "Всегда показывать над выбранной целью",
@@ -201,7 +201,7 @@ ShaguPlates_translation["ruRU"] = {
   ["Square"] = "Квадрат",
   ["Standard Text Font"] = "Шрифт стандартного текста",
   ["Standard Text Font Size"] = "Размер шрифта стандартного текста",
-  ["SuperWoW Settings"] = nil,
+  ["Aggro Display Settings"] = nil,
   ["Target Nameplate Zoom Factor"] = "Коэффициент увеличения индикатора здоровья цели",
   ["Thick Outline"] = "Толстый контурный", -- font style
   ["Threshold To Trust Health Estimation"] = "Точность подсчетов здоровья",

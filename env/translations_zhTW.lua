@@ -1,4 +1,4 @@
-ShaguPlates_translation["zhTW"] = {
+ShaguPlatesX_translation["zhTW"] = {
   ["Abbreviate Numbers (4200 -> 4.2k)"] = "縮寫數位格式[4200為4.2K]",
   ["Abbreviate Unit Names"] = nil,
   ["Always Show On Target Units"] = nil,
@@ -201,7 +201,7 @@ ShaguPlates_translation["zhTW"] = {
   ["Square"] = "方形",
   ["Standard Text Font"] = "標準字體",
   ["Standard Text Font Size"] = "標準字體字型大小",
-  ["SuperWoW Settings"] = nil,
+  ["Aggro Display Settings"] = nil,
   ["Target Nameplate Zoom Factor"] = nil,
   ["Thick Outline"] = nil,
   ["Threshold To Trust Health Estimation"] = nil,

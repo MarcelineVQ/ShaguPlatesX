@@ -1,5 +1,5 @@
 -- load ShaguPlates environment
-setfenv(1, ShaguPlates:GetEnvironment())
+setfenv(1, ShaguPlatesX:GetEnvironment())
 
 --[[ libtooltip ]]--
 -- A ShaguPlates library that provides additional GameTooltip information.
@@ -17,7 +17,7 @@ setfenv(1, ShaguPlates:GetEnvironment())
 --    `nil` when no item is displayed
 
 -- return instantly when another libtooltip is already active
-if ShaguPlates.api.libtooltip then return end
+if ShaguPlatesX.api.libtooltip then return end
 
 local _
 local libtooltip = CreateFrame("Frame" , "pfLibTooltip", GameTooltip)
@@ -46,7 +46,7 @@ libtooltip.GetItemCount = function(self)
   return libtooltip.itemCount
 end
 
-ShaguPlates.api.libtooltip = libtooltip
+ShaguPlatesX.api.libtooltip = libtooltip
 
 -- setup item hooks
 local pfHookSetHyperlink = GameTooltip.SetHyperlink

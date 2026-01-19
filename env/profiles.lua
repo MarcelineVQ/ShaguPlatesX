@@ -442,18 +442,18 @@ local adapta = {
 }
 
 -- assign profiles to userdata
-ShaguPlates_profiles["Modern"] = modern
-ShaguPlates_profiles["Legacy"] = legacy
-ShaguPlates_profiles["Adapta"] = adapta
-ShaguPlates_profiles["Slim"] = slim
+ShaguPlatesX_profiles["Modern"] = modern
+ShaguPlatesX_profiles["Legacy"] = legacy
+ShaguPlatesX_profiles["Adapta"] = adapta
+ShaguPlatesX_profiles["Slim"] = slim
 
 -- overwrite core profiles in userdata
 local profile_loader = CreateFrame("Frame")
 profile_loader:RegisterEvent("VARIABLES_LOADED")
 profile_loader:SetScript("OnEvent", function()
-  ShaguPlates_profiles["Modern"] = modern
-  ShaguPlates_profiles["Legacy"] = legacy
-  ShaguPlates_profiles["Adapta"] = adapta
-  ShaguPlates_profiles["Slim"] = slim
+  ShaguPlatesX_profiles["Modern"] = modern
+  ShaguPlatesX_profiles["Legacy"] = legacy
+  ShaguPlatesX_profiles["Adapta"] = adapta
+  ShaguPlatesX_profiles["Slim"] = slim
   this:UnregisterAllEvents()
 end)
