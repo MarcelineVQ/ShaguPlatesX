@@ -17,9 +17,11 @@ function SlashCmdList.RELOAD(msg, editbox)
   ReloadUI()
 end
 
-SLASH_SHAGUPLATESX1 = '/shaguplatesx'
-SLASH_SHAGUPLATESX2 = '/splatesx'
-SLASH_SHAGUPLATESX3 = '/spx'
+SLASH_SHAGUPLATESX1 = '/shaguplates'
+SLASH_SHAGUPLATESX2 = '/splates'
+SLASH_SHAGUPLATESX3 = '/sp'
+SLASH_SHAGUPLATESX4 = '/shaguplatesx'
+SLASH_SHAGUPLATESX5 = '/splatesx'
 function SlashCmdList.SHAGUPLATESX(msg, editbox)
   if ShaguPlatesX.gui:IsShown() then
     ShaguPlatesX.gui:Hide()
