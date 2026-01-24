@@ -1061,17 +1061,17 @@ ShaguPlatesX:RegisterModule("nameplates", "vanilla:tbc", function ()
     local castInfo = showCast and guid and castEvents[guid]
 
     if castInfo and castInfo.spellID and castInfo.endTime and now < castInfo.endTime and castInfo.event ~= "CAST" and castInfo.event ~= "FAIL" then
-      -- Only set min/max when cast changes
+      -- Only set min/max when cast changes (use 0-based range for smooth StatusBar rendering)
       if castbar.lastCastStart ~= castInfo.startTime then
         castbar.lastCastStart = castInfo.startTime
-        castbar:SetMinMaxValues(castInfo.startTime, castInfo.endTime)
+        castbar:SetMinMaxValues(0, castInfo.endTime - castInfo.startTime)
       end
 
-      -- Value must update for smooth animation
+      -- Value must update for smooth animation (0-based for precision)
       if castInfo.event == "CHANNEL" then
-        castbar:SetValue(castInfo.startTime + (castInfo.endTime - now))
+        castbar:SetValue(castInfo.endTime - now)
       else
-        castbar:SetValue(now)
+        castbar:SetValue(now - castInfo.startTime)
       end
 
       -- Text/icon only when changed
