@@ -402,7 +402,7 @@ ShaguPlatesX:RegisterModule("nameplates", "vanilla:tbc", function ()
         castEvents[casterGUID].duration = castDuration and castDuration / 1000
 
       elseif eventType == "CAST" or eventType == "FAIL" then
-        if castEvents[casterGUID] then
+        if castEvents[casterGUID] and castEvents[casterGUID].spellID == spellID then
           wipe(castEvents[casterGUID])
         end
       end
