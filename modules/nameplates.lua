@@ -1369,15 +1369,20 @@ ShaguPlatesX:RegisterModule("nameplates", "vanilla", function ()
           frame:SetHeight(1)
         end
       else
+        local scale = tonumber(C.nameplates.scale) or 1
+        local effectiveScale = UIParent:GetScale() * scale
+        local targetWidth = floor(frame.nameplate:GetWidth() * effectiveScale)
+
         if not frame.nameplate.dwidth then
           -- cache initial sizing value for comparison
-          frame.nameplate.dwidth = floor(frame.nameplate:GetWidth() * UIParent:GetScale())
+          frame.nameplate.dwidth = targetWidth
         end
 
-        if floor(frame:GetWidth()) ~= frame.nameplate.dwidth then
-          -- align parent plate to the actual size
-          frame:SetWidth(frame.nameplate:GetWidth() * UIParent:GetScale())
-          frame:SetHeight(frame.nameplate:GetHeight() * UIParent:GetScale())
+        if floor(frame:GetWidth()) ~= targetWidth then
+          -- align parent plate to the actual size (respecting custom scale)
+          frame:SetWidth(frame.nameplate:GetWidth() * effectiveScale)
+          frame:SetHeight(frame.nameplate:GetHeight() * effectiveScale)
+          frame.nameplate.dwidth = targetWidth
         end
       end
 
