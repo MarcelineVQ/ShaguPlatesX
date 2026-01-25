@@ -1,4 +1,4 @@
-ShaguPlatesX:RegisterModule("gui", "vanilla:tbc", function ()
+ShaguPlatesX:RegisterModule("gui", "vanilla", function ()
   local Reload, U, CreateConfig, CreateTabFrame, CreateArea, CreateGUIEntry, EntryUpdate
 
   -- "searchDB" gets populated when CreateConfig is called. The table holds
@@ -715,29 +715,6 @@ ShaguPlatesX:RegisterModule("gui", "vanilla:tbc", function ()
         "HORIZONTAL:" .. T["Horizontal"],
         "VERTICAL:" .. T["Vertical"],
       },
-      ["uf_animationspeed"] = {
-        "1:" .. T["Instant"],
-        "2:" .. T["Very Fast"],
-        "3:" .. T["Fast"],
-        "5:" .. T["Medium"],
-        "8:" .. T["Slow"],
-        "13:" .. T["Very Slow"],
-      },
-      ["xpanchors"] = {
-        "__NONONIL__:" .. T["No Anchor"],
-        "pfChatLeft:" .. T["Left Chat Frame"],
-        "pfChatRight:" .. T["Right Chat Frame"],
-        "pfActionBarMain:" .. T["Main Actionbar"],
-        "pfActionBarTop:" .. T["Top Actionbar"],
-        "pfActionBarLeft:" .. T["Left Actionbar"],
-        "pfActionBarRight:" .. T["Right Actionbar"],
-        "pfActionBarVertical:" .. T["Vertical Actionbar"],
-        "pfExperienceBar:" .. T["Experience Bar"],
-        "pfReputationBar:" .. T["Reputation Bar"],
-        "pfPlayer:" .. T["Player Unitframe"],
-        "pfMinimap:" .. T["Minimap"],
-        "pfPanelMinimap:" .. T["Minimap Panel"],
-      },
       ["uf_bartexture"] = {
         "Interface\\AddOns\\ShaguPlates\\img\\bar:ShaguPlates",
         "Interface\\AddOns\\ShaguPlates\\img\\bar_tukui:TukUI",
@@ -746,57 +723,6 @@ ShaguPlatesX:RegisterModule("gui", "vanilla:tbc", function ()
         "Interface\\AddOns\\ShaguPlates\\img\\bar_striped:Striped",
         "Interface\\TargetingFrame\\UI-StatusBar:Wow Status",
         "Interface\\PaperDollInfoFrame\\UI-Character-Skills-Bar:Wow Skill"
-      },
-      ["uf_rangecheckinterval"] = {
-        "1:" .. T["Very Fast"],
-        "2:" .. T["Fast"],
-        "4:" .. T["Medium"],
-        "8:" .. T["Slow"],
-        "16:" .. T["Very Slow"],
-      },
-      ["uf_raidlayout"] = {
-        "1x40:" .. "1x40",
-        "2x20:" .. "2x20",
-        "4x10:" .. "4x10",
-        "5x8:" ..  "5x8",
-        "8x5:" ..  "8x5",
-        "10x4:" .. "10x4",
-        "20x2:" .. "20x2",
-        "40x1:" .. "40x1",
-      },
-      ["uf_powerbar_position"] = {
-        "TOPLEFT:" .. T["Left"],
-        "TOP:" .. T["Center"],
-        "TOPRIGHT:" .. T["Right"]
-      },
-      ["uf_portrait_position"] = {
-        "bar:" .. T["Healthbar Embedded"],
-        "left:" .. T["Left"],
-        "right:" .. T["Right"],
-        "off:" .. T["Disabled"]
-      },
-      ["uf_buff_position"] = {
-        "TOPLEFT:" .. T["Top Left"],
-        "TOPRIGHT:" .. T["Top Right"],
-        "BOTTOMLEFT:" .. T["Bottom Left"],
-        "BOTTOMRIGHT:" .. T["Bottom Right"],
-        "off:" .. T["Disabled"]
-      },
-      ["uf_debuff_indicator"] = {
-        "0:" .. T["Disabled"],
-        "1:" .. T["Legacy"],
-        "2:" .. T["Glow"],
-        "3:" .. T["Square"],
-        "4:" .. T["Icon"]
-      },
-      ["uf_debuff_indicator_size"] = {
-        ".10:10%",
-        ".25:25%",
-        ".35:35%",
-        ".50:50%",
-        ".65:65%",
-        ".75:75%",
-        ".90:90%",
       },
       ["percent_small"] = {
         "0:0%",
@@ -820,50 +746,6 @@ ShaguPlatesX:RegisterModule("gui", "vanilla:tbc", function ()
         ".90:90%",
         ".95:95%",
         "1:100%",
-      },
-      ["uf_overheal"] = {
-        "0:0%",
-        "10:10%",
-        "20:20%",
-        "30:30%",
-        "40:40%",
-        "50:50%",
-        "60:60%",
-        "70:70%",
-        "80:80%",
-        "90:90%",
-        "100:100%",
-      },
-      ["uf_layout"] = {
-        "default:" .. T["Default"],
-        "tukui:TukUI"
-      },
-      ["uf_color"] = {
-        "0:" .. T["Class"],
-        "1:" .. T["Custom"],
-        "2:" .. T["Health"],
-      },
-      ["uf_texts"] = {
-        "none:" .. T["Disable"],
-        "unit:" .. T["Unit String"],
-        "name:" .. T["Name"],
-        "nameshort:" .. T["Name (Short)"],
-        "level:" .. T["Level"],
-        "class:" .. T["Class"],
-        "namehealth:" .. T["Name | Health Missing"],
-        "shortnamehealth:" .. T["Name (Short) | Health Missing"],
-        "healthdyn:" .. T["Health - Auto"],
-        "health:" .. T["Health - Current"],
-        "healthmax:" .. T["Health - Max"],
-        "healthperc:" .. T["Health - Percentage"],
-        "healthmiss:" .. T["Health - Missing"],
-        "healthminmax:" .. T["Health - Min/Max"],
-        "powerdyn:" .. T["Mana - Auto"],
-        "power:" .. T["Mana - Current"],
-        "powermax:" .. T["Mana - Max"],
-        "powerperc:" .. T["Mana - Percentage"],
-        "powermiss:" .. T["Mana - Missing"],
-        "powerminmax:" .. T["Mana - Min/Max"],
       },
       ["hpformat"] = {
         "percent:" .. T["Percent"],
@@ -956,12 +838,6 @@ ShaguPlatesX:RegisterModule("gui", "vanilla:tbc", function ()
         "top:" .. T["Top"],
         "right:" .. T["Right"]
       },
-      ["xp_position"] = {
-        "BOTTOM:" .. T["Bottom"],
-        "LEFT:" .. T["Left"],
-        "TOP:" .. T["Top"],
-        "RIGHT:" .. T["Right"]
-      },
       ["textalign"] = {
         "LEFT:" .. T["Left"],
         "CENTER:" .. T["Center"],
@@ -1028,15 +904,18 @@ ShaguPlatesX:RegisterModule("gui", "vanilla:tbc", function ()
       CreateConfig(U["nameplates"], T["Border Size"], C.appearance.border, "nameplates", "dropdown", ShaguPlatesX.gui.dropdowns.border)
       CreateConfig(nil, T["Enable Pixel Perfect Borders"], C.appearance.border, "pixelperfect", "checkbox")
       CreateConfig(nil, T["Scale Border On HiDPI Displays"], C.appearance.border, "hidpi", "checkbox")
-      CreateConfig(U["nameplates"], T["Vertical Offset (|cffffaaaaExperimental|r)"], C.nameplates, "vertical_offset", nil, nil, nil, nil, nil, "vanilla")
 
       CreateConfig(nil, T["Look & Feel"], nil, nil, "header")
+      CreateConfig(U["nameplates"], T["Nameplate Scale"], C.nameplates, "scale")
+      CreateConfig(U["nameplates"], T["Nameplate Vertical Offset"], C.nameplates, "vertical_offset", nil, nil, nil, nil, nil, "vanilla")
+      CreateConfig(U["nameplates"], T["Name Text Vertical Offset"], C.nameplates, "nameoffset")
       CreateConfig(U["nameplates"], T["Show On Hostile Units"], C.nameplates, "showhostile", "checkbox")
       CreateConfig(U["nameplates"], T["Show On Friendly Units"], C.nameplates, "showfriendly", "checkbox")
       CreateConfig(U["nameplates"], T["Draw Glow Around Target Nameplate"], C.nameplates, "targetglow", "checkbox")
       CreateConfig(U["nameplates"], T["Glow Color Around Target Nameplate"], C.nameplates, "glowcolor", "color")
       CreateConfig(U["nameplates"], T["Zoom Target Nameplate"], C.nameplates, "targetzoom", "checkbox")
       CreateConfig(U["nameplates"], T["Target Nameplate Zoom Factor"], C.nameplates, "targetzoomval", "dropdown", ShaguPlatesX.gui.dropdowns.percent_small)
+      CreateConfig(U["nameplates"], T["Instant Target Zoom"], C.nameplates, "targetzoominstant", "checkbox")
       CreateConfig(U["nameplates"], T["Inactive Nameplate Alpha"], C.nameplates, "notargalpha","dropdown", ShaguPlatesX.gui.dropdowns.percent_small)
       CreateConfig(U["nameplates"], T["Red Name Text On Infight Units"], C.nameplates, "namefightcolor", "checkbox")
       CreateConfig(U["nameplates"], T["Nameplate Width"], C.nameplates, "width")

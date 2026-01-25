@@ -12,5 +12,4 @@ ShaguPlates.lua
 init\env.xml
 init\compat.xml
 init\api.xml
-init\libs.xml
 init\modules.xml

@@ -72,7 +72,7 @@ ShaguPlatesX.hooks = {}
 ShaguPlatesX.env = {}
 
 -- detect current addon path
-local tocs = { "", "-master", "-tbc", "-wotlk" }
+local tocs = { "", "-master" }
 for _, name in pairs(tocs) do
   local current = string.format("ShaguPlatesX%s", name)
   local _, title = GetAddOnInfo(current)
@@ -100,18 +100,8 @@ end})
 -- cache client version
 local _, _, _, client = GetBuildInfo()
 client = client or 11200
-
--- detect client expansion
-if client >= 20000 and client <= 20400 then
-  ShaguPlatesX.expansion = "tbc"
-  ShaguPlatesX.client = client
-elseif client >= 30000 and client <= 30300 then
-  ShaguPlatesX.expansion = "wotlk"
-  ShaguPlatesX.client = client
-else
-  ShaguPlatesX.expansion = "vanilla"
-  ShaguPlatesX.client = client
-end
+ShaguPlatesX.expansion = "vanilla"
+ShaguPlatesX.client = client
 
 -- setup ShaguPlates namespace
 setmetatable(ShaguPlatesX.env, {__index = getfenv(0)})
@@ -150,13 +140,6 @@ function ShaguPlatesX:UpdateFonts()
     combat = "Fonts\\FZXHLJW.TTF"
     unit = "Fonts\\FZXHLJW.TTF"
     unit_name = "Fonts\\FZXHLJW.TTF"
-  elseif ShaguPlatesX_config.global.force_region == "1" and GetLocale() == "zhCN" and ShaguPlatesX.expansion == "tbc" then
-    -- force locale compatible fonts (zhCN 2.4.3)
-    default = "Fonts\\ZYHei.ttf"
-    tooltip = "Fonts\\ZYHei.ttf"
-    combat = "Fonts\\ZYKai_C.ttf"
-    unit = "Fonts\\ZYKai_T.ttf"
-    unit_name = "Fonts\\ZYHei.ttf"
   elseif ShaguPlatesX_config.global.force_region == "1" and GetLocale() == "zhTW" and ShaguPlatesX.expansion == "vanilla" then
     -- force locale compatible fonts (zhTW 1.12)
     default = "Fonts\\FZXHLJW.ttf"
@@ -164,13 +147,6 @@ function ShaguPlatesX:UpdateFonts()
     combat = "Fonts\\FZXHLJW.ttf"
     unit = "Fonts\\FZXHLJW.ttf"
     unit_name = "Fonts\\FZXHLJW.ttf"
-  elseif ShaguPlatesX_config.global.force_region == "1" and GetLocale() == "zhTW" and ShaguPlatesX.expansion == "tbc" then
-    -- force locale compatible fonts (zhTW 2.4.3)
-    default = "Fonts\\bHEI01B.ttf"
-    tooltip = "Fonts\\bHEI01B.ttf"
-    combat = "Fonts\\bHEI01B.ttf"
-    unit = "Fonts\\bHEI01B.ttf"
-    unit_name = "Fonts\\bHEI01B.ttf"
   elseif ShaguPlatesX_config.global.force_region == "1" and GetLocale() == "koKR" then
     -- force locale compatible fonts (koKR)
     default = "Fonts\\2002.TTF"
@@ -235,7 +211,7 @@ end
 function ShaguPlatesX:RegisterModule(name, a2, a3)
   if ShaguPlatesX.module[name] then return end
   local hasv = type(a2) == "string"
-  local func, version = hasv and a3 or a2, hasv and a2 or "vanilla:tbc:wotlk"
+  local func, version = hasv and a3 or a2, hasv and a2 or "vanilla"
 
   -- check for client compatibility
   if not strfind(version, ShaguPlatesX.expansion) then return end
@@ -250,7 +226,7 @@ end
 function ShaguPlatesX:RegisterSkin(name, a2, a3)
   if ShaguPlatesX.skin[name] then return end
   local hasv = type(a2) == "string"
-  local func, version = hasv and a3 or a2, hasv and a2 or "vanilla:tbc:wotlk"
+  local func, version = hasv and a3 or a2, hasv and a2 or "vanilla"
 
   -- check for client compatibility
   if not strfind(version, ShaguPlatesX.expansion) then return end

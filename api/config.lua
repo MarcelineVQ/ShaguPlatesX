@@ -58,8 +58,6 @@ function ShaguPlatesX:LoadConfig()
   ShaguPlatesX:UpdateConfig("unitframes", nil,           "pastel",           "1")
   ShaguPlatesX:UpdateConfig("unitframes", nil,           "manacolor",        ".5,.5,1,1")
   ShaguPlatesX:UpdateConfig("unitframes", nil,           "animation_speed",  "5")
-  ShaguPlatesX:UpdateConfig("unitframes", nil,           "rangecheck",       "0")
-  ShaguPlatesX:UpdateConfig("unitframes", nil,           "rangechecki",      "4")
   ShaguPlatesX:UpdateConfig("unitframes", nil,           "druidmanabar",     "1")
   ShaguPlatesX:UpdateConfig("unitframes", nil,           "druidmanaheight",  "2")
   ShaguPlatesX:UpdateConfig("unitframes", nil,           "druidmanatext",    "0")
@@ -159,6 +157,8 @@ function ShaguPlatesX:LoadConfig()
   ShaguPlatesX:UpdateConfig("nameplates", nil,           "overlap",          "0")
   ShaguPlatesX:UpdateConfig("nameplates", nil,           "verticalhealth",   "0")
   ShaguPlatesX:UpdateConfig("nameplates", nil,           "vertical_offset",  "0")
+  ShaguPlatesX:UpdateConfig("nameplates", nil,           "scale",            "1")
+  ShaguPlatesX:UpdateConfig("nameplates", nil,           "nameoffset",       "0")
   ShaguPlatesX:UpdateConfig("nameplates", nil,           "showcastbar",      "1")
   ShaguPlatesX:UpdateConfig("nameplates", nil,           "targetcastbar",    "0")
   ShaguPlatesX:UpdateConfig("nameplates", nil,           "spellname",        "0")
@@ -220,6 +220,7 @@ function ShaguPlatesX:LoadConfig()
   ShaguPlatesX:UpdateConfig("nameplates", nil,           "glowcolor",        "1,1,1,1")
   ShaguPlatesX:UpdateConfig("nameplates", nil,           "targetzoom",       "1")
   ShaguPlatesX:UpdateConfig("nameplates", nil,           "targetzoomval",    ".30")
+  ShaguPlatesX:UpdateConfig("nameplates", nil,           "targetzoominstant","1")
   ShaguPlatesX:UpdateConfig("nameplates", nil,           "notargalpha",      ".70")
   ShaguPlatesX:UpdateConfig("nameplates", nil,           "healthtexture",    ShaguPlatesX.path.."\\img\\bar")
   ShaguPlatesX:UpdateConfig("nameplates", "name",        "fontstyle",        "OUTLINE")
@@ -324,14 +325,6 @@ function ShaguPlatesX:MigrateConfig()
       ShaguPlatesX_config.unitframes.animation_speed = "5"
     end
   end
-
-  -- migrating rangecheck interval (> 3.2.2)
-  if checkversion(3, 2, 2) then
-    if tonumber(ShaguPlatesX_config.unitframes.rangechecki) <= 1 then
-      ShaguPlatesX_config.unitframes.rangechecki = "2"
-    end
-  end
-
 
   -- migrating actionbar settings (> 3.19)
   if checkversion(3, 19, 0) then

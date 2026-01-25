@@ -1,4 +1,4 @@
-ShaguPlatesX:RegisterModule("nameplates", "vanilla:tbc", function ()
+ShaguPlatesX:RegisterModule("nameplates", "vanilla", function ()
   -- disable original castbars
   pcall(SetCVar, "ShowVKeyCastbar", 0)
 
@@ -49,7 +49,7 @@ ShaguPlatesX:RegisterModule("nameplates", "vanilla:tbc", function ()
   -- Cache frequently accessed config values (updated on config change)
   local cfg_showcastbar, cfg_targetcastbar, cfg_notargalpha, cfg_namefightcolor
   local cfg_spellname, cfg_showhp, cfg_showdebuffs
-  local cfg_targetzoom, cfg_zoomval, cfg_width, cfg_heighthealth
+  local cfg_targetzoom, cfg_zoomval, cfg_zoominstant, cfg_width, cfg_heighthealth
 
   -- store SuperAPI_Castlib original scripts for restore
   local superapi_castlib_stored = false
@@ -88,6 +88,7 @@ ShaguPlatesX:RegisterModule("nameplates", "vanilla:tbc", function ()
     cfg_showdebuffs = C.nameplates["showdebuffs"] == "1"
     cfg_targetzoom = C.nameplates.targetzoom == "1"
     cfg_zoomval = (tonumber(C.nameplates.targetzoomval) or 0.4) + 1
+    cfg_zoominstant = C.nameplates.targetzoominstant == "1"
     cfg_width = tonumber(C.nameplates.width) or 120
     cfg_heighthealth = tonumber(C.nameplates.heighthealth) or 8
   end
@@ -535,7 +536,8 @@ ShaguPlatesX:RegisterModule("nameplates", "vanilla:tbc", function ()
     HookScript(nameplate.original.healthbar, "OnValueChanged", nameplates.OnValueChanged)
 
     -- adjust sizes and scaling of the nameplate
-    nameplate:SetScale(UIParent:GetScale())
+    local scale = tonumber(C.nameplates.scale) or 1
+    nameplate:SetScale(UIParent:GetScale() * scale)
 
     nameplate.health = CreateFrame("StatusBar", nil, nameplate)
     nameplate.health:SetFrameLevel(4) -- keep above glow
@@ -544,7 +546,8 @@ ShaguPlatesX:RegisterModule("nameplates", "vanilla:tbc", function ()
     nameplate.health.text:SetTextColor(1,1,1,1)
 
     nameplate.name = nameplate:CreateFontString(nil, "OVERLAY")
-    nameplate.name:SetPoint("TOP", nameplate, "TOP", 0, 0)
+    local nameoffset = tonumber(C.nameplates.nameoffset) or 0
+    nameplate.name:SetPoint("TOP", nameplate, "TOP", 0, nameoffset)
 
     nameplate.glow = nameplate:CreateTexture(nil, "BACKGROUND")
     nameplate.glow:SetPoint("CENTER", nameplate.health, "CENTER", 0, 0)
@@ -656,6 +659,8 @@ ShaguPlatesX:RegisterModule("nameplates", "vanilla:tbc", function ()
     local width = tonumber(C.nameplates.width)
     local debuffsize = tonumber(C.nameplates.debuffsize)
     local healthoffset = tonumber(C.nameplates.health.offset)
+    local nameoffset = tonumber(C.nameplates.nameoffset) or 0
+    local scale = tonumber(C.nameplates.scale) or 1
     local orientation = C.nameplates.verticalhealth == "1" and "VERTICAL" or "HORIZONTAL"
 
     local c = combatstate -- load combat state colors
@@ -664,14 +669,18 @@ ShaguPlatesX:RegisterModule("nameplates", "vanilla:tbc", function ()
     c.NOTHREAT.r, c.NOTHREAT.g, c.NOTHREAT.b, c.NOTHREAT.a = GetStringColor(C.nameplates.combatnothreat)
     c.STUN.r, c.STUN.g, c.STUN.b, c.STUN.a = GetStringColor(C.nameplates.combatstun)
 
+    nameplate:SetScale(UIParent:GetScale() * scale)
     nameplate:SetWidth(plate_width)
     nameplate:SetHeight(plate_height)
     nameplate:SetPoint("TOP", parent, "TOP", 0, 0)
 
+    nameplate.name:ClearAllPoints()
+    nameplate.name:SetPoint("TOP", nameplate, "TOP", 0, nameoffset)
     nameplate.name:SetFont(font, font_size, font_style)
 
     nameplate.health:SetOrientation(orientation)
-    nameplate.health:SetPoint("TOP", nameplate.name, "BOTTOM", 0, healthoffset)
+    nameplate.health:ClearAllPoints()
+    nameplate.health:SetPoint("TOP", nameplate, "CENTER", 0, healthoffset)
     nameplate.health:SetStatusBarTexture(hptexture)
     nameplate.health:SetWidth(C.nameplates.width)
     nameplate.health:SetHeight(C.nameplates.heighthealth)
@@ -1189,48 +1198,68 @@ ShaguPlatesX:RegisterModule("nameplates", "vanilla:tbc", function ()
 
     -- target zoom (uses cached config values)
     if target and cfg_targetzoom then
-      local w, h = nameplate.health:GetWidth(), nameplate.health:GetHeight()
       local wc = cfg_width * cfg_zoomval
       local hc = cfg_heighthealth * (cfg_zoomval * .9)
-      local animation = false
 
-      if wc >= w then
-        nameplate.health:SetWidth(w * 1.05)
-        nameplate.health.zoomTransition = true
-        animation = true
-      end
+      if cfg_zoominstant then
+        -- instant zoom
+        if not nameplate.health.zoomed then
+          nameplate.health:SetWidth(wc)
+          nameplate.health:SetHeight(hc)
+          nameplate.health.zoomed = true
+        end
+      else
+        -- animated zoom
+        local w, h = nameplate.health:GetWidth(), nameplate.health:GetHeight()
+        local animation = false
 
-      if hc >= h then
-        nameplate.health:SetHeight(h * 1.05)
-        nameplate.health.zoomTransition = true
-        animation = true
-      end
+        if wc >= w then
+          nameplate.health:SetWidth(w * 1.05)
+          nameplate.health.zoomTransition = true
+          animation = true
+        end
 
-      if not animation and not nameplate.health.zoomed then
-        nameplate.health:SetWidth(wc)
-        nameplate.health:SetHeight(hc)
-        nameplate.health.zoomTransition = nil
-        nameplate.health.zoomed = true
+        if hc >= h then
+          nameplate.health:SetHeight(h * 1.05)
+          nameplate.health.zoomTransition = true
+          animation = true
+        end
+
+        if not animation and not nameplate.health.zoomed then
+          nameplate.health:SetWidth(wc)
+          nameplate.health:SetHeight(hc)
+          nameplate.health.zoomTransition = nil
+          nameplate.health.zoomed = true
+        end
       end
     elseif nameplate.health.zoomed or nameplate.health.zoomTransition then
-      local w, h = nameplate.health:GetWidth(), nameplate.health:GetHeight()
-      local animation = false
-
-      if cfg_width <= w then
-        nameplate.health:SetWidth(w * .95)
-        animation = true
-      end
-
-      if cfg_heighthealth <= h then
-        nameplate.health:SetHeight(h * .95)
-        animation = true
-      end
-
-      if not animation then
+      if cfg_zoominstant then
+        -- instant unzoom
         nameplate.health:SetWidth(cfg_width)
         nameplate.health:SetHeight(cfg_heighthealth)
         nameplate.health.zoomTransition = nil
         nameplate.health.zoomed = nil
+      else
+        -- animated unzoom
+        local w, h = nameplate.health:GetWidth(), nameplate.health:GetHeight()
+        local animation = false
+
+        if cfg_width <= w then
+          nameplate.health:SetWidth(w * .95)
+          animation = true
+        end
+
+        if cfg_heighthealth <= h then
+          nameplate.health:SetHeight(h * .95)
+          animation = true
+        end
+
+        if not animation then
+          nameplate.health:SetWidth(cfg_width)
+          nameplate.health:SetHeight(cfg_heighthealth)
+          nameplate.health.zoomTransition = nil
+          nameplate.health.zoomed = nil
+        end
       end
     end
 
