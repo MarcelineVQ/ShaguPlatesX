@@ -1,6 +1,6 @@
 # ShaguPlatesX
 
-## This version is performance adapted for modern SuperWoW TWoW use.
+## This version is performance adapted for [modern SuperWoW TWoW](https://github.com/balakethelock/SuperWoW) use.
 
 * Performance enhanced in various places
 * Performs the job of [TankPlates](https://github.com/MarcelineVQ/TankPlates) by default, easy to disable.
