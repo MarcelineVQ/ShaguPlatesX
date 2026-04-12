@@ -451,6 +451,7 @@ ShaguPlatesX_profiles["Slim"] = slim
 local profile_loader = CreateFrame("Frame")
 profile_loader:RegisterEvent("VARIABLES_LOADED")
 profile_loader:SetScript("OnEvent", function()
+  if not ShaguPlatesX_profiles then ShaguPlatesX_profiles = {} end
   ShaguPlatesX_profiles["Modern"] = modern
   ShaguPlatesX_profiles["Legacy"] = legacy
   ShaguPlatesX_profiles["Adapta"] = adapta
